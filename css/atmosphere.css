@@ -1,0 +1,357 @@
+#app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* SVG-based grain noise */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 1;
+  mix-blend-mode: overlay;
+}
+
+/* All real content sits above the grain without overriding layout positioning */
+#app > * { z-index: 2; }
+#profile-panel,
+#toast-wrap { z-index: 600; }
+
+/* ══════════════════════════════════════════════════════════
+   BODY BACKGROUND — deep radial void
+   ══════════════════════════════════════════════════════════ */
+
+body {
+  position: relative;
+  background: #05050a;
+}
+
+  /* === COSMIC BG === */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(139,30,30,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(197,160,89,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 90%, rgba(30,30,80,0.15) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Stars */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(197,160,89,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 8%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 15%, rgba(197,160,89,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 5%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 30%, rgba(197,160,89,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 55%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 70%, rgba(197,160,89,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 85%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 88%, rgba(197,160,89,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 45% 45%, rgba(197,160,89,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 40%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 88% 60%, rgba(255,255,255,0.2) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+/* ══════════════════════════════════════════════════════════
+   AMBIENT KEYFRAMES
+   ══════════════════════════════════════════════════════════ */
+
+/* Slow gold pulse */
+@keyframes goldPulse {
+  0%, 100% { opacity: .55; }
+  50%       { opacity: 1.0; }
+}
+
+/* Soft glow breathe */
+@keyframes glowBreathe {
+  0%, 100% { box-shadow: 0 0 12px rgba(197,160,89,0.12); }
+  50%       { box-shadow: 0 0 28px rgba(197,160,89,0.28); }
+}
+
+/* Ember float */
+@keyframes emberFloat {
+  0%   { transform: translateY(0)    scale(1)   opacity(0.6); }
+  50%  { transform: translateY(-8px) scale(1.1) opacity(1); }
+  100% { transform: translateY(0)    scale(1)   opacity(0.6); }
+}
+
+/* Subtle shimmer sweep */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* Rune flicker */
+@keyframes runeFade {
+  0%, 100% { opacity: .25; }
+  45%, 55%  { opacity: .55; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   HEADER ATMOSPHERE
+   ══════════════════════════════════════════════════════════ */
+
+/* Logo ambient glow pulse */
+.header-logo {
+  animation: goldPulse 5s ease-in-out infinite;
+}
+
+/* Header bottom border glow */
+#app-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(197,160,89,0.35), transparent);
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════
+   RUNE DIVIDER
+   Adds decorative runic glyph separators
+   ══════════════════════════════════════════════════════════ */
+
+.rune-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: var(--sp-4) 0;
+  color: var(--c-gold-dim);
+  font-size: 10px;
+  letter-spacing: .25em;
+  opacity: .50;
+  animation: runeFade 6s ease-in-out infinite;
+}
+.rune-divider::before,
+.rune-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--c-border-md));
+}
+.rune-divider::after {
+  background: linear-gradient(90deg, var(--c-border-md), transparent);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ARCANE PANEL — layered magical surface
+   ══════════════════════════════════════════════════════════ */
+
+.panel-arcane {
+  position: relative;
+  background:
+    linear-gradient(145deg, rgba(112,48,192,0.06) 0%, rgba(197,160,89,0.03) 50%, transparent 100%),
+    var(--c-raised);
+  border: 1px solid rgba(112,48,192,0.22);
+  border-radius: var(--r-lg);
+  padding: var(--sp-3);
+  box-shadow:
+    0 0 16px rgba(112,48,192,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    var(--shadow-md);
+  overflow: hidden;
+}
+
+/* Corner rune marks */
+.panel-arcane::before {
+  content: '✦';
+  position: absolute;
+  top: var(--sp-2);
+  left: var(--sp-2);
+  font-size: 7px;
+  color: var(--c-gold);
+  opacity: .25;
+  animation: runeFade 8s ease-in-out infinite;
+}
+.panel-arcane::after {
+  content: '✦';
+  position: absolute;
+  bottom: var(--sp-2);
+  right: var(--sp-2);
+  font-size: 7px;
+  color: var(--c-gold);
+  opacity: .25;
+  animation: runeFade 8s ease-in-out infinite 4s;
+}
+
+/* ══════════════════════════════════════════════════════════
+   TOWER GLOW CLASSES — applied to #app[data-tower]
+   ══════════════════════════════════════════════════════════ */
+
+/* Tower identity now lives in nav/card accents. Avoid page-wide glow bands. */
+#app[data-tower="fire"]::after,
+#app[data-tower="dark"]::after,
+#app[data-tower="light"]::after,
+#app[data-tower="ice"]::after {
+  content: none;
+}
+
+/* ══════════════════════════════════════════════════════════
+   INTERACTIVE GLOW — cards and buttons
+   ══════════════════════════════════════════════════════════ */
+
+/* Cards get a soft reveal on hover */
+.card:hover, .card--raised:hover {
+  border-color: var(--c-border-md);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.03);
+  transition: border-color .18s, box-shadow .18s;
+}
+
+/* Blueprint slot hover */
+#blueprint-grid .card--raised:hover {
+  border-color: rgba(197,160,89,0.28);
+  box-shadow: 0 0 10px rgba(197,160,89,0.08), var(--shadow-sm);
+}
+
+/* ══════════════════════════════════════════════════════════
+   SCREEN TITLES — atmospheric text treatment
+   ══════════════════════════════════════════════════════════ */
+
+.screen-title {
+  position: relative;
+  display: inline-block;
+}
+
+/* Decorative prefix rune on screen titles */
+.screen-title::before {
+  content: '⬥ ';
+  font-size: 8px;
+  color: var(--c-gold);
+  opacity: .55;
+  vertical-align: middle;
+  letter-spacing: 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SECTION LABELS — gold accent line animation
+   ══════════════════════════════════════════════════════════ */
+
+.section-label::before {
+  animation: goldPulse 4s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PROFILE PANEL ATMOSPHERE
+   ══════════════════════════════════════════════════════════ */
+
+.profile-sheet {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Radiant top corner on profile */
+.profile-sheet::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(ellipse at top right, rgba(197,160,89,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.profile-sheet > * { position: relative; z-index: 1; }
+
+/* Avatar ambient ring */
+.profile-avatar {
+  animation: glowBreathe 5s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════
+   TOWER SELECT — intro atmospheric accents
+   ══════════════════════════════════════════════════════════ */
+
+/* Subtle scan line effect on tower cards when active tower chosen */
+.tower-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+.tower-card { position: relative; overflow: hidden; }
+
+/* Shimmer sweep on hover */
+.tower-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+  transform: skewX(-20deg);
+  transition: left .55s ease;
+  pointer-events: none;
+}
+.tower-card:hover::after { left: 160%; }
+
+/* ══════════════════════════════════════════════════════════
+   EMPTY STATE — atmospheric atmosphere
+   ══════════════════════════════════════════════════════════ */
+
+.empty-state__icon {
+  animation: emberFloat 4s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════
+   BOTTOM NAV — magical active indicator pulse
+   ══════════════════════════════════════════════════════════ */
+
+.nav-btn.is-active::after {
+  animation: goldPulse 3s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════
+   GOLD DIVIDER — refined
+   ══════════════════════════════════════════════════════════ */
+
+.divider--gold {
+  animation: goldPulse 6s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STAT ROW — subtle hover
+   ══════════════════════════════════════════════════════════ */
+
+.stat-row:hover {
+  background: rgba(197,160,89,0.025);
+  padding-left: 4px;
+  padding-right: 4px;
+  margin: 0 -4px;
+  border-radius: var(--r-sm);
+  transition: background .15s;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SCROLLBAR — atmospheric gold
+   ══════════════════════════════════════════════════════════ */
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--c-gold-pale), var(--c-gold-dim));
+}
+
+/* ══════════════════════════════════════════════════════════
+   PERFORMANCE — reduce motion for accessibility
+   ══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
