@@ -159,6 +159,25 @@ function renderProfilePanel() {
     badgeEl.className = 'badge ' + (towerBadge[s.tower] || 'badge--gold');
     badgeEl.textContent = (s.tower || '').toUpperCase();
   }
+
+  /* vital bars */
+  const setBar = (id, pct) => {
+    const el = document.getElementById(id);
+    if (el) el.style.width = Math.min(100, Math.max(0, pct)) + '%';
+  };
+  setBar('prof-hp-bar',  (p.hp  / p.hpMax)   * 100);
+  setBar('prof-sp-bar',  (p.sp  / p.spMax)   * 100);
+  setBar('prof-exp-bar', (p.exp / p.expNext) * 100);
+
+  /* avatar tower glow */
+  const towerGlow = {
+    fire:  '0 0 20px rgba(217,79,26,0.6)',
+    dark:  '0 0 20px rgba(112,48,192,0.6)',
+    light: '0 0 20px rgba(184,152,32,0.6)',
+    ice:   '0 0 20px rgba(102,199,232,0.6)',
+  };
+  const avatarEl = document.getElementById('prof-avatar');
+  if (avatarEl) avatarEl.style.boxShadow = towerGlow[s.tower] || 'none';
 }
 
 /* ── Toast ───────────────────────────────────────────────── */
@@ -193,3 +212,81 @@ function bootApp() {
     showScreen(DEFAULT_SCREEN);
   }
 }
+
+/* ── Library ─────────────────────────────────────────────── */
+let _libTower  = 'all';
+let _libRarity = 'all';
+
+function renderLibrary() {
+  _renderLibFilters();
+  _renderLibCards();
+}
+
+function _renderLibFilters() {
+  const towerEl  = document.getElementById('library-tower-filter');
+  const rarityEl = document.getElementById('library-rarity-filter');
+  if (!towerEl || !rarityEl) return;
+
+  const towers  = ['all', 'light', 'dark', 'fire', 'ice'];
+  const tLabels = { all: 'All', light: 'Light', dark: 'Dark', fire: 'Fire', ice: 'Ice' };
+
+  towerEl.innerHTML = towers.map(t => {
+    const on = t === _libTower;
+    return `<button class="btn btn--ghost" style="opacity:${on ? '1' : '0.45'};padding:0 var(--sp-3);min-height:32px;font-size:12px;"
+      onclick="_libTower='${t}';renderLibrary();">${tLabels[t]}</button>`;
+  }).join('');
+
+  const rarities = ['all', 'common', 'uncommon', 'rare', 'ultimate'];
+  const rLabels  = { all: 'All', common: 'Common', uncommon: 'Uncommon', rare: 'Rare', ultimate: 'Ultimate' };
+
+  rarityEl.innerHTML = rarities.map(r => {
+    const on = r === _libRarity;
+    return `<button class="btn btn--ghost" style="opacity:${on ? '1' : '0.45'};padding:0 var(--sp-3);min-height:32px;font-size:12px;"
+      onclick="_libRarity='${r}';renderLibrary();">${rLabels[r]}</button>`;
+  }).join('');
+}
+
+function _renderLibCards() {
+  const list = document.getElementById('library-list');
+  if (!list) return;
+
+  let spells = getAllSpells();
+  if (_libTower  !== 'all') spells = spells.filter(s => s.tower  === _libTower);
+  if (_libRarity !== 'all') spells = spells.filter(s => s.rarity === _libRarity);
+
+  if (!spells.length) {
+    list.innerHTML =
+      `<div class="empty-state">
+        <div class="empty-state__icon">▤</div>
+        <div class="empty-state__title">No Spells Found</div>
+        <div class="empty-state__body">Try a different filter combination.</div>
+      </div>`;
+    return;
+  }
+
+  const obtainBadge = s => {
+    if (s.obtain === 'shop') return `<span class="lib-obtain lib-obtain--shop">Available in Shop</span>`;
+    if (s.obtain === 'boss') return `<span class="lib-obtain lib-obtain--boss">Boss Drop</span>`;
+    return                          `<span class="lib-obtain lib-obtain--drop">Drop Only</span>`;
+  };
+
+  const cap = str => str.charAt(0).toUpperCase() + str.slice(1);
+
+  list.innerHTML = spells.map(s => `
+    <div class="card card--raised lib-spell-card">
+      <div class="lib-card-head">
+        <span class="lib-spell-name">${s.name}</span>
+        <span class="badge badge--${s.rarity}">${cap(s.rarity)}</span>
+        <span class="badge badge--${s.tower}">${s.element}</span>
+      </div>
+      <div class="lib-card-meta">
+        <span class="lib-role">${s.role}</span>
+        <span class="lib-sp">SP ${s.spCost}</span>
+      </div>
+      <div class="lib-card-effect">${s.effect}</div>
+      <div class="lib-card-foot">${obtainBadge(s)}</div>
+    </div>
+  `).join('');
+}
+
+onScreen('library', renderLibrary);

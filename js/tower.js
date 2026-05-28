@@ -8,10 +8,10 @@
 let _pendingTower = null;
 
 const TOWER_UI = {
-  light: { glyph: '✦', name: 'Light Tower' },
-  dark:  { glyph: '◐', name: 'Dark Tower' },
-  fire:  { glyph: '△', name: 'Fire Tower' },
-  ice:   { glyph: '◇', name: 'Ice Tower' },
+  light: { lucide: 'sun',     name: 'Light Tower' },
+  dark:  { lucide: 'moon',    name: 'Dark Tower'  },
+  fire:  { lucide: 'flame',   name: 'Fire Tower'  },
+  ice:   { lucide: 'diamond', name: 'Ice Tower'   },
 };
 
 function chooseTower(tower) {
@@ -21,7 +21,10 @@ function chooseTower(tower) {
 
   const gEl = document.getElementById('intro-chosen-glyph');
   const nEl = document.getElementById('intro-chosen-name');
-  if (gEl) gEl.textContent = info.glyph;
+  if (gEl) {
+    gEl.innerHTML = `<i data-lucide="${info.lucide}"></i>`;
+    lucide.createIcons();
+  }
   if (nEl) nEl.textContent = info.name;
 
   const app = document.getElementById('app');

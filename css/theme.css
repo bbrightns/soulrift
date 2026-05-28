@@ -15,11 +15,11 @@
   --c-scrim:     rgba(5,5,10,0.85);
 
   /* ── Gold ────────────────────────────────────────────── */
-  --c-gold:       #c5a059;
+  --c-gold:       #d4aa55;  /* ทองสว่างขึ้น */
   --c-gold-dim:   #7a6030;
   --c-gold-pale:  #4a3a1a;
-  --c-gold-text:  #d4b06a;
-  --c-gold-hi:    #e8cc88;
+  --c-gold-text:  #e8c070;  /* ทอง text ชัด */
+  --c-gold-hi:    #f5d878;  /* ทอง highlight สว่าง */
 
   /* ── Borders ─────────────────────────────────────────── */
   --c-border:    rgba(197,160,89,0.10);
@@ -49,10 +49,10 @@
   --c-ice-glow:  rgba(102,199,232,0.30);
 
   /* ── Text ────────────────────────────────────────────── */
-  --c-text:      #d8ceba;   /* primary — warm parchment */
-  --c-text-2:    #7a7060;   /* secondary — dim stone */
-  --c-text-3:    #3e3830;   /* muted — deep ash */
-  --c-text-hi:   #ece4d0;   /* highlight */
+  --c-text:      #e8e0d0;   /* ขาวอุ่น อ่านง่ายขึ้น */
+  --c-text-2:    #a09880;   /* secondary ชัดขึ้น */
+  --c-text-3:    #605850;   /* muted แต่ยังเห็น */
+  --c-text-hi:   #f5f0e8;   /* highlight สว่างจริงๆ */
 
   /* ── Status ──────────────────────────────────────────── */
   --c-ok:   #2e9050;
@@ -358,8 +358,8 @@ body {
   font-size: 13px;
 }
 .stat-row:last-child { border-bottom: none; }
-.stat-row__key   { color: var(--c-text-3); font-size: 12px; letter-spacing: .02em; }
-.stat-row__val   { color: var(--c-text); font-weight: 500; }
+.stat-row__key   { color: var(--c-text-2); font-size: 12px; letter-spacing: .02em; }
+.stat-row__val   { color: var(--c-text-hi); font-weight: 600; }
 .stat-row__val--gold {
   color: var(--c-gold-text);
   font-family: var(--f-head);
@@ -417,3 +417,27 @@ body {
 .c-ok    { color: var(--c-ok); }
 .c-bad   { color: var(--c-bad); }
 .t-head  { font-family: var(--f-head); }
+
+/* ── Profile panel — vitals & section heads ─────────────── */
+.vital-row { padding: 6px 0; border-bottom: 1px solid var(--c-border); margin-bottom: 0; }
+.vital-row:last-child { border-bottom: none; }
+.vital-row__head { display:flex; justify-content:space-between; align-items:center;
+                   font-size:12px; margin-bottom:4px; }
+.vital-row__key  { color: var(--c-text-2); text-transform:uppercase;
+                   letter-spacing:.06em; }
+.vital-row__frac { color: var(--c-text-hi); font-weight:600; }
+
+.profile-sheet .card { padding: var(--sp-3) var(--sp-4); }
+.vital-bar { height:6px; background:rgba(255,255,255,0.08);
+             border-radius:3px; overflow:hidden; }
+.vital-bar__fill { height:100%; border-radius:3px;
+                   transition: width 0.4s ease; }
+.vital-bar__fill--hp  { background: linear-gradient(90deg,#8b1a1a,#c03030); }
+.vital-bar__fill--sp  { background: linear-gradient(90deg,#1a4a8b,#4a90d9); }
+.vital-bar__fill--exp { background: linear-gradient(90deg,var(--c-gold-dim),var(--c-gold)); }
+
+.prof-section-head { display:flex; align-items:center; gap:var(--sp-2);
+                     margin: var(--sp-4) 0 var(--sp-2); }
+.prof-section-head__icon  { color: var(--c-gold); font-size:10px; }
+.prof-section-head__title { color: var(--c-text-2); font-size:11px;
+                             letter-spacing:.1em; font-family:var(--f-head); }

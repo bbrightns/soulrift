@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/theme.css?v=phase1-1">
   <link rel="stylesheet" href="css/layout.css?v=phase1-1">
   <link rel="stylesheet" href="css/atmosphere.css?v=phase1-1">
+  <link rel="stylesheet" href="css/library.css?v=phase1-1">
 </head>
 <body>
 
@@ -278,7 +279,10 @@
     <div class="screen" id="screen-library">
       <div class="screen-title">Library</div>
       <div class="screen-sub">Your collected spell stones</div>
-      <div class="section-label">Spell Collection</div>
+      <div class="section-label" style="margin-top:var(--sp-4)">Tower</div>
+      <div id="library-tower-filter" class="filter-row"></div>
+      <div class="section-label" style="margin-top:var(--sp-3)">Rarity</div>
+      <div id="library-rarity-filter" class="filter-row"></div>
       <div id="library-list">
         <div class="empty-state">
           <div class="empty-state__icon">▤</div>
@@ -340,15 +344,23 @@
       <div class="divider--gold divider"></div>
 
       <!-- Progression -->
-      <div class="section-label">Progression</div>
+      <div class="prof-section-head">
+        <span class="prof-section-head__icon">◆</span>
+        <span class="prof-section-head__title">PROGRESSION</span>
+      </div>
       <div class="card card--raised" style="margin-bottom:var(--sp-4);">
         <div class="stat-row">
           <span class="stat-row__key">Level</span>
           <span class="stat-row__val stat-row__val--gold" id="prof-level">1</span>
         </div>
-        <div class="stat-row">
-          <span class="stat-row__key">EXP</span>
-          <span class="stat-row__val" id="prof-exp">0 / 100</span>
+        <div class="vital-row">
+          <div class="vital-row__head">
+            <span class="vital-row__key">EXP</span>
+            <span class="vital-row__frac" id="prof-exp">0 / 100</span>
+          </div>
+          <div class="vital-bar">
+            <div class="vital-bar__fill vital-bar__fill--exp" id="prof-exp-bar" style="width:0%"></div>
+          </div>
         </div>
         <div class="stat-row">
           <span class="stat-row__key">Gold</span>
@@ -357,39 +369,55 @@
       </div>
 
       <!-- Vitals -->
-      <div class="section-label">Vitals</div>
+      <div class="prof-section-head">
+        <span class="prof-section-head__icon">◆</span>
+        <span class="prof-section-head__title">VITALS</span>
+      </div>
       <div class="card card--raised" style="margin-bottom:var(--sp-4);">
-        <div class="stat-row">
-          <span class="stat-row__key">HP</span>
-          <span class="stat-row__val" id="prof-hp">80 / 80</span>
+        <div class="vital-row">
+          <div class="vital-row__head">
+            <span class="vital-row__key">HP</span>
+            <span class="vital-row__frac" id="prof-hp">80 / 80</span>
+          </div>
+          <div class="vital-bar">
+            <div class="vital-bar__fill vital-bar__fill--hp" id="prof-hp-bar" style="width:100%"></div>
+          </div>
         </div>
-        <div class="stat-row">
-          <span class="stat-row__key">SP</span>
-          <span class="stat-row__val" id="prof-sp">40 / 40</span>
+        <div class="vital-row">
+          <div class="vital-row__head">
+            <span class="vital-row__key">SP</span>
+            <span class="vital-row__frac" id="prof-sp">40 / 40</span>
+          </div>
+          <div class="vital-bar">
+            <div class="vital-bar__fill vital-bar__fill--sp" id="prof-sp-bar" style="width:100%"></div>
+          </div>
         </div>
       </div>
 
       <!-- Core Stats -->
-      <div class="section-label">Stats</div>
+      <div class="prof-section-head">
+        <span class="prof-section-head__icon">◆</span>
+        <span class="prof-section-head__title">STATS</span>
+      </div>
       <div class="card card--raised" style="margin-bottom:var(--sp-5);">
         <div class="stat-row">
-          <span class="stat-row__key">Strength</span>
+          <span class="stat-row__key">💪 Strength</span>
           <span class="stat-row__val" id="prof-str">8</span>
         </div>
         <div class="stat-row">
-          <span class="stat-row__key">Attack</span>
+          <span class="stat-row__key">⚔ Attack</span>
           <span class="stat-row__val" id="prof-atk">10</span>
         </div>
         <div class="stat-row">
-          <span class="stat-row__key">Intelligence</span>
+          <span class="stat-row__key">🧠 Intelligence</span>
           <span class="stat-row__val" id="prof-int">8</span>
         </div>
         <div class="stat-row">
-          <span class="stat-row__key">Agility</span>
+          <span class="stat-row__key">⚡ Agility</span>
           <span class="stat-row__val" id="prof-agi">6</span>
         </div>
         <div class="stat-row">
-          <span class="stat-row__key">Defense</span>
+          <span class="stat-row__key">🛡 Defense</span>
           <span class="stat-row__val" id="prof-def">5</span>
         </div>
       </div>

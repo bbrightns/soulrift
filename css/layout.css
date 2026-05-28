@@ -114,13 +114,14 @@
 
 .hud-level {
   font-size: 10px;
-  color: var(--c-text-3);
+  color: var(--c-gold-text);
   background: var(--c-inset);
-  border: 1px solid var(--c-border);
+  border: 1px solid var(--c-border-md);
   border-radius: var(--r-sm);
   padding: 2px 6px;
   font-family: var(--f-head);
   letter-spacing: .06em;
+  text-shadow: 0 0 8px rgba(197,160,89,0.4);  /* ← เพิ่มบรรทัดนี้ */
 }
 
 /* Vertical separator between hud items */
@@ -432,8 +433,8 @@
 
 .name-input-label {
   font-family: var(--f-head);
-  font-size: 9px;
-  color: var(--c-text-3);
+  font-size: 11px;
+  color: var(--c-text-2);
   letter-spacing: .20em;
   text-transform: uppercase;
   margin-bottom: var(--sp-2);
@@ -1434,10 +1435,33 @@
   justify-content: center;
   background: #16161a;
   border: 1px solid rgba(197, 160, 89, 0.3);
-  color: #e8c87a; /* --gold-light */
-  font-size: 28px;
-  text-shadow: 0 0 10px rgba(197,160,89,0.5);
-  box-shadow: 0 0 15px rgba(197, 160, 89, 0.1);
+  color: var(--c-gold-text);
+  box-shadow: var(--glow-gold-sm);
+}
+.landing-chosen-glyph svg {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.5;
+}
+#app[data-tower="light"] .landing-chosen-glyph {
+  color: var(--c-light);
+  border-color: rgba(184,152,32, 0.40);
+  box-shadow: var(--glow-light);
+}
+#app[data-tower="dark"] .landing-chosen-glyph {
+  color: var(--c-dark);
+  border-color: rgba(112,48,192, 0.40);
+  box-shadow: var(--glow-dark);
+}
+#app[data-tower="fire"] .landing-chosen-glyph {
+  color: var(--c-fire);
+  border-color: rgba(217,79,26, 0.40);
+  box-shadow: var(--glow-fire);
+}
+#app[data-tower="ice"] .landing-chosen-glyph {
+  color: var(--c-ice);
+  border-color: rgba(102,199,232, 0.40);
+  box-shadow: var(--glow-ice);
 }
 
 .landing-chosen-name {
@@ -1450,8 +1474,8 @@
 }
 
 .landing-name-copy {
-  font-size: 12px;
-  color: var(--c-text-3);
+  font-size: 13px;
+  color: var(--c-text-2);
   margin-top: 7px;
 }
 

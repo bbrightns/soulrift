@@ -1,0 +1,91 @@
+/* ============================================================
+   SOULRIFT — css/library.css
+   Spell Library screen styles.
+   ============================================================ */
+
+.filter-row {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-2);
+}
+
+/* Compact spell card */
+.lib-spell-card {
+  margin-bottom: var(--sp-2);
+  padding: var(--sp-3);
+}
+
+.lib-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.lib-spell-name {
+  font-family: var(--f-head);
+  font-size: 13px;
+  color: var(--c-text);
+  flex: 1;
+  min-width: 0;
+}
+
+.lib-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--c-text-2);
+  margin-bottom: 5px;
+}
+
+.lib-role {
+  font-style: italic;
+}
+
+.lib-sp {
+  font-family: var(--f-head);
+  font-size: 11px;
+  color: var(--c-text-2);
+  white-space: nowrap;
+}
+
+.lib-card-effect {
+  font-size: 11px;
+  color: var(--c-text-2);
+  line-height: 1.45;
+  margin-bottom: 6px;
+}
+
+.lib-card-foot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lib-obtain {
+  font-size: 10px;
+  font-family: var(--f-head);
+  letter-spacing: .04em;
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+}
+
+.lib-obtain--shop {
+  color: var(--c-uncommon);
+  background: rgba(42,152,88,.10);
+  border: 1px solid rgba(42,152,88,.22);
+}
+
+.lib-obtain--drop {
+  color: var(--c-text-2);
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--c-border);
+}
+
+.lib-obtain--boss {
+  color: var(--c-ultimate);
+  background: rgba(200,112,16,.10);
+  border: 1px solid rgba(200,112,16,.25);
+}

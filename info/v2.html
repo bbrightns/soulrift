@@ -1,0 +1,3537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOULRIFT RPG — Choose Your Tower</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --void: #0a0a0b;
+    --void2: #16161a;
+    --void3: #1e1e24;
+    --gold: #c5a059;
+    --gold-light: #e8c87a;
+    --gold-dim: #7a6035;
+    --crimson: #8b1e1e;
+    --crimson-light: #c42b2b;
+    --text-primary: #e8dcc8;
+    --text-secondary: #9a8f7a;
+    --text-muted: #5a5248;
+    --border-rune: rgba(197, 160, 89, 0.15);
+    --border-rune-bright: rgba(197, 160, 89, 0.4);
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--void);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* === COSMIC BG === */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(139,30,30,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(197,160,89,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 90%, rgba(30,30,80,0.15) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Stars */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(197,160,89,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 8%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 15%, rgba(197,160,89,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 5%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 30%, rgba(197,160,89,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 55%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 70%, rgba(197,160,89,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 85%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 88%, rgba(197,160,89,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 45% 45%, rgba(197,160,89,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 40%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 88% 60%, rgba(255,255,255,0.2) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  /* === HEADER === */
+  .site-header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .logo-rune {
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: var(--gold-dim);
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .game-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+    text-shadow: 0 0 60px rgba(197,160,89,0.3), 0 0 120px rgba(197,160,89,0.15);
+    margin-bottom: 0.5rem;
+  }
+
+  .game-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+  }
+
+  /* Ornamental divider */
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    width: 100%;
+    max-width: 700px;
+  }
+  .ornament-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+  .ornament-diamond {
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(197,160,89,0.6);
+  }
+  .ornament-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* === CARDS GRID === */
+  .towers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 3rem;
+  }
+
+  /* === TOWER CARD === */
+  .tower-card {
+    position: relative;
+    background: var(--void2);
+    border: 1px solid var(--border-rune);
+    border-radius: 4px;
+    padding: 2rem 1.75rem 1.75rem;
+    cursor: pointer;
+    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Corner rune marks */
+  .tower-card::before,
+  .tower-card::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    opacity: 0.4;
+    transition: opacity 0.35s ease;
+  }
+  .tower-card::before {
+    top: 0; left: 0;
+    border-top: 1px solid var(--gold);
+    border-left: 1px solid var(--gold);
+  }
+  .tower-card::after {
+    bottom: 0; right: 0;
+    border-bottom: 1px solid var(--gold);
+    border-right: 1px solid var(--gold);
+  }
+
+  .tower-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-rune-bright);
+  }
+  .tower-card:hover::before,
+  .tower-card:hover::after { opacity: 1; }
+
+  /* Selected state */
+  .tower-card.selected {
+    border-color: var(--gold);
+    transform: translateY(-6px);
+  }
+  .tower-card.selected::before,
+  .tower-card.selected::after { opacity: 1; }
+
+  /* Glow overlays per tower */
+  .tower-card .card-glow {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    border-radius: 4px;
+  }
+  .tower-card:hover .card-glow,
+  .tower-card.selected .card-glow { opacity: 1; }
+
+  .light-glow   { background: radial-gradient(ellipse at 50% 0%, rgba(255,220,100,0.08) 0%, transparent 70%); }
+  .dark-glow    { background: radial-gradient(ellipse at 50% 0%, rgba(150,80,220,0.09) 0%, transparent 70%); }
+  .fire-glow    { background: radial-gradient(ellipse at 50% 0%, rgba(220,80,30,0.1) 0%, transparent 70%); }
+
+  /* Selected glow stronger */
+  .tower-card.selected .light-glow  { background: radial-gradient(ellipse at 50% 0%, rgba(255,220,100,0.15) 0%, transparent 70%); }
+  .tower-card.selected .dark-glow   { background: radial-gradient(ellipse at 50% 0%, rgba(150,80,220,0.16) 0%, transparent 70%); }
+  .tower-card.selected .fire-glow   { background: radial-gradient(ellipse at 50% 0%, rgba(220,80,30,0.18) 0%, transparent 70%); }
+
+  /* === CARD TOP === */
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .tower-sigil {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .sigil-light  { background: rgba(255,220,100,0.1); border: 1px solid rgba(255,220,100,0.3); box-shadow: 0 0 20px rgba(255,220,100,0.15); }
+  .sigil-dark   { background: rgba(140,60,200,0.1);  border: 1px solid rgba(140,60,200,0.3);  box-shadow: 0 0 20px rgba(140,60,200,0.15); }
+  .sigil-fire   { background: rgba(220,70,20,0.12);  border: 1px solid rgba(220,70,20,0.35);  box-shadow: 0 0 20px rgba(220,70,20,0.2); }
+
+  .tower-card.selected .sigil-light { box-shadow: 0 0 35px rgba(255,220,100,0.4); border-color: rgba(255,220,100,0.7); }
+  .tower-card.selected .sigil-dark  { box-shadow: 0 0 35px rgba(140,60,200,0.4);  border-color: rgba(140,60,200,0.7); }
+  .tower-card.selected .sigil-fire  { box-shadow: 0 0 35px rgba(220,70,20,0.4);   border-color: rgba(220,70,20,0.7); }
+
+  .selected-badge {
+    display: none;
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+    padding: 3px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    background: rgba(197,160,89,0.07);
+  }
+  .tower-card.selected .selected-badge { display: block; }
+
+  /* === TOWER NAME === */
+  .tower-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+
+  .tower-tagline {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .color-light  { color: #e0c060; }
+  .color-dark   { color: #b080e0; }
+  .color-fire   { color: #e06030; }
+
+  /* Stats row */
+  .tower-stats {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .stat-pill {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    border: 1px solid;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .stat-light { background: rgba(255,220,100,0.08); border-color: rgba(255,220,100,0.25); color: #e0c060; }
+  .stat-dark  { background: rgba(140,60,200,0.08);  border-color: rgba(140,60,200,0.25);  color: #b080e0; }
+  .stat-fire  { background: rgba(220,70,20,0.1);    border-color: rgba(220,70,20,0.3);    color: #e06030; }
+
+  /* Divider */
+  .card-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-rune-bright), transparent);
+    margin-bottom: 1.2rem;
+  }
+
+  /* Description */
+  .tower-desc {
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+
+  /* Playstyle */
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .playstyle-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+  .ps-tag {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+  }
+
+  /* Strength / Weakness */
+  .sw-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .sw-block { }
+  .sw-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .sw-strength .sw-label { color: #5a8f5a; }
+  .sw-weakness .sw-label { color: #8f4a4a; }
+
+  .sw-item {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  .sw-item::before { content: '·'; flex-shrink: 0; }
+  .sw-strength .sw-item::before { color: #5a8f5a; }
+  .sw-weakness .sw-item::before { color: #8f4a4a; }
+
+  /* Special mechanic */
+  .special-box {
+    background: rgba(197,160,89,0.05);
+    border: 1px solid rgba(197,160,89,0.12);
+    border-radius: 2px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .special-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .special-text {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .special-text em {
+    color: var(--gold);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  /* Choose button */
+  .choose-btn {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border: 1px solid var(--border-rune-bright);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    margin-top: auto;
+  }
+
+  .choose-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .tower-card[data-tower="light"]  .choose-btn::before { background: rgba(255,220,100,0.08); }
+  .tower-card[data-tower="dark"]   .choose-btn::before { background: rgba(140,60,200,0.08); }
+  .tower-card[data-tower="fire"]   .choose-btn::before { background: rgba(220,70,20,0.1); }
+
+  .choose-btn:hover::before { opacity: 1; }
+  .choose-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--gold);
+  }
+
+  .tower-card.selected .choose-btn {
+    background: rgba(197,160,89,0.12);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* === CONFIRM SECTION === */
+  .confirm-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+    width: 100%;
+    max-width: 480px;
+  }
+  .confirm-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .confirm-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .confirm-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  .enter-arcadia-btn {
+    width: 100%;
+    max-width: 360px;
+    padding: 1.1rem 2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    font-weight: 700;
+    border: 1px solid var(--gold);
+    background: rgba(197,160,89,0.1);
+    color: var(--gold);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .enter-arcadia-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(197,160,89,0.1);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .enter-arcadia-btn:hover::before { transform: scaleX(1); }
+  .enter-arcadia-btn:hover {
+    background: rgba(197,160,89,0.18);
+    box-shadow: 0 0 30px rgba(197,160,89,0.2);
+    letter-spacing: 0.4em;
+  }
+
+  /* === NOTIFICATION === */
+  .notify {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--void3);
+    border: 1px solid var(--gold-dim);
+    color: var(--text-primary);
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    padding: 0.75rem 2rem;
+    border-radius: 2px;
+    transition: transform 0.4s ease;
+    z-index: 100;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .notify.show { transform: translateX(-50%) translateY(0); }
+
+  /* === FOOTER === */
+  .page-footer {
+    margin-top: 3rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  /* Pulse animation for selected sigil */
+  @keyframes sigil-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  .tower-card.selected .tower-sigil { animation: sigil-pulse 3s ease-in-out infinite; }
+
+  /* Entrance animation */
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .tower-card {
+    animation: card-in 0.6s ease both;
+  }
+  .tower-card:nth-child(1) { animation-delay: 0.1s; }
+  .tower-card:nth-child(2) { animation-delay: 0.22s; }
+  .tower-card:nth-child(3) { animation-delay: 0.34s; }
+  .tower-card:nth-child(4) { animation-delay: 0.46s; }
+
+  @keyframes header-in {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .site-header { animation: header-in 0.8s ease both; }
+
+
+  /* ============================================================
+     HUB SCREEN — SIDEBAR LAYOUT
+  ============================================================ */
+  #hubScreen { display: none; position: relative; z-index: 1; width: 100%; min-height: 100vh; flex-direction: column; }
+  #hubScreen.active { display: flex; }
+
+  #hubParticles { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1.2s ease; }
+  #hubParticles.visible { opacity: 1; }
+  .hub-ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1.5s ease; }
+  .hub-ambient.visible { opacity: 1; }
+  .hub-ambient.light { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,220,100,0.07) 0%, transparent 70%); }
+  .hub-ambient.dark  { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(140,60,200,0.07) 0%, transparent 70%); }
+  .hub-ambient.fire  { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(220,70,20,0.09) 0%, transparent 70%); }
+
+  /* STATUS BAR */
+  .status-bar { position: sticky; top: 0; z-index: 100; width: 100%; background: rgba(10,10,11,0.92); border-bottom: 1px solid var(--border-rune); backdrop-filter: blur(12px); }
+  .status-bar-inner { display: flex; align-items: center; gap: 0; height: 50px; padding: 0 1rem; width: 100%; }
+  .sb-identity { display: flex; flex-direction: column; justify-content: center; padding: 0.35rem 1rem 0.35rem 0.45rem; border-right: 1px solid var(--border-rune); margin-right: 1rem; min-width: 0; cursor: pointer; border-radius: 3px; transition: background 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .sb-identity:hover, .sb-identity.active { background: rgba(197,160,89,0.06); box-shadow: 0 0 18px rgba(197,160,89,0.08); border-right-color: rgba(197,160,89,0.35); }
+  .sb-player-name { font-family: 'Cinzel', serif; font-size: 0.72rem; font-weight: 700; color: var(--text-primary); letter-spacing: 0.08em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+  .sb-identity:hover .sb-player-name, .sb-identity.active .sb-player-name { color: var(--gold); }
+  .sb-tower-badge { font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; white-space: nowrap; margin-top: 1px; }
+  .sb-tower-badge.light { color: #e0c060; } .sb-tower-badge.dark { color: #b080e0; } .sb-tower-badge.fire { color: #e06030; }
+  .sb-stats { display: flex; align-items: center; gap: 0; flex: 1; overflow: hidden; }
+  .sb-stat-block { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 0.85rem; border-right: 1px solid var(--border-rune); height: 100%; min-width: 0; }
+  .sb-stat-block:last-child { border-right: none; }
+  .sb-stat-label { font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 0.2em; color: var(--text-muted); text-transform: uppercase; white-space: nowrap; }
+  .sb-stat-val { font-size: 0.76rem; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; }
+  .sb-stat-val.lv { color: var(--gold); } .sb-stat-val.hp { color: #d06060; } .sb-stat-val.sp { color: #6090d0; } .sb-stat-val.gold { color: var(--gold); }
+  .sb-bar { width: 48px; height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; margin-top: 2px; }
+  .sb-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+  .sb-bar-fill.hp { background: linear-gradient(90deg,#8b1e1e,#c05050); }
+  .sb-bar-fill.sp { background: linear-gradient(90deg,#1e3a8b,#5080c0); }
+  .sb-actions { margin-left: auto; display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+  .sb-action-btn { font-family: 'Cinzel', serif; font-size: 0.56rem; letter-spacing: 0.15em; color: var(--text-muted); background: transparent; border: 1px solid var(--border-rune); padding: 4px 9px; border-radius: 2px; cursor: pointer; text-transform: uppercase; transition: all 0.2s; white-space: nowrap; }
+  .sb-action-btn:hover { color: var(--text-secondary); border-color: var(--border-rune-bright); }
+  .sb-action-btn.gm { border-color: rgba(140,60,200,0.4); color: rgba(140,60,200,0.7); }
+  .sb-action-btn.gm:hover { background: rgba(140,60,200,0.1); color: #b080e0; border-color: rgba(140,60,200,0.7); }
+
+  /* BODY LAYOUT */
+  .hub-body { display: flex; flex: 1; position: relative; z-index: 1; min-height: calc(100vh - 50px); }
+
+  /* LEFT SIDEBAR */
+  .hub-sidebar { width: 220px; flex-shrink: 0; background: rgba(10,10,11,0.75); border-right: 1px solid var(--border-rune); display: flex; flex-direction: column; padding: 1.25rem 0 1rem; position: sticky; top: 50px; height: calc(100vh - 50px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--gold-dim) transparent; backdrop-filter: blur(8px); }
+  .hub-sidebar::-webkit-scrollbar { width: 3px; }
+  .hub-sidebar::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+  .sidebar-section-label { font-family: 'Cinzel', serif; font-size: 0.52rem; letter-spacing: 0.35em; color: var(--text-muted); text-transform: uppercase; padding: 0 1.1rem 0.5rem; border-bottom: 1px solid var(--border-rune); margin-bottom: 0.4rem; }
+  .sidebar-nav-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 1.1rem; cursor: pointer; transition: all 0.2s; border-left: 2px solid transparent; user-select: none; }
+  .sidebar-nav-item:hover { background: rgba(197,160,89,0.05); border-left-color: var(--gold-dim); }
+  .sidebar-nav-item.active { background: rgba(197,160,89,0.08); border-left-color: var(--gold); }
+  .sidebar-nav-item.active .sni-title { color: var(--gold); }
+  .sidebar-nav-item.danger .sni-title { color: #c06060; }
+  .sidebar-nav-item.danger:hover { background: rgba(139,30,30,0.07); border-left-color: rgba(192,80,80,0.5); }
+  .sni-icon { font-size: 1.05rem; flex-shrink: 0; width: 1.4rem; text-align: center; }
+  .sni-title { font-family: 'Cinzel', serif; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; color: var(--text-secondary); display: block; white-space: nowrap; }
+  .sni-sub { font-size: 0.57rem; color: var(--text-muted); display: block; margin-top: 1px; }
+  .sni-badge { margin-left: auto; font-size: 0.55rem; font-family: 'Cinzel', serif; color: var(--gold-dim); background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.2); padding: 1px 6px; border-radius: 2px; white-space: nowrap; flex-shrink: 0; }
+  .sidebar-spacer { flex: 1; }
+  .sidebar-footer { padding: 0.75rem 1.1rem 0; border-top: 1px solid var(--border-rune); font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 0.25em; color: var(--text-muted); text-transform: uppercase; text-align: center; line-height: 1.8; }
+
+  /* MAIN CONTENT */
+  .hub-main { flex: 1; min-width: 0; overflow-y: auto; }
+
+  /* RIFT HOME */
+  .rift-home {}
+  .rift-hero { position: relative; overflow: hidden; min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.5rem 2rem; border-bottom: 1px solid var(--border-rune); }
+  .rift-hero-bg { position: absolute; inset: 0; z-index: 0; }
+  .rift-hero-content { position: relative; z-index: 1; }
+  .rift-hero-eyebrow { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.5em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .rift-hero-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.8rem,5vw,3rem); color: var(--gold); letter-spacing: 0.06em; text-shadow: 0 0 60px rgba(197,160,89,0.4); margin-bottom: 0.5rem; line-height: 1.1; }
+  .rift-hero-sub { font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.2em; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.6rem; }
+  .rift-hero-lore { font-size: 0.76rem; color: var(--text-muted); font-style: italic; max-width: 400px; line-height: 1.7; }
+
+  .rift-stats-strip { display: flex; border-bottom: 1px solid var(--border-rune); background: rgba(0,0,0,0.3); }
+  .rss-item { flex: 1; padding: 0.7rem 0.75rem; text-align: center; border-right: 1px solid var(--border-rune); }
+  .rss-item:last-child { border-right: none; }
+  .rss-val { font-family: 'Cinzel', serif; font-size: 0.88rem; font-weight: 700; color: var(--gold); display: block; }
+  .rss-lbl { font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 0.2em; color: var(--text-muted); text-transform: uppercase; }
+
+  .rift-zones-section { padding: 1.25rem 1.25rem 0; }
+  .rift-zones-title { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.35em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+  .rift-zones-title::after { content:''; flex:1; height:1px; background: linear-gradient(90deg, var(--border-rune), transparent); }
+  .rift-zone-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+  .rz-card { position: relative; border-radius: 4px; overflow: hidden; border: 1px solid var(--border-rune); cursor: pointer; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; }
+  .rz-card:hover:not(.locked) { transform: translateY(-4px); border-color: var(--border-rune-bright); box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 30px rgba(197,160,89,0.08); }
+  .rz-card.locked { cursor: not-allowed; opacity: 0.5; }
+  .rz-art { position: relative; height: 140px; overflow: hidden; flex-shrink: 0; }
+  .rz-art svg { width: 100%; height: 100%; }
+  .rz-locked-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+  .rz-info { padding: 0.85rem 1rem; flex: 1; display: flex; flex-direction: column; gap: 0.3rem; background: rgba(16,16,20,0.92); }
+  .rz-name { font-family: 'Cinzel', serif; font-size: 0.82rem; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; }
+  .rz-desc { font-size: 0.67rem; color: var(--text-muted); line-height: 1.5; }
+  .rz-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.2rem; }
+  .rz-enter { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.6rem; background: rgba(197,160,89,0.07); border-top: 1px solid var(--border-rune); font-family: 'Cinzel', serif; font-size: 0.63rem; letter-spacing: 0.2em; color: var(--gold-dim); text-transform: uppercase; transition: all 0.2s; }
+  .rz-card:hover:not(.locked) .rz-enter { background: rgba(197,160,89,0.15); color: var(--gold); }
+
+  .rift-blueprint-strip { margin: 0 1.25rem 1.25rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-rune); border-radius: 3px; padding: 0.85rem 1rem; }
+  .rbs-title { font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.3em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.65rem; display: flex; justify-content: space-between; align-items: center; }
+  .rbs-edit-btn { font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.15em; color: var(--gold-dim); background: transparent; border: 1px solid var(--border-rune); padding: 2px 8px; border-radius: 2px; cursor: pointer; transition: all 0.2s; }
+  .rbs-edit-btn:hover { color: var(--gold); border-color: var(--gold-dim); }
+  .rbs-slots { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+  .rbs-slot { width: 2rem; height: 2rem; border-radius: 2px; border: 1px solid var(--border-rune); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; background: rgba(255,255,255,0.02); position: relative; }
+  .rbs-slot.filled { border-color: rgba(197,160,89,0.35); background: rgba(197,160,89,0.06); }
+  .rbs-slot-num { position: absolute; top: 1px; right: 2px; font-size: 0.42rem; color: var(--text-muted); font-family: 'Cinzel', serif; }
+  .rbs-slot-img { width: 100%; height: 100%; object-fit: cover; border-radius: 2px; display: block; }
+
+  /* GM PANEL */
+  .gm-panel-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 500; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .gm-panel-overlay.open { display: flex; }
+  .gm-box { background: rgba(16,16,20,0.98); border: 1px solid rgba(140,60,200,0.5); border-radius: 4px; width: 100%; max-width: 380px; padding: 1.5rem; animation: panel-in 0.25s ease both; }
+  .gm-title { font-family: 'Cinzel', serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.15em; color: #b080e0; text-transform: uppercase; margin-bottom: 1.25rem; text-align: center; }
+  .gm-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.65rem; }
+  .gm-label { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--text-muted); width: 55px; flex-shrink: 0; }
+  .gm-input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border-rune); border-radius: 2px; padding: 6px 10px; color: var(--text-primary); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; }
+  .gm-input:focus { border-color: rgba(140,60,200,0.5); }
+  .gm-apply { width: 100%; margin-top: 0.75rem; padding: 0.75rem; font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; background: rgba(140,60,200,0.12); border: 1px solid rgba(140,60,200,0.4); color: #b080e0; cursor: pointer; border-radius: 2px; transition: all 0.2s; }
+  .gm-apply:hover { background: rgba(140,60,200,0.22); }
+  .gm-close { width: 100%; margin-top: 0.5rem; padding: 0.6rem; font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; background: transparent; border: 1px solid var(--border-rune); color: var(--text-muted); cursor: pointer; border-radius: 2px; }
+  .gm-close:hover { border-color: var(--border-rune-bright); color: var(--text-secondary); }
+
+  /* MOBILE BOTTOM NAV */
+  .hub-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,11,0.96); border-top: 1px solid var(--border-rune); z-index: 90; backdrop-filter: blur(12px); padding: 0.25rem 0 env(safe-area-inset-bottom, 0.25rem); }
+  .hbn-inner { display: flex; justify-content: space-around; }
+  .hbn-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0.35rem 0.2rem; cursor: pointer; transition: all 0.2s; border-top: 2px solid transparent; }
+  .hbn-item.active { border-top-color: var(--gold); }
+  .hbn-item.active .hbn-label { color: var(--gold); }
+  .hbn-icon { font-size: 1.1rem; line-height: 1; }
+  .hbn-label { font-family: 'Cinzel', serif; font-size: 0.46rem; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; white-space: nowrap; }
+  .more-sheet-overlay { display: none; position: fixed; inset: 0; z-index: 260; background: rgba(0,0,0,0.55); align-items: flex-end; }
+  .more-sheet-overlay.open { display: flex; }
+  .more-sheet { width: 100%; background: rgba(16,16,20,0.98); border-top: 1px solid var(--border-rune-bright); padding: 0.85rem 1rem calc(env(safe-area-inset-bottom, 0) + 0.9rem); box-shadow: 0 -18px 60px rgba(0,0,0,0.55); }
+  .more-sheet-title { font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.28em; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.65rem; }
+  .more-sheet-item { display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.8rem 0.2rem; border: 0; border-bottom: 1px solid rgba(197,160,89,0.08); background: transparent; color: var(--text-secondary); text-align: left; cursor: pointer; }
+  .more-sheet-item:last-child { border-bottom: 0; }
+  .more-sheet-item:hover { color: var(--gold); }
+  .more-sheet-icon { width: 1.4rem; text-align: center; font-size: 1.05rem; }
+  .more-sheet-text { font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* PANELS */
+  .panel-overlay { display: none; position: fixed; inset: 0; background: rgba(5,5,6,0.75); z-index: 300; align-items: center; justify-content: center; padding: 1.5rem; backdrop-filter: blur(6px); }
+  .panel-overlay.open { display: flex; }
+  .panel-box { background: rgba(16,16,20,0.98); border: 1px solid var(--border-rune-bright); border-radius: 4px; width: 100%; max-width: 540px; max-height: 88vh; overflow-y: auto; position: relative; animation: panel-in 0.32s cubic-bezier(.22,.8,.36,1) both; scrollbar-width: thin; scrollbar-color: var(--gold-dim) transparent; }
+  .panel-box::-webkit-scrollbar { width: 4px; }
+  .panel-box::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+  @keyframes panel-in { from { opacity: 0; transform: scale(0.94) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .panel-head { padding: 1.25rem 1.5rem 1rem; border-bottom: 1px solid var(--border-rune); display: flex; align-items: center; gap: 0.75rem; justify-content: space-between; position: sticky; top: 0; background: rgba(16,16,20,0.98); z-index: 2; }
+  .panel-head-left { display: flex; align-items: center; gap: 0.6rem; }
+  .panel-icon-sm { font-size: 1.2rem; }
+  .panel-title { font-family: 'Cinzel', serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; }
+  .panel-close { background: transparent; border: 1px solid var(--border-rune); color: var(--text-muted); width: 30px; height: 30px; border-radius: 2px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+  .panel-close:hover { color: var(--text-primary); border-color: var(--border-rune-bright); }
+  .panel-body { padding: 1.5rem; }
+  .panel-coming { text-align: center; padding: 2.5rem 1rem 1.5rem; }
+  .panel-coming-rune { font-family: 'Cinzel Decorative', serif; font-size: 2.5rem; color: var(--gold-dim); opacity: 0.5; margin-bottom: 1rem; display: block; }
+  .panel-coming-title { font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 0.25em; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.8rem; }
+  .panel-coming-text { font-size: 0.78rem; color: var(--text-muted); line-height: 1.75; max-width: 340px; margin: 0 auto 1.5rem; }
+  .panel-coming-badge { display: inline-block; font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.25em; border: 1px solid var(--border-rune); color: var(--text-muted); padding: 4px 14px; border-radius: 2px; text-transform: uppercase; }
+  .panel-box.wide { max-width: 680px; }
+
+  .spell-tag { display: inline-flex; align-items: center; gap: 0.25rem; border: 1px solid rgba(197,160,89,0.18); border-radius: 2px; padding: 2px 7px; font-family: 'Cinzel', serif; font-size: 0.54rem; letter-spacing: 0.08em; color: var(--text-secondary); background: rgba(255,255,255,0.025); text-transform: uppercase; }
+  .rarity-common { color: #b8aa90; border-color: rgba(184,170,144,0.28); background: rgba(184,170,144,0.06); }
+  .rarity-uncommon { color: #70c080; border-color: rgba(112,192,128,0.32); background: rgba(112,192,128,0.07); }
+  .rarity-rare { color: #80a8e8; border-color: rgba(128,168,232,0.34); background: rgba(128,168,232,0.08); }
+  .rarity-ultimate { color: var(--gold-light); border-color: rgba(232,200,122,0.5); background: rgba(197,160,89,0.12); box-shadow: 0 0 18px rgba(197,160,89,0.08); }
+  .elem-light { color: #e0c060; border-color: rgba(224,192,96,0.26); }
+  .elem-dark { color: #b080e0; border-color: rgba(176,128,224,0.26); }
+  .elem-fire { color: #e06030; border-color: rgba(224,96,48,0.28); }
+  .sp-tag { color: #6090d0; border-color: rgba(96,144,208,0.25); background: rgba(96,144,208,0.06); }
+
+  .library-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+  .library-select { width: 100%; background: rgba(255,255,255,0.035); border: 1px solid var(--border-rune); border-radius: 3px; color: var(--text-primary); padding: 0.65rem 0.75rem; font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; outline: none; }
+  .library-select option { background: #1b1410; color: var(--text-primary); }
+  .library-select:focus { border-color: var(--border-rune-bright); }
+  .library-count { margin-bottom: 0.8rem; font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.2em; color: var(--text-muted); text-transform: uppercase; }
+  .library-grid { display: grid; gap: 0.75rem; }
+  .library-card { border: 1px solid var(--border-rune); border-radius: 4px; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012)); padding: 0.85rem; display: grid; grid-template-columns: 46px 1fr; gap: 0.75rem; }
+  .library-icon { width: 46px; height: 46px; border: 1px solid var(--border-rune); border-radius: 4px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); font-size: 1.25rem; overflow: hidden; }
+  .spell-icon-img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
+  .spell-icon-img.so-spell-inline-img, .spell-icon-img.fusion-inline-img { width: 22px; height: 22px; border-radius: 3px; border: 1px solid var(--border-rune); flex-shrink: 0; }
+  .spell-sigil, .inv-stone-sigil { width: 54px; height: 54px; border: 1px solid var(--border-rune); border-radius: 4px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.28); overflow: hidden; flex-shrink: 0; font-size: 1.25rem; }
+  .spell-sigil.light, .inv-stone-sigil.light, .library-icon.light, .so-picker-icon.light { border-color: rgba(224,192,96,0.32); }
+  .spell-sigil.dark, .inv-stone-sigil.dark, .library-icon.dark, .so-picker-icon.dark { border-color: rgba(176,128,224,0.32); }
+  .spell-sigil.fire, .inv-stone-sigil.fire, .library-icon.fire, .so-picker-icon.fire { border-color: rgba(224,96,48,0.35); }
+  .fusion-card-name { display: flex; align-items: center; gap: 0.45rem; }
+  .library-name { font-family: 'Cinzel', serif; font-size: 0.86rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text-primary); margin-bottom: 0.35rem; }
+  .library-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.55rem; }
+  .library-text { font-size: 0.68rem; color: var(--text-muted); line-height: 1.55; margin-top: 0.35rem; }
+  .library-label { color: var(--gold-dim); font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.56rem; }
+
+  /* SET ORDER */
+  .so-header { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: stretch; margin-bottom: 1rem; }
+  .so-info-badge, .so-sp-display { position: relative; overflow: hidden; border: 1px solid var(--border-rune); border-radius: 4px; background: linear-gradient(135deg, rgba(197,160,89,0.08), rgba(255,255,255,0.015)); }
+  .so-info-badge { min-height: 74px; padding: 0.9rem 1rem; display: flex; flex-direction: column; justify-content: center; gap: 0.35rem; }
+  .so-kicker { font-family: 'Cinzel', serif; font-size: 0.54rem; letter-spacing: 0.32em; color: var(--gold-dim); text-transform: uppercase; }
+  .so-title-line { font-family: 'Cinzel', serif; font-size: 0.86rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text-primary); }
+  .so-sub-line { font-size: 0.68rem; color: var(--text-muted); line-height: 1.45; }
+  .so-sp-display { min-width: 128px; padding: 0.85rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .so-sp-display::before, .so-info-badge::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 50% 0%, rgba(197,160,89,0.14), transparent 62%); pointer-events:none; }
+  .so-sp-label { position: relative; z-index: 1; font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 0.24em; color: var(--text-muted); text-transform: uppercase; }
+  .so-sp-current { position: relative; z-index: 1; font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
+  .so-sp-max { position: relative; z-index: 1; font-size: 0.62rem; color: var(--text-muted); }
+  .so-sequence-rail { display: grid; grid-template-columns: repeat(10, 1fr); gap: 0.35rem; margin-bottom: 1rem; }
+  .so-rail-step { height: 5px; border-radius: 999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(197,160,89,0.08); }
+  .so-rail-step.filled { background: linear-gradient(90deg, var(--gold-dim), var(--gold-light)); box-shadow: 0 0 12px rgba(197,160,89,0.2); }
+  .so-picker { display: none; margin-bottom: 1rem; border: 1px solid var(--border-rune-bright); border-radius: 4px; background: rgba(10,10,11,0.88); box-shadow: 0 18px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.03); overflow: hidden; }
+  .so-picker.open { display: block; animation: panel-in 0.22s ease both; }
+  .so-picker-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.75rem 0.9rem; border-bottom: 1px solid var(--border-rune); background: rgba(197,160,89,0.06); }
+  #so-picker-label { font-family: 'Cinzel', serif; font-size: 0.68rem; letter-spacing: 0.14em; color: var(--gold); text-transform: uppercase; }
+  .so-picker-close { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-rune); border-radius: 2px; background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
+  .so-picker-close:hover { color: var(--text-primary); border-color: var(--border-rune-bright); background: rgba(255,255,255,0.04); }
+  .so-picker-list { max-height: 270px; overflow-y: auto; padding: 0.45rem; scrollbar-width: thin; scrollbar-color: var(--gold-dim) transparent; }
+  .so-picker-list::-webkit-scrollbar { width: 4px; }
+  .so-picker-list::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+  .so-picker-item { display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 0.75rem; padding: 0.55rem 0.65rem; border: 1px solid transparent; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+  .so-picker-item:hover { border-color: var(--border-rune); background: rgba(197,160,89,0.06); }
+  .so-picker-icon { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-rune); border-radius: 3px; background: rgba(255,255,255,0.035); font-size: 1.2rem; box-shadow: inset 0 0 18px rgba(0,0,0,0.35); overflow: hidden; }
+  .so-picker-icon.light { color: #e0c060; } .so-picker-icon.dark { color: #b080e0; } .so-picker-icon.fire { color: #e06030; }
+  .so-picker-name { color: var(--text-primary); font-size: 0.82rem; font-weight: 600; min-width: 0; }
+  .so-picker-sp { font-family: 'Cinzel', serif; font-size: 0.62rem; color: #6090d0; border: 1px solid rgba(96,144,208,0.28); background: rgba(96,144,208,0.08); border-radius: 2px; padding: 3px 7px; white-space: nowrap; }
+  .so-picker-empty { padding: 1.5rem 1rem; text-align: center; color: var(--text-muted); line-height: 1.7; border: 1px dashed rgba(197,160,89,0.18); border-radius: 4px; margin: 0.4rem; }
+  .so-slots { display: grid; gap: 0.5rem; }
+  .so-slot { position: relative; display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 0.75rem; min-height: 62px; padding: 0.65rem 0.7rem; border: 1px solid rgba(197,160,89,0.12); border-radius: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01)); transition: border-color 0.2s, background 0.2s, transform 0.2s; }
+  .so-slot::before { content:''; position:absolute; left:0; top:10px; bottom:10px; width:2px; background: rgba(197,160,89,0.18); }
+  .so-slot:hover { border-color: rgba(197,160,89,0.32); background: rgba(197,160,89,0.045); transform: translateX(2px); }
+  .so-slot.filled { border-color: rgba(197,160,89,0.28); background: linear-gradient(90deg, rgba(197,160,89,0.09), rgba(255,255,255,0.018)); }
+  .so-slot.filled::before { background: var(--gold); box-shadow: 0 0 12px rgba(197,160,89,0.45); }
+  .so-slot.sp-warn { border-color: rgba(192,80,80,0.45); background: rgba(139,30,30,0.08); }
+  .so-turn-num { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-rune); border-radius: 3px; font-family: 'Cinzel', serif; font-size: 0.88rem; font-weight: 700; color: var(--gold); background: rgba(0,0,0,0.24); }
+  .so-slot-info { min-width: 0; }
+  .so-spell-name { color: var(--text-primary); font-size: 0.86rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 0.45rem; }
+  .so-spell-sp { margin-top: 0.2rem; font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.06em; color: #6090d0; }
+  .so-empty-label { color: var(--text-muted); font-size: 0.76rem; font-style: italic; }
+  .so-slot-actions { display: flex; align-items: center; gap: 0.35rem; }
+  .so-btn { min-width: 46px; height: 30px; padding: 0 0.7rem; border: 1px solid var(--border-rune); border-radius: 2px; background: rgba(197,160,89,0.055); color: var(--gold-dim); font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+  .so-btn:hover { color: var(--gold); border-color: var(--border-rune-bright); background: rgba(197,160,89,0.1); }
+  .so-btn.clear-btn { min-width: 30px; width: 30px; padding: 0; color: #b56a6a; border-color: rgba(139,30,30,0.28); background: rgba(139,30,30,0.06); }
+  .so-btn.clear-btn:hover { color: #d08080; border-color: rgba(192,80,80,0.55); background: rgba(139,30,30,0.13); }
+  .so-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
+  .so-footer-stat { border: 1px solid var(--border-rune); border-radius: 4px; background: rgba(255,255,255,0.025); padding: 0.75rem; text-align: center; }
+  .so-footer-val { display: block; font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700; line-height: 1.1; }
+  .so-footer-lbl { display: block; margin-top: 0.25rem; font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 0.22em; color: var(--text-muted); text-transform: uppercase; }
+  .so-struggle-note { margin-top: 0.75rem; border: 1px solid rgba(197,160,89,0.16); border-radius: 4px; background: rgba(0,0,0,0.22); padding: 0.75rem 0.85rem; color: var(--text-secondary); font-size: 0.72rem; line-height: 1.65; }
+  .so-struggle-note strong { color: var(--text-primary); }
+
+  /* STAT ROWS (shared) */
+  .stat-section-label { font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.35em; color: var(--text-muted); text-transform: uppercase; padding: 1rem 0 0.5rem; border-bottom: 1px solid var(--border-rune); margin-bottom: 0.25rem; }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0; border-bottom: 1px solid rgba(197,160,89,0.07); }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row-label { font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--text-secondary); }
+  .stat-row-val { color: var(--text-primary); font-weight: 500; font-size: 0.82rem; }
+  .stat-row-val.gold-c { color: var(--gold); } .stat-row-val.hp-c { color: #d06060; } .stat-row-val.sp-c { color: #6090d0; }
+  .bar-wrap { background: rgba(255,255,255,0.06); border-radius: 2px; height: 5px; overflow: hidden; margin-top: 4px; }
+  .bar-fill { height: 100%; border-radius: 2px; }
+  .bar-hp { background: linear-gradient(90deg,#8b1e1e,#c05050); }
+  .bar-sp { background: linear-gradient(90deg,#1e3a8b,#6090d0); }
+  .hub-btn { width: 100%; padding: 0.85rem; font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; border: 1px solid var(--border-rune-bright); background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: 2px; transition: all 0.25s; margin-bottom: 0.5rem; }
+  .hub-btn:hover { background: rgba(197,160,89,0.08); color: var(--gold); border-color: var(--gold); }
+  .hub-btn.danger { border-color: rgba(139,30,30,0.35); color: #c06060; }
+  .hub-btn.danger:hover { background: rgba(139,30,30,0.1); border-color: rgba(192,80,80,0.6); }
+  .reset-warning { background: rgba(139,30,30,0.08); border: 1px solid rgba(139,30,30,0.25); border-radius: 2px; padding: 0.9rem 1.1rem; margin-bottom: 1rem; font-size: 0.76rem; color: #c06060; line-height: 1.65; }
+
+  @media (max-width: 768px) { .hub-sidebar { display: none; } .hub-bottom-nav { display: block; } .hub-main { padding-bottom: 65px; } .rift-zone-cards { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { .status-bar-inner { padding: 0 0.75rem; height: 46px; } .sb-stat-block { padding: 0 0.5rem; } .sb-stat-label { font-size: 0.44rem; } .sb-stat-val { font-size: 0.7rem; } .sb-bar { width: 36px; } .rift-zones-section { padding: 1rem; } .rift-blueprint-strip { margin: 0 1rem 1rem; } .so-header { grid-template-columns: 1fr; } .so-sp-display { min-width: 0; } .so-slot { grid-template-columns: 38px 1fr; } .so-slot-actions { grid-column: 2; justify-content: flex-start; } .so-picker-item { grid-template-columns: 38px 1fr; } .so-picker-sp { grid-column: 2; width: max-content; } .library-controls { grid-template-columns: 1fr; } .library-card { grid-template-columns: 40px 1fr; } .library-icon { width: 40px; height: 40px; } }
+  @media (max-width: 380px) { .sb-stat-block.hide-xs { display: none; } }
+
+</style>
+</head>
+<body>
+<div id="selectionScreen">
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="logo-rune">◆ &nbsp; World of Arcadia &nbsp; ◆</div>
+    <h1 class="game-title">SOULRIFT</h1>
+    <p class="game-subtitle">RPG Chronicles</p>
+  </header>
+
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-diamond"></div>
+    <span class="ornament-text">Choose Your Tower Alignment</span>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line"></div>
+  </div>
+
+  <!-- TOWER CARDS -->
+  <div class="towers-grid" role="list">
+
+    <!-- LIGHT TOWER -->
+    <div class="tower-card" data-tower="light" role="listitem" tabindex="0" aria-label="Light Tower" onclick="selectTower(this)">
+      <div class="card-glow light-glow"></div>
+      <div class="card-top">
+        <div class="tower-sigil sigil-light" aria-hidden="true">☀️</div>
+        <span class="selected-badge">Chosen</span>
+      </div>
+      <div class="tower-name">Light Tower</div>
+      <div class="tower-tagline color-light">Sol Radiance · Order of the Dawn</div>
+      <div class="tower-stats">
+        <span class="stat-pill stat-light">Intelligence</span>
+        <span class="stat-pill stat-light">HP</span>
+      </div>
+      <div class="card-divider"></div>
+      <p class="tower-desc">
+        Disciples of the Sun forge their power through divine radiance and sacred endurance. 
+        Masters of healing arts and impenetrable barriers, they outlast all opposition through 
+        unwavering sustain and layered holy defenses.
+      </p>
+      <div class="section-label">Playstyle</div>
+      <div class="playstyle-list">
+        <span class="ps-tag">Healing</span>
+        <span class="ps-tag">Shield Stacking</span>
+        <span class="ps-tag">Sustain</span>
+        <span class="ps-tag">Defensive</span>
+      </div>
+      <div class="sw-grid">
+        <div class="sw-block sw-strength">
+          <div class="sw-label">Strength</div>
+          <div class="sw-item">High HP survivability</div>
+          <div class="sw-item">Reliable self-healing</div>
+          <div class="sw-item">Shield stacking combos</div>
+        </div>
+        <div class="sw-block sw-weakness">
+          <div class="sw-label">Weakness</div>
+          <div class="sw-item">Low burst damage</div>
+          <div class="sw-item">Slower kills</div>
+          <div class="sw-item">SP-heavy rotations</div>
+        </div>
+      </div>
+      <div class="special-box">
+        <div class="special-title">⟡ Special Mechanic</div>
+        <div class="special-text"><em>Radiant Charge</em> — Accumulate solar energy over multiple turns. The longer you charge, the more devastating the divine release strike.</div>
+      </div>
+      <button class="choose-btn" onclick="selectTower(this.parentElement); event.stopPropagation()">
+        ⟡ &nbsp; Swear Oath to the Light &nbsp; ⟡
+      </button>
+    </div>
+
+    <!-- DARK TOWER -->
+    <div class="tower-card" data-tower="dark" role="listitem" tabindex="0" aria-label="Dark Tower" onclick="selectTower(this)">
+      <div class="card-glow dark-glow"></div>
+      <div class="card-top">
+        <div class="tower-sigil sigil-dark" aria-hidden="true">🌙</div>
+        <span class="selected-badge">Chosen</span>
+      </div>
+      <div class="tower-name">Dark Tower</div>
+      <div class="tower-tagline color-dark">Void Curse · Covenant of Shadows</div>
+      <div class="tower-stats">
+        <span class="stat-pill stat-dark">Agility</span>
+        <span class="stat-pill stat-dark">Attack</span>
+      </div>
+      <div class="card-divider"></div>
+      <p class="tower-desc">
+        Shadow mages channel forbidden void energies into devastating curses and lethal combos. 
+        They drink the life force of their enemies, amplifying their power with each chained 
+        strike until nothing remains but ash and silence.
+      </p>
+      <div class="section-label">Playstyle</div>
+      <div class="playstyle-list">
+        <span class="ps-tag">Curse Magic</span>
+        <span class="ps-tag">Burst Damage</span>
+        <span class="ps-tag">Lifesteal</span>
+        <span class="ps-tag">Combo Chains</span>
+      </div>
+      <div class="sw-grid">
+        <div class="sw-block sw-strength">
+          <div class="sw-label">Strength</div>
+          <div class="sw-item">Highest burst damage</div>
+          <div class="sw-item">Lifesteal sustain</div>
+          <div class="sw-item">Combo amplification</div>
+        </div>
+        <div class="sw-block sw-weakness">
+          <div class="sw-label">Weakness</div>
+          <div class="sw-item">Fragile HP pool</div>
+          <div class="sw-item">Combo-dependent</div>
+          <div class="sw-item">Risky rotations</div>
+        </div>
+      </div>
+      <div class="special-box">
+        <div class="special-title">⟡ Special Mechanic</div>
+        <div class="special-text"><em>Dark Combo</em> — Chain offensive turns to exponentially amplify damage. Break the chain and lose all accumulated void power.</div>
+      </div>
+      <button class="choose-btn" onclick="selectTower(this.parentElement); event.stopPropagation()">
+        ⟡ &nbsp; Embrace the Void &nbsp; ⟡
+      </button>
+    </div>
+
+    <!-- FIRE TOWER -->
+    <div class="tower-card" data-tower="fire" role="listitem" tabindex="0" aria-label="Fire Tower" onclick="selectTower(this)">
+      <div class="card-glow fire-glow"></div>
+      <div class="card-top">
+        <div class="tower-sigil sigil-fire" aria-hidden="true">🔥</div>
+        <span class="selected-badge">Chosen</span>
+      </div>
+      <div class="tower-name">Fire Tower</div>
+      <div class="tower-tagline color-fire">Inferno Forge · Brotherhood of Ash</div>
+      <div class="tower-stats">
+        <span class="stat-pill stat-fire">Strength</span>
+        <span class="stat-pill stat-fire">Attack</span>
+      </div>
+      <div class="card-divider"></div>
+      <p class="tower-desc">
+        Pyromancers of the Inferno Forge wield catastrophic fire sequences that burn hotter with 
+        every cast. Stack searing flames, detonate explosive combos, and plunder gold from enemies 
+        before they turn to cinders.
+      </p>
+      <div class="section-label">Playstyle</div>
+      <div class="playstyle-list">
+        <span class="ps-tag">Burn Stacking</span>
+        <span class="ps-tag">Explosive Combos</span>
+        <span class="ps-tag">Gold Farming</span>
+        <span class="ps-tag">Aggressive</span>
+      </div>
+      <div class="sw-grid">
+        <div class="sw-block sw-strength">
+          <div class="sw-label">Strength</div>
+          <div class="sw-item">Burn DoT scaling</div>
+          <div class="sw-item">Gold stealing spells</div>
+          <div class="sw-item">Explosive AoE combos</div>
+        </div>
+        <div class="sw-block sw-weakness">
+          <div class="sw-label">Weakness</div>
+          <div class="sw-item">No self-healing</div>
+          <div class="sw-item">Weak vs shielded enemies</div>
+          <div class="sw-item">SP hungry sequences</div>
+        </div>
+      </div>
+      <div class="special-box">
+        <div class="special-title">⟡ Special Mechanic</div>
+        <div class="special-text"><em>Burn Amplification</em> — Repeated fire spells in sequence multiply burn intensity, leading to catastrophic <em>Combustion</em> explosions.</div>
+      </div>
+      <button class="choose-btn" onclick="selectTower(this.parentElement); event.stopPropagation()">
+        ⟡ &nbsp; Ignite the Forge &nbsp; ⟡
+      </button>
+    </div>
+
+  </div><!-- /towers-grid -->
+
+  <!-- CONFIRM SECTION -->
+  <div class="confirm-section" id="confirmSection" aria-live="polite">
+    <div class="confirm-text">You have chosen your path</div>
+    <div class="confirm-name" id="confirmName"></div>
+    <div class="ornament" style="max-width:300px; margin: 0.5rem 0;">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line"></div>
+    </div>
+    <button class="enter-arcadia-btn" onclick="enterArcadia()">
+      ◆ &nbsp; Enter Arcadia &nbsp; ◆
+    </button>
+  </div>
+
+  <footer class="page-footer">
+    Arcadia Awaits · Soulrift RPG Chronicles · Build Your Legend
+  </footer>
+
+</div><!-- /page-wrapper -->
+</div><!-- /selectionScreen -->
+
+<!-- NOTIFICATION -->
+<div class="notify" id="notify" role="status" aria-live="polite"></div>
+
+<!-- Particle canvas (shared ambient layer) -->
+<canvas id="hubParticles"></canvas>
+<div class="hub-ambient" id="hubAmbient"></div>
+
+<!-- ============================================================
+     MAIN HUB SCREEN
+============================================================ -->
+<div id="hubScreen">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-bar-inner">
+      <div class="sb-identity" id="sbIdentity" onclick="setActivePanel('character')" title="Character Status">
+        <span class="sb-player-name" id="sbPlayerName">Arcane Wanderer</span>
+        <span class="sb-tower-badge light" id="sbTowerBadge">☀️ Light Tower</span>
+      </div>
+      <div class="sb-stats">
+        <div class="sb-stat-block">
+          <span class="sb-stat-label">LV</span>
+          <span class="sb-stat-val lv" id="sbLevel">1</span>
+        </div>
+        <div class="sb-stat-block">
+          <span class="sb-stat-label">HP</span>
+          <span class="sb-stat-val hp" id="sbHp">120/120</span>
+          <div class="sb-bar"><div class="sb-bar-fill hp" id="sbHpBar" style="width:100%"></div></div>
+        </div>
+        <div class="sb-stat-block">
+          <span class="sb-stat-label">SP</span>
+          <span class="sb-stat-val sp" id="sbSp">80/80</span>
+          <div class="sb-bar"><div class="sb-bar-fill sp" id="sbSpBar" style="width:100%"></div></div>
+        </div>
+        <div class="sb-stat-block">
+          <span class="sb-stat-label">Gold</span>
+          <span class="sb-stat-val gold" id="sbGold">1,000</span>
+        </div>
+        <div class="sb-stat-block hide-xs">
+          <span class="sb-stat-label">EXP</span>
+          <span class="sb-stat-val lv" id="sbExp">0/100</span>
+        </div>
+      </div>
+      <div class="sb-actions">
+        <button class="sb-action-btn gm" onclick="openGmPanel()">⚙ GM</button>
+        <button class="sb-action-btn" onclick="setActivePanel('settings')" title="Settings">Settings</button>
+        <button class="sb-action-btn" onclick="backToSelection()">◀ Tower</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY: MAIN -->
+  <div class="hub-body">
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="hub-main" id="hubMain">
+
+      <!-- ═══ RIFT HOME (default) ═══ -->
+      <div id="mainRift" class="rift-home">
+
+        <!-- Hero Banner -->
+        <div class="rift-hero">
+          <div class="rift-hero-bg" id="riftHeroBg"></div>
+          <div class="rift-hero-content">
+            <div class="rift-hero-eyebrow">◆ &nbsp; Dimensional Rift Sectors &nbsp; ◆</div>
+            <div class="rift-hero-title">Battle</div>
+            <div class="rift-hero-sub" id="riftHeroSub">World of Arcadia awaits</div>
+            <div class="rift-hero-lore">"Enter dungeons, challenge enemies, farm EXP, earn Gold, and carve your path through Arcadia."</div>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="rift-stats-strip">
+          <div class="rss-item">
+            <span class="rss-val" id="rssLevel">1</span>
+            <span class="rss-lbl">Level</span>
+          </div>
+          <div class="rss-item">
+            <span class="rss-val" id="rssSpells">0</span>
+            <span class="rss-lbl">Spells</span>
+          </div>
+          <div class="rss-item">
+            <span class="rss-val" id="rssBlueprintFill">0/10</span>
+            <span class="rss-lbl">Blueprint</span>
+          </div>
+          <div class="rss-item">
+            <span class="rss-val" id="rssGold">1,000</span>
+            <span class="rss-lbl">Gold</span>
+          </div>
+        </div>
+
+        <!-- Blueprint Preview -->
+        <div class="rift-blueprint-strip">
+          <div class="rbs-title">
+            <span>◆ &nbsp; Current Battle Blueprint</span>
+            <button class="rbs-edit-btn" onclick="setActivePanel('order')">Edit →</button>
+          </div>
+          <div class="rbs-slots" id="rbsSlots"></div>
+        </div>
+
+        <!-- Zone Cards -->
+        <div class="rift-zones-section">
+          <div class="rift-zones-title">? &nbsp; Enter Dungeons and Challenge Enemies</div>
+          <div class="rift-zone-cards">
+
+            <!-- Booby Forest -->
+            <div class="rz-card" onclick="enterRift('booby_forest')">
+              <div class="rz-art" id="rzArtForest"></div>
+              <div class="rz-info">
+                <div class="rz-name">🌿 Booby Forest</div>
+                <div class="rz-desc">A cursed woodland teeming with weak monsters. The perfect hunting ground for new mages testing their first spell sequences.</div>
+                <div class="rz-tags">
+                  <span class="rift-meta-tag easy">Beginner</span>
+                  <span class="rift-meta-tag easy">EXP +10~14</span>
+                  <span class="rift-meta-tag easy">Gold +6~22</span>
+                </div>
+              </div>
+              <div class="rz-enter">?? Enter Battle &nbsp; ?</div>
+            </div>
+
+            <!-- Magi Graveyard -->
+            <div class="rz-card locked">
+              <div class="rz-art" id="rzArtGrave">
+                <div class="rz-locked-overlay">🔒</div>
+              </div>
+              <div class="rz-info">
+                <div class="rz-name">💀 Magi Graveyard</div>
+                <div class="rz-desc">Ancient burial grounds haunted by fallen mages. Higher danger, greater rewards. Requires stable builds to survive.</div>
+                <div class="rz-tags">
+                  <span class="rift-meta-tag hard">Level 5+</span>
+                  <span class="rift-meta-tag medium">EXP +25~35</span>
+                  <span class="rift-meta-tag medium">Gold +35~80</span>
+                </div>
+              </div>
+              <div class="rz-enter" style="color:var(--text-muted)">🔒 Locked — Reach Level 5</div>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /mainRift -->
+
+      <!-- ═══ OTHER PANELS (hidden, opened via bottom nav) ═══ -->
+      <div id="mainPanel" style="display:none; padding:1.5rem;">
+        <div id="mainPanelBody"></div>
+      </div>
+
+    </main>
+  </div><!-- /hub-body -->
+
+  <!-- UNIFIED BOTTOM NAV -->
+  <div class="hub-bottom-nav" role="navigation" aria-label="Main command bar">
+    <div class="hbn-inner">
+      <button class="hbn-item active" id="hbn-battle" onclick="setActivePanel('battle')" type="button">
+        <span class="hbn-icon">&#9876;&#65039;</span><span class="hbn-label">Battle</span>
+      </button>
+      <button class="hbn-item" id="hbn-order" onclick="setActivePanel('order')" type="button">
+        <span class="hbn-icon">&#128220;</span><span class="hbn-label">Order</span>
+      </button>
+      <button class="hbn-item" id="hbn-market" onclick="setActivePanel('market')" type="button">
+        <span class="hbn-icon">&#127963;&#65039;</span><span class="hbn-label">Market</span>
+      </button>
+      <button class="hbn-item" id="hbn-items" onclick="setActivePanel('items')" type="button">
+        <span class="hbn-icon">&#127890;</span><span class="hbn-label">Items</span>
+      </button>
+      <button class="hbn-item" id="hbn-fusion" onclick="setActivePanel('fusion')" type="button">
+        <span class="hbn-icon">&#128302;</span><span class="hbn-label">Fusion</span>
+      </button>
+      <button class="hbn-item" id="hbn-library" onclick="setActivePanel('library')" type="button">
+        <span class="hbn-icon">&#128214;</span><span class="hbn-label">Library</span>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /hubScreen -->
+
+<!-- GM PANEL -->
+<div class="gm-panel-overlay" id="gmPanelOverlay" onclick="if(event.target===this)closeGmPanel()">
+  <div class="gm-box">
+    <div class="gm-title">⚙ GM Panel &nbsp;—&nbsp; Dev Mode</div>
+    <div class="gm-row"><span class="gm-label">Gold</span><input class="gm-input" id="gmGold" type="number" placeholder="e.g. 9999"></div>
+    <div class="gm-row"><span class="gm-label">HP</span><input class="gm-input" id="gmHp" type="number" placeholder="e.g. 200"></div>
+    <div class="gm-row"><span class="gm-label">Max HP</span><input class="gm-input" id="gmMaxHp" type="number" placeholder="e.g. 200"></div>
+    <div class="gm-row"><span class="gm-label">SP</span><input class="gm-input" id="gmSp" type="number" placeholder="e.g. 100"></div>
+    <div class="gm-row"><span class="gm-label">Max SP</span><input class="gm-input" id="gmMaxSp" type="number" placeholder="e.g. 100"></div>
+    <div class="gm-row"><span class="gm-label">Level</span><input class="gm-input" id="gmLevel" type="number" placeholder="e.g. 10"></div>
+    <div class="gm-row"><span class="gm-label">EXP</span><input class="gm-input" id="gmExp" type="number" placeholder="e.g. 50"></div>
+    <button class="gm-apply" onclick="applyGm()">◆ Apply Changes</button>
+    <button class="gm-close" onclick="closeGmPanel()">✕ Close</button>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     PANEL OVERLAY
+============================================================ -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanelOnBg(event)">
+  <div class="panel-box" id="panelBox">
+    <div class="panel-head">
+      <div class="panel-head-left">
+        <span class="panel-icon-sm" id="panelIcon"></span>
+        <span class="panel-title" id="panelTitle">Panel</span>
+      </div>
+      <button class="panel-close" onclick="closePanel()" aria-label="Close panel">✕</button>
+    </div>
+    <div class="panel-body" id="panelBody"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCRIPT
+============================================================ -->
+<script>
+/* ═══════════ TOWER DATA ═══════════ */
+const TOWER = {
+  light: {
+    badge: '☀️ Light Tower', cls: 'light',
+    label: 'Light Tower — Sol Radiance',
+    welcome: 'Welcome, Mage of the Light Tower',
+    lore: '"The rift tears grow wider. Stand firm in radiance and let your barriers hold the tide."',
+    hp: 140, sp: 80, tu: 1500,
+    stats: { Strength:8, Intelligence:16, Agility:10, Attack:12, Defense:14, 'Max HP':140, 'Max SP':80 },
+    color: 'rgba(255,220,100,0.5)'
+  },
+  dark: {
+    badge: '🌙 Dark Tower', cls: 'dark',
+    label: 'Dark Tower — Covenant of Shadows',
+    welcome: 'Welcome, Shadow Mage of the Void',
+    lore: '"Consume the light. Each chain you forge in darkness multiplies your devastation tenfold."',
+    hp: 100, sp: 90, tu: 1500,
+    stats: { Strength:12, Intelligence:12, Agility:18, Attack:20, Defense:8, 'Max HP':100, 'Max SP':90 },
+    color: 'rgba(140,60,200,0.5)'
+  },
+  fire: {
+    badge: '🔥 Fire Tower', cls: 'fire',
+    label: 'Fire Tower — Inferno Forge',
+    welcome: 'Welcome, Pyromancer of the Inferno',
+    lore: '"Stack the embers. Each flame you kindle stacks higher, until the world itself burns."',
+    hp: 110, sp: 70, tu: 1500,
+    stats: { Strength:18, Intelligence:10, Agility:12, Attack:22, Defense:10, 'Max HP':110, 'Max SP':70 },
+    color: 'rgba(220,70,20,0.6)'
+  }
+};
+
+/* ═══════════ STATE ═══════════ */
+let G = {
+  tower: null, playerName: 'Arcane Wanderer',
+  level: 1, xp: 0,
+  hp: 120, maxHp: 120,
+  sp: 80, maxSp: 80,
+  gold: 1000,
+  inventory: [], spells: [],
+  blueprint: Array(10).fill(null)
+};
+
+/* ═══════════ INIT ═══════════ */
+
+function loadState(tower) {
+  const raw = localStorage.getItem('soulrift_state');
+  if (raw) { try { Object.assign(G, JSON.parse(raw)); } catch(e) {} }
+  const td = TOWER[tower];
+  G.tower = tower;
+  if (!raw) { G.maxHp = td.hp; G.hp = td.hp; G.maxSp = td.sp; G.sp = td.sp; }
+}
+
+function saveState() {
+  localStorage.setItem('soulrift_tower', G.tower);
+  localStorage.setItem('soulrift_state', JSON.stringify(G));
+}
+
+/* ═══════════ TOWER SELECTION ═══════════ */
+const towerNames = {
+  light: '☀️ &nbsp; Light Tower — Sol Radiance',
+  dark:  '🌙 &nbsp; Dark Tower — Covenant of Shadows',
+  fire:  '🔥 &nbsp; Fire Tower — Inferno Forge'
+};
+
+function selectTower(card) {
+  document.querySelectorAll('.tower-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const tower = card.getAttribute('data-tower');
+  localStorage.setItem('soulrift_tower', tower);
+  document.getElementById('confirmName').innerHTML = towerNames[tower];
+  document.getElementById('confirmSection').classList.add('visible');
+  showNotify('Tower alignment sealed — ' + tower.toUpperCase() + ' TOWER');
+}
+
+function enterArcadia() {
+  const tower = localStorage.getItem('soulrift_tower');
+  if (!tower) return;
+  loadState(tower);
+  saveState();
+  showHub();
+  setTimeout(() => showNotify('Entering Arcadia — ' + TOWER[tower].label), 200);
+}
+
+function backToSelection() {
+  document.getElementById('hubScreen').classList.remove('active');
+  document.getElementById('selectionScreen').style.display = 'block';
+  stopParticles();
+}
+
+/* ═══════════ SHOW HUB ═══════════ */
+function showHub() {
+  document.getElementById('selectionScreen').style.display = 'none';
+  document.getElementById('hubScreen').classList.add('active');
+  renderStatusBar();
+  startParticles();
+  const amb = document.getElementById('hubAmbient');
+  amb.className = 'hub-ambient ' + G.tower;
+  setTimeout(() => { amb.classList.add('visible'); renderRiftHome(); renderZoneArt(); }, 100);
+}
+
+/* ═══════════ STATUS BAR ═══════════ */
+function renderStatusBar() {
+  const td = TOWER[G.tower];
+  document.getElementById('sbPlayerName').textContent = G.playerName;
+  const badge = document.getElementById('sbTowerBadge');
+  badge.textContent = td.badge;
+  badge.className = 'sb-tower-badge ' + td.cls;
+  document.getElementById('sbLevel').textContent = G.level;
+  document.getElementById('sbHp').textContent    = G.hp + '/' + G.maxHp;
+  document.getElementById('sbSp').textContent    = G.sp + '/' + G.maxSp;
+  document.getElementById('sbGold').textContent  = G.gold.toLocaleString();
+  const expEl = document.getElementById('sbExp');
+  if (expEl) expEl.textContent = G.xp + '/100';
+  document.getElementById('sbHpBar').style.width = Math.round(G.hp/G.maxHp*100)+'%';
+  document.getElementById('sbSpBar').style.width = Math.round(G.sp/G.maxSp*100)+'%';
+}
+
+/* ═══════════ PARTICLES ═══════════ */
+var pCtx, pCanvas, pAnim, pParticles = [];
+
+function startParticles() {
+  pCanvas = document.getElementById('hubParticles');
+  pCtx = pCanvas.getContext('2d');
+  resize();
+  window.addEventListener('resize', resize);
+  const td = TOWER[G.tower];
+  pParticles = Array.from({length: 28}, () => makeParticle(td.color));
+  pCanvas.classList.add('visible');
+  (function loop() { pAnim = requestAnimationFrame(loop); drawParticles(); })();
+}
+
+function stopParticles() {
+  cancelAnimationFrame(pAnim);
+  if (pCtx) pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+  pCanvas && pCanvas.classList.remove('visible');
+  document.getElementById('hubAmbient').classList.remove('visible');
+  window.removeEventListener('resize', resize);
+}
+
+function resize() {
+  pCanvas.width  = window.innerWidth;
+  pCanvas.height = window.innerHeight;
+}
+
+function makeParticle(color) {
+  return {
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 1.4 + 0.4,
+    vx: (Math.random() - 0.5) * 0.25,
+    vy: -Math.random() * 0.4 - 0.1,
+    alpha: Math.random() * 0.5 + 0.1,
+    da: (Math.random() - 0.5) * 0.004,
+    color
+  };
+}
+
+function drawParticles() {
+  pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+  pParticles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.alpha += p.da;
+    if (p.alpha <= 0.05 || p.alpha >= 0.65) p.da *= -1;
+    if (p.y < -10) { p.y = pCanvas.height + 10; p.x = Math.random() * pCanvas.width; }
+    pCtx.beginPath();
+    pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    pCtx.fillStyle = p.color.replace('0.5)', p.alpha + ')').replace('0.6)', p.alpha + ')');
+    pCtx.fill();
+  });
+}
+
+/* ═══════════ SPELL CATALOG ═══════════ */
+const SPELL_CATALOG = {
+  light: [
+    {
+      id: "light_shot",
+      name: "Light Shot",
+      tower: "light",
+      element: "light",
+      rarity: "Common",
+      role: "Basic Damage",
+      spCost: 7,
+      basePower: 26,
+      scaling: "Damage increases by spell level.",
+      condition: "None.",
+      effect: "Deal light damage to one enemy.",
+      combo: "Deals slightly more damage if the player has an active shield or buff.",
+      obtain: "Light Tower shop.",
+      battleLog: {
+        cast: "A radiant bolt strikes the enemy.",
+        trigger: "Light Shot burns with sacred force.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a golden holy light projectile, radiant ivory glow, sacred circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u2726",
+      iconImg: "assets/spells/light_shot.png",
+      price: 50
+    },
+    {
+      id: "holy_mend",
+      name: "Holy Mend",
+      tower: "light",
+      element: "light",
+      rarity: "Common",
+      role: "Healing",
+      spCost: 12,
+      basePower: 30,
+      scaling: "Healing increases by spell level.",
+      condition: "None.",
+      effect: "Restore HP.",
+      combo: "Healing increases if Sun Barrier is active.",
+      obtain: "Light Tower shop.",
+      battleLog: {
+        cast: "Warm holy light closes the mage’s wounds.",
+        trigger: "Holy Mend restores HP.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of glowing holy hands healing a golden wound, ivory and radiant gold, circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u271A",
+      iconImg: "assets/spells/holy_mend.png",
+      price: 50
+    },
+    {
+      id: "sun_barrier",
+      name: "Sun Barrier",
+      tower: "light",
+      element: "light",
+      rarity: "Common",
+      role: "Shield",
+      spCost: 10,
+      basePower: 35,
+      scaling: "Shield strength increases by spell level.",
+      condition: "None.",
+      effect: "Create a shield that absorbs incoming damage.",
+      combo: "Improves Radiant Charge survivability.",
+      obtain: "Light Tower shop.",
+      battleLog: {
+        cast: "A golden barrier rises like a miniature sun.",
+        trigger: "Sun Barrier absorbs incoming damage.",
+        expire: "The solar barrier fades."
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a radiant golden shield with sun rays, sacred circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u{1F6E1}",
+      iconImg: "assets/spells/sun_barrier.png",
+      price: 60
+    },
+    {
+      id: "blessing_aura",
+      name: "Blessing Aura",
+      tower: "light",
+      element: "light",
+      rarity: "Common",
+      role: "Defense Buff",
+      spCost: 9,
+      basePower: 0,
+      scaling: "Defense bonus increases by spell level.",
+      condition: "None.",
+      effect: "Increase defense for 3 turns.",
+      combo: "Light Shot and Solar Judgment gain bonuses from active buffs.",
+      obtain: "Light Tower shop.",
+      battleLog: {
+        cast: "A sacred aura strengthens the mage’s resolve.",
+        trigger: "Blessing Aura increases defense.",
+        expire: "The blessing fades."
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a glowing golden aura around a hooded mage silhouette, sacred light, circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u263C",
+      iconImg: "assets/spells/blessing_aura.png",
+      price: 55
+    },
+    {
+      id: "radiant_charge",
+      name: "Radiant Charge",
+      tower: "light",
+      element: "light",
+      rarity: "Uncommon",
+      role: "Charge Setup",
+      spCost: 8,
+      basePower: 0,
+      scaling: "Charge value increases by spell level.",
+      condition: "None.",
+      effect: "Store radiant energy. Each charge increases Release Radiance damage.",
+      combo: "Pairs with Release Radiance.",
+      obtain: "Monster drop from holy or ancient enemies.",
+      battleLog: {
+        cast: "Radiant power gathers silently within the spell circle.",
+        trigger: "Radiant Charge stores holy energy.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a golden orb charging with layered holy rings, radiant energy buildup, circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u26A1",
+      iconImg: "assets/spells/radiant_charge.png",
+    },
+    {
+      id: "release_radiance",
+      name: "Release Radiance",
+      tower: "light",
+      element: "light",
+      rarity: "Uncommon",
+      role: "Charge Finisher",
+      spCost: 18,
+      basePower: 60,
+      scaling: "Damage increases by spell level and stored charges.",
+      condition: "Best used after Radiant Charge.",
+      effect: "Release stored radiant charge as heavy light damage.",
+      combo: "The longer the charge sequence, the stronger the attack.",
+      obtain: "Monster drop or paired unlock with Radiant Charge.",
+      battleLog: {
+        cast: "Stored radiance erupts in a blinding beam.",
+        trigger: "Release Radiance consumes stored charge.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a massive golden beam bursting from a charged holy orb, ivory gold light, circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u2600",
+      iconImg: "assets/spells/release_radiance.png",
+    },
+    {
+      id: "sanctuary_pulse",
+      name: "Sanctuary Pulse",
+      tower: "light",
+      element: "light",
+      rarity: "Uncommon",
+      role: "Heal + Shield",
+      spCost: 16,
+      basePower: 36,
+      scaling: "Healing and shield increase by spell level.",
+      condition: "Best used after taking damage or before boss turns.",
+      effect: "Restore HP and create a small shield.",
+      combo: "Strong after defensive setup.",
+      obtain: "Monster drop or Catalyst Exchange.",
+      battleLog: {
+        cast: "A sanctuary pulse spreads through the battlefield, restoring life and protection.",
+        trigger: "Sanctuary Pulse heals and shields the mage.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a circular holy pulse expanding outward, golden shield and healing light, circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u2725",
+      iconImg: "assets/spells/sanctuary_pulse.png",
+    },
+    {
+      id: "solar_judgment",
+      name: "Solar Judgment",
+      tower: "light",
+      element: "light",
+      rarity: "Rare",
+      role: "Buff-Based Damage",
+      spCost: 24,
+      basePower: 82,
+      scaling: "Damage multiplier increases by spell level.",
+      condition: "Best used after Blessing Aura and Sun Barrier.",
+      effect: "Deal damage based on number of active Light buffs and shields.",
+      combo: "Rewards defensive setup before offense.",
+      obtain: "Rare boss drop or Catalyst Exchange.",
+      battleLog: {
+        cast: "The sun itself judges the enemy through accumulated sacred power.",
+        trigger: "Solar Judgment converts holy buffs into damage.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a golden sun sword descending from the sky, holy judgment beam, ornate circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u2739",
+      iconImg: "assets/spells/solar_judgment.png",
+    },
+    {
+      id: "divine_reflection",
+      name: "Divine Reflection",
+      tower: "light",
+      element: "light",
+      rarity: "Rare",
+      role: "Counter / Reflection / Defensive Punish",
+      spCost: 24,
+      basePower: 0,
+      scaling: "Reflection percentage increases by spell level: Lv.1 35%, Lv.2 45%, Lv.3 55%, Lv.4 70%, Lv.5 85%, Lv.6 100%, Lv.7 115%, Lv.8 130%, Lv.9 150%, Lv.10 175%, Lv.11 200%.",
+      condition: "Reflects only the next direct damage received before the effect expires.",
+      effect: "Prepare a radiant mirror that lasts until the next enemy action. When the player receives direct damage from the next enemy attack, reflect a percentage of the actual HP damage received back to the enemy.",
+      combo: "Works well after Sun Barrier if the player wants to survive burst damage. Works well before Holy Mend because the player can reflect damage, then heal afterward. Does not reduce damage by itself.",
+      obtain: "Rare monster drop, guardian boss drop, or Catalyst Exchange. Not sold in shop.",
+      battleLog: {
+        cast: "The mage raises a divine mirror of radiant judgment.",
+        trigger: "Divine Reflection triggers. The enemy's attack is mirrored back as reflected holy damage.",
+        expire: "The divine mirror fades without reflecting an attack."
+      },
+      rules: [
+        "Reflects only direct damage.",
+        "Does not reflect Burn, poison, DoT, or passive damage.",
+        "Does not reflect reflected damage.",
+        "Does not stack with itself.",
+        "Expires after one enemy action.",
+        "If no enemy direct attack occurs, the effect expires.",
+        "Reflection damage is based on actual HP damage received after shield and mitigation."
+      ],
+      iconPrompt: "Dark fantasy RPG skill icon of a radiant golden mirror shield reflecting a crimson enemy strike, gothic holy magic, ivory and royal gold glow, circular spell-stone frame, semi-realistic painted style, high contrast, readable at small size, no text, transparent background if possible.",
+      icon: "\u25C8",
+      iconImg: "assets/spells/divine_reflection.png",
+    },
+    {
+      id: "heavenfall_chronicle",
+      name: "Heavenfall Chronicle",
+      tower: "light",
+      element: "light",
+      rarity: "Ultimate",
+      role: "Ultimate Holy Finisher",
+      spCost: 40,
+      basePower: 150,
+      scaling: "Massive scaling with level, active buffs, shields, and accumulated radiant charges.",
+      condition: "Requires defensive setup for maximum power.",
+      effect: "Deal massive light damage based on active buffs, shields, and accumulated radiant charges.",
+      combo: "Best after Sun Barrier, Blessing Aura, Radiant Charge, and Release Radiance.",
+      obtain: "Light Rift Overlord.",
+      battleLog: {
+        cast: "The heavens open, and a chronicle of light descends upon the enemy.",
+        trigger: "Heavenfall Chronicle converts sacred setup into ultimate holy damage.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG ultimate skill icon of an ancient golden heavenly book opening above a battlefield, beams of sacred light falling, ivory and gold, gothic legendary frame, no text, transparent background if possible.",
+      icon: "\u2604",
+      iconImg: "assets/spells/heavenfall_chronicle.png",
+    }
+  ],
+  dark: [
+    {
+      id: "dark_shot",
+      name: "Dark Shot",
+      tower: "dark",
+      element: "dark",
+      rarity: "Common",
+      role: "Basic High Damage",
+      spCost: 9,
+      basePower: 36,
+      scaling: "Damage increases by spell level.",
+      condition: "None.",
+      effect: "Deal dark damage to one enemy.",
+      combo: "Deals extra damage if previous spell was Dark.",
+      obtain: "Dark Tower shop.",
+      battleLog: {
+        cast: "A shard of darkness pierces the enemy.",
+        trigger: "Dark Shot wounds the target with abyssal force.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a black violet shadow projectile, abyssal energy, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u25C6",
+      iconImg: "assets/spells/dark_shot.png",
+      price: 50
+    },
+    {
+      id: "soul_drain",
+      name: "Soul Drain",
+      tower: "dark",
+      element: "dark",
+      rarity: "Common",
+      role: "Lifesteal",
+      spCost: 12,
+      basePower: 26,
+      scaling: "Damage and healing increase by spell level.",
+      condition: "None.",
+      effect: "Deal dark damage and heal the player for part of the damage dealt.",
+      combo: "Healing increases if enemy is cursed.",
+      obtain: "Dark Tower shop.",
+      battleLog: {
+        cast: "The mage tears life from the enemy and drinks it as power.",
+        trigger: "Soul Drain restores HP from the enemy’s soul.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of violet soul energy being drained into a dark hand, black and purple glow, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u25D2",
+      iconImg: "assets/spells/soul_drain.png",
+      price: 55
+    },
+    {
+      id: "curse_fang",
+      name: "Curse Fang",
+      tower: "dark",
+      element: "dark",
+      rarity: "Common",
+      role: "Debuff Setup",
+      spCost: 10,
+      basePower: 18,
+      scaling: "Curse effect increases by spell level.",
+      condition: "None.",
+      effect: "Apply Curse. Cursed enemies take increased dark damage.",
+      combo: "Dark Combo and Abyssal Crit gain bonuses against cursed enemies.",
+      obtain: "Dark Tower shop.",
+      battleLog: {
+        cast: "A cursed fang bites into the enemy’s soul.",
+        trigger: "Curse Fang weakens the enemy against dark magic.",
+        expire: "The curse fades from the enemy."
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a black cursed fang with violet runes and blood-red aura, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u2620",
+      iconImg: "assets/spells/curse_fang.png",
+      price: 55
+    },
+    {
+      id: "shadow_step",
+      name: "Shadow Step",
+      tower: "dark",
+      element: "dark",
+      rarity: "Common",
+      role: "Self Buff / Agility",
+      spCost: 8,
+      basePower: 0,
+      scaling: "Agility bonus increases by spell level.",
+      condition: "None.",
+      effect: "Increase Agility for 2 turns and slightly reduce incoming damage.",
+      combo: "Improves Dark Combo reliability.",
+      obtain: "Dark Tower shop.",
+      battleLog: {
+        cast: "The mage dissolves into shadow and reappears with deadly speed.",
+        trigger: "Shadow Step increases agility.",
+        expire: "The shadow movement fades."
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a shadowy figure stepping through a violet portal, black mist, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u25C8",
+      iconImg: "assets/spells/shadow_step.png",
+      price: 60
+    },
+    {
+      id: "dark_combo",
+      name: "Dark Combo",
+      tower: "dark",
+      element: "dark",
+      rarity: "Uncommon",
+      role: "Combo Amplifier",
+      spCost: 15,
+      basePower: 46,
+      scaling: "Damage and combo scaling increase by spell level.",
+      condition: "Best used after another Dark spell.",
+      effect: "Deal dark damage. Consecutive Dark spells increase combo multiplier.",
+      combo: "Main Dark Tower identity spell.",
+      obtain: "Monster drop from dark enemies.",
+      battleLog: {
+        cast: "The darkness compounds, each strike feeding the next.",
+        trigger: "Dark Combo increases the dark chain multiplier.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of multiple black blades striking in sequence, violet trails, abyssal glow, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u2694",
+      iconImg: "assets/spells/dark_combo.png",
+    },
+    {
+      id: "abyssal_crit",
+      name: "Abyssal Crit",
+      tower: "dark",
+      element: "dark",
+      rarity: "Uncommon",
+      role: "Critical Strike",
+      spCost: 17,
+      basePower: 55,
+      scaling: "Critical chance and critical damage improve by spell level.",
+      condition: "Best used after Curse Fang or Dark Combo.",
+      effect: "Deal dark damage with increased critical chance.",
+      combo: "Critical chance increases against cursed enemies or after Dark Combo.",
+      obtain: "Monster drop or Catalyst Exchange.",
+      battleLog: {
+        cast: "The abyss opens for a single perfect killing strike.",
+        trigger: "Abyssal Crit attempts a devastating critical hit.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a violet-black eye opening above a dagger, critical strike energy, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u{1F480}",
+      iconImg: "assets/spells/abyssal_crit.png",
+    },
+    {
+      id: "blood_pact",
+      name: "Blood Pact",
+      tower: "dark",
+      element: "dark",
+      rarity: "Uncommon",
+      role: "Self Sacrifice Buff",
+      spCost: 10,
+      basePower: 0,
+      scaling: "Damage buff increases by spell level.",
+      condition: "Requires sufficient HP.",
+      effect: "Sacrifice HP to increase dark damage for the next 2 turns.",
+      combo: "Strong before Abyssal Crit or Dark Combo.",
+      obtain: "Monster drop from cursed ritual enemies.",
+      battleLog: {
+        cast: "The mage signs a pact in blood and power floods the spell circle.",
+        trigger: "Blood Pact empowers the next dark spells.",
+        expire: "The blood pact dissolves."
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a blood contract scroll with violet flame and black runes, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u271A",
+      iconImg: "assets/spells/blood_pact.png",
+    },
+    {
+      id: "midnight_eclipse",
+      name: "Midnight Eclipse",
+      tower: "dark",
+      element: "dark",
+      rarity: "Rare",
+      role: "Low HP Burst",
+      spCost: 24,
+      basePower: 92,
+      scaling: "Damage multiplier increases by spell level.",
+      condition: "Best below 40% HP.",
+      effect: "Deal massive damage. Stronger when player HP is low.",
+      combo: "Can be amplified by Blood Pact.",
+      obtain: "Rare drop from Magi Graveyard or Dark boss.",
+      battleLog: {
+        cast: "An eclipse swallows the light and the enemy is struck by midnight.",
+        trigger: "Midnight Eclipse grows stronger from danger.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a black eclipse with violet corona and blood-red edge, ornate gothic spell-stone frame, no text, transparent background if possible.",
+      icon: "\u{1F311}",
+      iconImg: "assets/spells/midnight_eclipse.png",
+    },
+    {
+      id: "void_reaper",
+      name: "Void Reaper",
+      tower: "dark",
+      element: "dark",
+      rarity: "Rare",
+      role: "Execution",
+      spCost: 28,
+      basePower: 85,
+      scaling: "Damage and execute threshold improve slightly by spell level.",
+      condition: "Enemy must be weakened.",
+      effect: "Deal high damage. If enemy HP is below a threshold, execute.",
+      combo: "Best used after Dark Combo chain.",
+      obtain: "Rare boss drop.",
+      battleLog: {
+        cast: "A reaper from the void marks the enemy for death.",
+        trigger: "Void Reaper attempts to execute the weakened enemy.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a hooded void reaper scythe silhouette, purple black mist, ornate gothic spell-stone frame, no text, transparent background if possible.",
+      icon: "\u263D",
+      iconImg: "assets/spells/void_reaper.png",
+    },
+    {
+      id: "oblivion_gospel",
+      name: "Oblivion Gospel",
+      tower: "dark",
+      element: "dark",
+      rarity: "Ultimate",
+      role: "Ultimate Combo Finisher",
+      spCost: 42,
+      basePower: 165,
+      scaling: "Massive scaling with level and combo count.",
+      condition: "Requires prior dark setup for maximum power.",
+      effect: "Deal catastrophic dark damage based on Dark Combo count and Curse status.",
+      combo: "Best used after Curse Fang, Blood Pact, and Dark Combo chain.",
+      obtain: "Dark Rift Overlord.",
+      battleLog: {
+        cast: "The gospel of oblivion is recited, and the enemy’s existence begins to collapse.",
+        trigger: "Oblivion Gospel consumes dark combo power for catastrophic damage.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG ultimate skill icon of an ancient black book opening into a void, violet abyssal light, blood-red runes, gothic legendary spell frame, no text, transparent background if possible.",
+      icon: "\u2726",
+      iconImg: "assets/spells/oblivion_gospel.png",
+    }
+  ],
+  fire: [
+    {
+      id: "fire_shot",
+      name: "Fire Shot",
+      tower: "fire",
+      element: "fire",
+      rarity: "Common",
+      role: "Basic Damage",
+      spCost: 8,
+      basePower: 30,
+      scaling: "Damage increases by spell level.",
+      condition: "None.",
+      effect: "Deal basic fire damage to one enemy.",
+      combo: "If the previous spell was also Fire, gain small bonus damage.",
+      obtain: "Fire Tower shop.",
+      battleLog: {
+        cast: "The mage launches a burning projectile into the enemy.",
+        trigger: "Fire Shot scorches the target.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a blazing fire projectile, ember orange flame, molten glow, circular spell-stone frame, gothic fantasy style, no text, transparent background if possible.",
+      icon: "\u{1F525}",
+      iconImg: "assets/spells/fire_shot.png",
+      price: 50
+    },
+    {
+      id: "burn_mark",
+      name: "Burn Mark",
+      tower: "fire",
+      element: "fire",
+      rarity: "Common",
+      role: "Damage Over Time Setup",
+      spCost: 10,
+      basePower: 12,
+      scaling: "Burn damage increases by spell level.",
+      condition: "None.",
+      effect: "Apply Burn for 3 turns. Burn deals damage at the start of each turn.",
+      combo: "Fire finishers deal more damage if the enemy has Burn.",
+      obtain: "Fire Tower shop.",
+      battleLog: {
+        cast: "A burning sigil brands the enemy’s flesh.",
+        trigger: "Burn Mark sears the enemy for damage over time.",
+        expire: "The burning sigil fades from the enemy."
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a flaming sigil burned into dark metal, crimson ember glow, molten rune circle, circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u2668",
+      iconImg: "assets/spells/burn_mark.png",
+      price: 55
+    },
+    {
+      id: "fire_thief",
+      name: "Fire Thief",
+      tower: "fire",
+      element: "fire",
+      rarity: "Common",
+      role: "Damage + Gold Steal",
+      spCost: 12,
+      basePower: 24,
+      scaling: "Damage and stolen Gold increase by spell level.",
+      condition: "None.",
+      effect: "Deal fire damage and steal a small amount of Gold from the enemy.",
+      combo: "If the enemy is Burning, steal extra Gold.",
+      obtain: "Fire Tower shop.",
+      battleLog: {
+        cast: "Flames twist into greedy hands and rip Gold from the enemy.",
+        trigger: "Fire Thief burns and steals Gold.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of fiery spectral hands stealing gold coins, ember flame, molten gold sparks, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u{1F4B0}",
+      iconImg: "assets/spells/fire_thief.png",
+      price: 55
+    },
+    {
+      id: "ember_skin",
+      name: "Ember Skin",
+      tower: "fire",
+      element: "fire",
+      rarity: "Common",
+      role: "Self Buff / Survival",
+      spCost: 9,
+      basePower: 0,
+      scaling: "Protection increases by spell level.",
+      condition: "None.",
+      effect: "Increase temporary HP or reduce incoming damage for 2 turns.",
+      combo: "If cast after Burn Mark, gain additional protection.",
+      obtain: "Fire Tower shop.",
+      battleLog: {
+        cast: "Embers wrap around the mage like living armor.",
+        trigger: "Ember Skin absorbs part of the incoming damage.",
+        expire: "The ember armor fades into ash."
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a mage silhouette covered in ember armor, crimson and molten gold glow, circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u25CD",
+      iconImg: "assets/spells/ember_skin.png",
+      price: 60
+    },
+    {
+      id: "blaze_chain",
+      name: "Blaze Chain",
+      tower: "fire",
+      element: "fire",
+      rarity: "Uncommon",
+      role: "Combo Amplifier",
+      spCost: 14,
+      basePower: 35,
+      scaling: "Damage and chain bonus increase by spell level.",
+      condition: "Best used after another Fire spell.",
+      effect: "Deal fire damage. If the previous spell was Fire, increase Fire Chain count.",
+      combo: "Each consecutive Fire spell increases later fire damage.",
+      obtain: "Monster drop from fire-aligned enemies or dungeon reward.",
+      battleLog: {
+        cast: "A chain of flame links this spell to the last, intensifying the inferno.",
+        trigger: "Blaze Chain increases the Fire Chain count.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of interlocking chains made of fire, molten links, crimson glow, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u26D3",
+      iconImg: "assets/spells/blaze_chain.png",
+    },
+    {
+      id: "combustion",
+      name: "Combustion",
+      tower: "fire",
+      element: "fire",
+      rarity: "Uncommon",
+      role: "Burn Finisher",
+      spCost: 18,
+      basePower: 60,
+      scaling: "Explosion damage increases by spell level.",
+      condition: "Enemy should have Burn for full effect.",
+      effect: "Consume Burn stacks to deal burst fire damage.",
+      combo: "Damage greatly increases with Burn and Blaze Chain stacks.",
+      obtain: "Monster drop or Catalyst Exchange.",
+      battleLog: {
+        cast: "The burn marks detonate into a violent combustion.",
+        trigger: "Combustion consumes Burn and explodes.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a fiery explosion bursting from a cursed rune, volcanic orange and crimson fire, gothic circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u{1F4A5}",
+      iconImg: "assets/spells/combustion.png",
+    },
+    {
+      id: "inferno_greed",
+      name: "Inferno Greed",
+      tower: "fire",
+      element: "fire",
+      rarity: "Uncommon",
+      role: "Economy Finisher",
+      spCost: 16,
+      basePower: 42,
+      scaling: "Damage and Gold steal increase by spell level.",
+      condition: "Best used when the enemy is Burning.",
+      effect: "Deal fire damage and steal Gold. Extra Gold if enemy is Burning.",
+      combo: "Best used after Burn Mark or Blaze Chain.",
+      obtain: "Monster drop from treasure or bandit-type enemies.",
+      battleLog: {
+        cast: "The inferno devours flesh and fortune alike.",
+        trigger: "Inferno Greed burns the enemy and steals Gold.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a burning treasure chest with molten coins and red flames, dark gothic spell-stone frame, no text, transparent background if possible.",
+      icon: "\u25C6",
+      iconImg: "assets/spells/inferno_greed.png",
+    },
+    {
+      id: "phoenix_blood",
+      name: "Phoenix Blood",
+      tower: "fire",
+      element: "fire",
+      rarity: "Rare",
+      role: "Low HP Power Spell",
+      spCost: 22,
+      basePower: 70,
+      scaling: "Damage multiplier increases by spell level.",
+      condition: "Stronger when player HP is low.",
+      effect: "Deal damage based on missing HP. The lower the player’s HP, the stronger the attack.",
+      combo: "Can turn dangerous fights around.",
+      obtain: "Rare drop from Magi Graveyard or Fire boss.",
+      battleLog: {
+        cast: "The mage’s blood ignites into phoenix fire.",
+        trigger: "Phoenix Blood grows stronger from missing HP.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a phoenix made of blood and flame rising from ashes, crimson and molten gold, ornate circular spell-stone frame, no text, transparent background if possible.",
+      icon: "\u2739",
+      iconImg: "assets/spells/phoenix_blood.png",
+    },
+    {
+      id: "hellflare_ritual",
+      name: "Hellflare Ritual",
+      tower: "fire",
+      element: "fire",
+      rarity: "Rare",
+      role: "High Risk Burst",
+      spCost: 26,
+      basePower: 95,
+      scaling: "Damage increases strongly by spell level.",
+      condition: "Requires enough HP to sacrifice.",
+      effect: "Sacrifice a small amount of HP to deal massive fire damage.",
+      combo: "Damage increases if Fire Chain count is active.",
+      obtain: "Rare boss drop or Catalyst Exchange.",
+      battleLog: {
+        cast: "The mage sacrifices blood to open a flare from hell.",
+        trigger: "Hellflare Ritual consumes HP and releases devastating fire.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG skill icon of a blood ritual circle erupting with hellfire, blackened altar, crimson flame, ornate gothic spell-stone frame, no text, transparent background if possible.",
+      icon: "\u273A",
+      iconImg: "assets/spells/hellflare_ritual.png",
+    },
+    {
+      id: "ragnarok_ignition",
+      name: "Ragnarok Ignition",
+      tower: "fire",
+      element: "fire",
+      rarity: "Ultimate",
+      role: "Ultimate Burn Detonation",
+      spCost: 40,
+      basePower: 160,
+      scaling: "Massive scaling with spell level, Burn stacks, and Fire Chain count.",
+      condition: "Requires Burn or Fire Chain for full effect.",
+      effect: "Consume all Burn and Fire Chain stacks to deal catastrophic damage.",
+      combo: "Best used as final turn after multiple Fire setup spells.",
+      obtain: "Fire Rift Overlord.",
+      battleLog: {
+        cast: "The battlefield erupts as Ragnarok Ignition consumes everything.",
+        trigger: "Ragnarok Ignition detonates all accumulated fire power.",
+        expire: ""
+      },
+      iconPrompt: "Dark fantasy RPG ultimate skill icon of an apocalyptic firestorm, molten sun collapsing into a battlefield, crimson gold inferno, gothic legendary spell frame, no text, transparent background if possible.",
+      icon: "\u2604",
+      iconImg: "assets/spells/ragnarok_ignition.png",
+    }
+  ]
+};
+
+/* ??????????? SPELL LEVEL DAMAGE SCALE ═══════════ */
+const LEVEL_SCALE = [0, 1.0, 1.35, 1.75, 2.2, 2.8, 3.4, 4.0, 4.7, 5.4, 6.2];
+
+function spellScale(spellId) {
+  // Find highest level of this spell in inventory
+  const copies = G.spells.filter(s => s.id === spellId);
+  if (!copies.length) return 1.0;
+  const maxLv = Math.max(...copies.map(s => s.level));
+  return LEVEL_SCALE[maxLv] || 1.0;
+}
+
+function allSpells() { return Object.values(SPELL_CATALOG).flat(); }
+function getSpellById(id) { return allSpells().find(sp => sp.id === id); }
+function getSpellsByTower(tower) { return SPELL_CATALOG[(tower || '').toLowerCase()] || []; }
+function getCommonShopSpells(tower) { return getSpellsByTower(tower).filter(sp => sp.rarity === 'Common'); }
+function getSpellsByRarity(rarity) { return allSpells().filter(sp => sp.rarity === rarity); }
+function createSpellStone(sp, level = 1) {
+  return {
+    id: sp.id,
+    name: sp.name,
+    tower: sp.tower,
+    element: sp.element,
+    rarity: sp.rarity,
+    role: sp.role,
+    level,
+    spCost: sp.spCost
+  };
+}
+function spellIconHtml(sp, className = '') {
+  if (sp && sp.iconImg) {
+    return `<img class="spell-icon-img ${className}" src="${sp.iconImg}" alt="${sp.name || 'Spell'}">`;
+  }
+  return (sp && sp.icon) || '✦';
+}
+
+/* ═══════════ FUSION ═══════════ */
+const FUSION_RATES = [0,90,80,70,60,50,40,30,20,10];
+
+function doFusion(spellId, level) {
+  // Find 2 copies at this level
+  const idxs = [];
+  G.spells.forEach((sp, i) => { if (sp.id === spellId && sp.level === level && idxs.length < 2) idxs.push(i); });
+  if (idxs.length < 2) { showNotify('Need 2 copies to fuse.'); return; }
+  if (level >= 10) { showNotify('Already at maximum level!'); return; }
+
+  const rate    = FUSION_RATES[level];
+  const success = Math.random() * 100 < rate;
+  const allCat  = Object.values(SPELL_CATALOG).flat();
+  const cat     = allCat.find(c => c.id === spellId) || {};
+
+  // Remove both copies (higher index first to avoid shift)
+  [idxs[1], idxs[0]].sort((a,b) => b - a).forEach(i => G.spells.splice(i, 1));
+
+  const resultBox   = document.getElementById('fusionResult');
+  const resultIcon  = document.getElementById('fusionResultIcon');
+  const resultTitle = document.getElementById('fusionResultTitle');
+  const resultDesc  = document.getElementById('fusionResultDesc');
+
+  if (success) {
+    G.spells.push(createSpellStone(cat, level + 1));
+    if (resultBox)  { resultBox.className = 'fusion-result-box show success'; }
+    if (resultIcon)  resultIcon.textContent  = '✨';
+    if (resultTitle) resultTitle.textContent = 'Fusion Successful!';
+    if (resultDesc)  resultDesc.textContent  = `${cat.name || spellId} ascended to LV${level + 1}! (${rate}% chance)`;
+    showNotify(`✨ Fusion success! ${cat.name} → LV${level + 1}`);
+  } else {
+    if (resultBox)  { resultBox.className = 'fusion-result-box show fail'; }
+    if (resultIcon)  resultIcon.textContent  = '💀';
+    if (resultTitle) resultTitle.textContent = 'Fusion Failed!';
+    if (resultDesc)  resultDesc.textContent  = `Both LV${level} stones were destroyed. (${rate}% chance — fortune was not with you)`;
+    showNotify(`💀 Fusion failed — both stones destroyed.`);
+  }
+
+  saveState();
+  renderStatusBar();
+
+  // Refresh fuseable list
+  const allCatalog = Object.values(SPELL_CATALOG).flat();
+  const grouped = {};
+  G.spells.forEach(sp => {
+    const key = sp.id + '_' + sp.level;
+    if (!grouped[key]) grouped[key] = { ...sp, count: 0 };
+    grouped[key].count++;
+  });
+  const fuseableItems = Object.values(grouped).filter(g => g.level < 10).sort((a,b) => a.name.localeCompare(b.name) || a.level - b.level);
+  const fusionList = document.getElementById('fusionList');
+  if (fusionList) {
+    fusionList.innerHTML = fuseableItems.length === 0
+      ? `<div class="inv-empty">— No fuseable spell stones —<span class="inv-empty-hint">You need at least 2 copies of the same spell at the same level.</span></div>`
+      : fuseableItems.map(g => {
+          const cat2 = allCatalog.find(c => c.id === g.id) || {};
+          const canFuse = g.count >= 2;
+          const r2 = FUSION_RATES[g.level];
+          const rateCls = r2 >= 70 ? 'rate-high' : r2 >= 40 ? 'rate-med' : 'rate-low';
+          return `<div class="fusion-card">
+            <div class="fusion-card-info">
+              <div class="fusion-card-name">${spellIconHtml(cat2, 'fusion-inline-img')} ${g.name}</div>
+              <div class="fusion-card-meta">
+                <span class="spell-tag elem-${g.element}">${g.element}</span>
+                <span class="lv-badge${g.level >= 6 ? ' high' : ''}">LV${g.level}</span>
+                <span class="spell-tag sp-tag ${rateCls}">Success: ${r2}%</span>
+              </div>
+            </div>
+            <div class="fusion-card-count ${canFuse ? 'enough' : ''}">×${g.count} owned</div>
+            <button class="fusion-btn" ${canFuse ? '' : 'disabled'} onclick="doFusion('${g.id}', ${g.level})">
+              ${canFuse ? '⚗ Fuse' : 'Need ×2'}
+            </button>
+          </div>`;
+        }).join('');
+  }
+}
+
+/* ═══════════ BUY SPELL ═══════════ */
+function buySpell(spellId) {
+  const sp = getSpellById(spellId);
+  if (!sp) return;
+  if (sp.rarity !== 'Common') { showNotify('Only Common spells are sold here.'); return; }
+  if (G.gold < sp.price) { showNotify('Insufficient Gold.'); return; }
+
+  G.gold -= sp.price;
+  // Always add LV1 copy — multiple copies allowed for fusion
+  G.spells.push(createSpellStone(sp));
+  saveState();
+  renderStatusBar();
+
+  // Update gold display in open shop
+  const goldEl = document.getElementById('shopGoldVal');
+  if (goldEl) goldEl.textContent = G.gold.toLocaleString();
+
+  // Update copy count on the card
+  const cardEl = document.getElementById('sc-' + spellId);
+  if (cardEl) {
+    const countEl = cardEl.querySelector('.spell-copy-count');
+    const copies = G.spells.filter(s => s.id === spellId).length;
+    if (countEl) {
+      countEl.textContent = '×' + copies + ' owned';
+    } else {
+      // First purchase — inject count badge
+      const nameEl = cardEl.querySelector('.spell-name');
+      if (nameEl) nameEl.insertAdjacentHTML('afterend', `<div class="spell-copy-count" style="font-size:0.62rem;color:var(--gold-dim);margin-bottom:0.2rem;">×1 owned</div>`);
+    }
+    // Update afford state
+    if (G.gold < sp.price) {
+      const btn = cardEl.querySelector('.spell-buy-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'No Gold'; }
+    }
+  }
+  showNotify('Acquired: ' + sp.name + ' LV1 (−' + sp.price + ' G)');
+}
+
+/* ═══════════ SHOP BASKET ═══════════ */
+var shopBasket = {}; // { spellId: qty }
+
+function basketTotal() {
+  return Object.entries(shopBasket).reduce((sum, [id, qty]) => {
+    const sp = getSpellById(id);
+    return sum + (sp ? sp.price * qty : 0);
+  }, 0);
+}
+function basketCount() {
+  return Object.values(shopBasket).reduce((s, q) => s + q, 0);
+}
+function basketSummaryText() {
+  return Object.entries(shopBasket).map(([id, qty]) => {
+    const sp = getSpellById(id);
+    return (sp ? sp.name : id) + (qty > 1 ? ' ×' + qty : '');
+  }).join(', ') || '— empty —';
+}
+
+function addToBasket(spellId, qty) {
+  const sp = getSpellById(spellId);
+  if (!sp) return;
+  if (sp.rarity !== 'Common') { showNotify('Only Common spells are sold here.'); return; }
+  if (!shopBasket[spellId]) shopBasket[spellId] = 0;
+  shopBasket[spellId] += qty;
+  refreshBasketBar();
+  refreshSpellCardBasket(spellId);
+  showNotify(`Added ×${qty} ${sp.name} to basket`);
+}
+
+function clearBasket() {
+  shopBasket = {};
+  refreshBasketBar();
+  // Reset all card qty badges
+  document.querySelectorAll('.spell-qty-btn.in-basket').forEach(b => b.classList.remove('in-basket'));
+  document.querySelectorAll('.basket-qty-badge').forEach(b => b.remove());
+}
+
+function refreshBasketBar() {
+  const total = basketTotal();
+  const count = basketCount();
+  const canAfford = total <= G.gold;
+  const labelEl = document.getElementById('basketItemsLabel');
+  const totalEl = document.getElementById('basketTotalLabel');
+  const confirmBtn = document.getElementById('basketConfirmBtn');
+  if (labelEl) labelEl.textContent = count > 0 ? basketSummaryText() : '— empty —';
+  if (totalEl) {
+    totalEl.textContent = '◆ ' + total.toLocaleString() + ' G';
+    totalEl.className = 'basket-total' + (canAfford ? '' : ' over');
+  }
+  if (confirmBtn) confirmBtn.disabled = count === 0 || !canAfford;
+}
+
+function refreshSpellCardBasket(spellId) {
+  const cardEl = document.getElementById('sc-' + spellId);
+  if (!cardEl) return;
+  const qty = shopBasket[spellId] || 0;
+  let badge = cardEl.querySelector('.basket-qty-badge');
+  if (qty > 0) {
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.className = 'basket-qty-badge';
+      badge.style.cssText = 'font-size:0.6rem;color:var(--gold);margin-top:2px;font-family:Cinzel,serif;letter-spacing:0.1em;';
+      const info = cardEl.querySelector('.spell-info');
+      if (info) info.appendChild(badge);
+    }
+    badge.textContent = '🛒 In basket: ×' + qty;
+    cardEl.querySelectorAll('.spell-qty-btn').forEach(b => b.classList.add('in-basket'));
+  } else {
+    if (badge) badge.remove();
+    cardEl.querySelectorAll('.spell-qty-btn').forEach(b => b.classList.remove('in-basket'));
+  }
+}
+
+function confirmPurchase() {
+  const total = basketTotal();
+  if (total > G.gold) { showNotify('Insufficient Gold!'); return; }
+  if (basketCount() === 0) return;
+
+  G.gold -= total;
+  Object.entries(shopBasket).forEach(([id, qty]) => {
+    const sp = getSpellById(id);
+    if (!sp || sp.rarity !== 'Common') return;
+    for (let i = 0; i < qty; i++) {
+      G.spells.push(createSpellStone(sp));
+    }
+  });
+
+  const bought = Object.entries(shopBasket).map(([id, qty]) => {
+    const sp = getSpellById(id);
+    return (sp ? sp.name : id) + (qty > 1 ? ' ×' + qty : '');
+  }).join(', ');
+
+  shopBasket = {};
+  saveState();
+  renderStatusBar();
+
+  // Refresh gold in panel header
+  const goldEl = document.getElementById('shopGoldVal');
+  if (goldEl) goldEl.textContent = G.gold.toLocaleString();
+
+  // Rebuild spell cards to show new copy counts
+  setActivePanel('market');
+  showNotify('✅ Purchased: ' + bought);
+}
+
+/* ═══════════ PANELS ═══════════ */
+function spellRarityClass(rarity) {
+  return 'rarity-' + String(rarity || 'Common').toLowerCase();
+}
+
+function renderSpellLibraryList() {
+  const towerSelect = document.getElementById('libraryTowerFilter');
+  if (towerSelect && !towerSelect.dataset.initialized) {
+    towerSelect.value = G.tower || 'all';
+    towerSelect.dataset.initialized = 'true';
+  }
+  const towerFilter = towerSelect?.value || G.tower || 'all';
+  const rarityFilter = document.getElementById('libraryRarityFilter')?.value || 'all';
+  const listEl = document.getElementById('libraryList');
+  const countEl = document.getElementById('libraryCount');
+  if (!listEl) return;
+
+  const spells = allSpells().filter(sp => {
+    const towerOk = towerFilter === 'all' || sp.tower === towerFilter;
+    const rarityOk = rarityFilter === 'all' || sp.rarity === rarityFilter;
+    return towerOk && rarityOk;
+  });
+
+  if (countEl) countEl.textContent = `${spells.length} / ${allSpells().length} spells shown`;
+  listEl.innerHTML = spells.map(sp => `
+    <div class="library-card">
+      <div class="library-icon ${sp.element}">${spellIconHtml(sp)}</div>
+      <div>
+        <div class="library-name">${sp.name}</div>
+        <div class="library-tags">
+          <span class="spell-tag ${spellRarityClass(sp.rarity)}">${sp.rarity}</span>
+          <span class="spell-tag elem-${sp.element}">${sp.tower}</span>
+          <span class="spell-tag sp-tag">SP ${sp.spCost}</span>
+          <span class="spell-tag">${sp.role}</span>
+        </div>
+        <div class="library-text"><span class="library-label">Effect</span> ${sp.effect}</div>
+        <div class="library-text"><span class="library-label">Combo</span> ${sp.combo}</div>
+        <div class="library-text"><span class="library-label">Obtain</span> ${sp.obtain}</div>
+        <div class="library-text"><span class="library-label">Battle Log</span> ${sp.battleLog?.cast || ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+const PANELS = {
+  character(s) {
+    const td = TOWER[s.tower];
+    const rows = Object.entries(td.stats).map(([k,v]) => {
+      let cls = '';
+      if (k === 'Max HP') cls = 'hp-c'; else if (k === 'Max SP') cls = 'sp-c';
+      return `<div class="stat-row"><span class="stat-row-label">${k}</span><span class="stat-row-val ${cls}">${v}</span></div>`;
+    }).join('');
+    return { icon:'⚔️', title:'Character Status', html:`
+      <div class="stat-section-label">Identity</div>
+      <div class="stat-row"><span class="stat-row-label">Player Name</span><span class="stat-row-val">${s.playerName}</span></div>
+      <div class="stat-row"><span class="stat-row-label">Tower</span><span class="stat-row-val gold-c">${td.badge}</span></div>
+      <div class="stat-row"><span class="stat-row-label">Level</span><span class="stat-row-val">${s.level}</span></div>
+      <div class="stat-row"><span class="stat-row-label">EXP</span><span class="stat-row-val">${s.xp} / 100</span></div>
+      <div class="stat-section-label" style="margin-top:0.5rem">Resources</div>
+      <div class="stat-row">
+        <span class="stat-row-label">HP</span>
+        <span style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          <span class="stat-row-val hp-c">${s.hp} / ${s.maxHp}</span>
+          <div class="bar-wrap" style="width:110px"><div class="bar-fill bar-hp" style="width:${Math.round(s.hp/s.maxHp*100)}%"></div></div>
+        </span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">SP</span>
+        <span style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          <span class="stat-row-val sp-c">${s.sp} / ${s.maxSp}</span>
+          <div class="bar-wrap" style="width:110px"><div class="bar-fill bar-sp" style="width:${Math.round(s.sp/s.maxSp*100)}%"></div></div>
+        </span>
+      </div>
+      <div class="stat-row"><span class="stat-row-label">Gold</span><span class="stat-row-val gold-c">${s.gold.toLocaleString()} G</span></div>
+      <div class="stat-section-label" style="margin-top:0.5rem">Base Attributes</div>
+      ${rows}
+      <div style="margin-top:1.25rem;padding:0.75rem 1rem;background:rgba(197,160,89,0.05);border:1px solid var(--border-rune);border-radius:2px;font-size:0.7rem;color:var(--text-muted);text-align:center;font-family:'Cinzel',serif;letter-spacing:0.1em;">
+        Equipment & spell bonuses not yet applied
+      </div>` };
+  },
+
+  items(s) {
+    const allCatalog = Object.values(SPELL_CATALOG).flat();
+    const spells = s.spells || [];
+    const spellCards = spells.length === 0
+      ? `<div class="inv-empty">
+          — No Spell Stones Acquired —
+          <span class="inv-empty-hint">Visit the Arcane Market to purchase your first spell stones.</span>
+         </div>
+         <button class="inv-go-shop" onclick="setActivePanel('market')">◆ &nbsp; Open Arcane Market</button>`
+      : (() => {
+          // Group by id+level, show count
+          const grouped = {};
+          spells.forEach(sp => {
+            const key = sp.id + '_' + sp.level;
+            if (!grouped[key]) grouped[key] = { ...sp, count: 0 };
+            grouped[key].count++;
+          });
+          return `<div class="inv-list">${Object.values(grouped).sort((a,b) => a.name.localeCompare(b.name) || a.level - b.level).map(g => {
+            const cat = allCatalog.find(c => c.id === g.id) || {};
+            return `<div class="inv-stone-card">
+              <div class="inv-stone-sigil ${g.element}">${spellIconHtml(cat)}</div>
+              <div class="inv-stone-info">
+                <div class="inv-stone-name">${g.name}</div>
+                <div class="inv-stone-tags">
+                  <span class="spell-tag elem-${g.element}">${g.element}</span>
+                  <span class="lv-badge${g.level >= 6 ? ' high' : ''}">LV${g.level}</span>
+                  <span class="spell-tag sp-tag">SP ${g.spCost}</span>
+                  ${g.count > 1 ? `<span class="spell-tag" style="color:var(--gold-dim);border-color:rgba(197,160,89,0.25);background:rgba(197,160,89,0.05);">×${g.count}</span>` : ''}
+                </div>
+              </div>
+              <div class="inv-stone-level" style="color:var(--gold)">LV${g.level}</div>
+            </div>`;
+          }).join('')}</div>`;
+        })();
+
+    const equipCards = `<div class="inv-empty">
+      — No Equipment Acquired —
+      <span class="inv-empty-hint">Weapons, armor, and rings will appear here.</span>
+    </div>`;
+
+    return { icon:'🎒', title:'Magic & Item', wide: false, html:`
+      <div class="inv-summary">
+        <div class="inv-summary-card">
+          <span class="inv-summary-val">${spells.length}</span>
+          <span class="inv-summary-lbl">Spell Stones</span>
+        </div>
+        <div class="inv-summary-card">
+          <span class="inv-summary-val" style="color:#9a8f7a">0</span>
+          <span class="inv-summary-lbl">Equipment</span>
+        </div>
+        <div class="inv-summary-card">
+          <span class="inv-summary-val" style="color:var(--gold)">${s.gold.toLocaleString()}</span>
+          <span class="inv-summary-lbl">Gold</span>
+        </div>
+      </div>
+
+      <div class="inv-tabs">
+        <button class="inv-tab active" id="itab-spells" onclick="invTab('spells')">⟡ Spell Stones</button>
+        <button class="inv-tab" id="itab-equip"  onclick="invTab('equip')">⟡ Equipment</button>
+      </div>
+
+      <div class="inv-pane active" id="ipane-spells">${spellCards}</div>
+      <div class="inv-pane"        id="ipane-equip">${equipCards}</div>
+    `};
+  },
+  order(s) {
+    const allCatalog = Object.values(SPELL_CATALOG).flat();
+    const owned = s.spells || [];
+    const blueprint = s.blueprint || Array(10).fill(null);
+    const totalSP = blueprint.reduce((sum, id) => {
+      if (!id) return sum;
+      const sp = allCatalog.find(c => c.id === id);
+      return sum + (sp ? sp.spCost : 0);
+    }, 0);
+    const usedSlots = blueprint.filter(Boolean).length;
+
+    const slotRows = blueprint.map((spId, i) => {
+      const sp = spId ? allCatalog.find(c => c.id === spId) : null;
+      const spOver = spId && sp ? (totalSP > s.maxSp) : false;
+      const filledCls = spId ? ' filled' : '';
+      const warnCls = spOver ? ' sp-warn' : '';
+      return `<div class="so-slot${filledCls}${warnCls}" id="so-slot-${i}">
+        <div class="so-turn-num">${i + 1}</div>
+        <div class="so-slot-info">
+          ${sp
+            ? `<div class="so-spell-name">${spellIconHtml(sp, 'so-spell-inline-img')} ${sp.name}</div>
+               <div class="so-spell-sp">SP ${sp.spCost}${spOver ? ' ⚠ Over limit' : ''}</div>`
+            : `<div class="so-empty-label">— No spell set (skip turn) —</div>`
+          }
+        </div>
+        <div class="so-slot-actions">
+          <button class="so-btn" onclick="soOpenPicker(${i})">Set</button>
+          ${sp ? `<button class="so-btn clear-btn" onclick="soClearSlot(${i})">✕</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+
+    const pickerItems = owned.length === 0
+      ? `<div class="so-picker-empty">No spell stones owned.<br>Visit the Arcane Market first.</div>`
+      : owned.map(sp => {
+          const cat = allCatalog.find(c => c.id === sp.id) || {};
+          return `<div class="so-picker-item" onclick="soPickSpell('${sp.id}')">
+            <div class="so-picker-icon ${sp.element}">${spellIconHtml(cat)}</div>
+            <span class="so-picker-name">${sp.name}</span>
+            <span class="so-picker-sp">SP ${sp.spCost}</span>
+          </div>`;
+        }).join('');
+
+    const spColor = totalSP > s.maxSp ? '#c06060' : '#6090d0';
+    const railSteps = blueprint.map((spId, i) => `<div class="so-rail-step${spId ? ' filled' : ''}" title="Turn ${i + 1}"></div>`).join('');
+
+    return { icon:'📜', title:'Set Order — Battle Blueprint', wide: true, html:`
+      <div class="so-header">
+        <div class="so-info-badge">◆ &nbsp; Assign spells to each turn slot (1–10)</div>
+        <div class="so-sp-display">
+          <span class="so-sp-label">Total SP</span>
+          <span class="so-sp-current" style="color:${spColor}">${totalSP}</span>
+          <span class="so-sp-max">/ ${s.maxSp}</span>
+        </div>
+      </div>
+      <div class="so-sequence-rail" id="so-sequence-rail">${railSteps}</div>
+
+      <!-- Spell picker (hidden by default) -->
+      <div class="so-picker" id="so-picker">
+        <div class="so-picker-head">
+          <span id="so-picker-label">Select Spell for Turn —</span>
+          <button class="so-picker-close" onclick="soClosePicker()">✕</button>
+        </div>
+        <div class="so-picker-list">${pickerItems}</div>
+      </div>
+
+      <!-- Turn slots -->
+      <div class="so-slots" id="so-slots">${slotRows}</div>
+
+      <!-- Summary -->
+      <div class="so-footer">
+        <div class="so-footer-stat">
+          <span class="so-footer-val" style="color:var(--gold)">${usedSlots} / 10</span>
+          <span class="so-footer-lbl">Turns Filled</span>
+        </div>
+        <div class="so-footer-stat">
+          <span class="so-footer-val" style="color:${spColor}">${totalSP} SP</span>
+          <span class="so-footer-lbl">Total Cost</span>
+        </div>
+      </div>
+      <div class="so-struggle-note">
+        ⚠ Empty turn slots mean you do <strong>nothing</strong> that turn — no attack, no heal. Only spells set in the blueprint will activate during battle.
+      </div>
+    `};
+  },
+  shop(s) {
+    const td = TOWER[s.tower];
+    const spells = getCommonShopSpells(s.tower);
+    const ownedIds = s.spells.map(sp => sp.id);
+    const ownedCount = ownedIds.length;
+
+    const cards = spells.map(sp => {
+      const copyCount = s.spells.filter(inv => inv.id === sp.id).length;
+      const canAfford1  = s.gold >= sp.price;
+      const canAfford10 = s.gold >= sp.price * 10;
+      const elemCls = 'elem-' + sp.element;
+      const inBasket = shopBasket[sp.id] || 0;
+      return `
+        <div class="spell-card" id="sc-${sp.id}">
+          <div class="spell-sigil ${sp.element}">${spellIconHtml(sp)}</div>
+          <div class="spell-info">
+            <div class="spell-name">${sp.name}</div>
+            ${copyCount > 0 ? `<div style="font-size:0.62rem;color:var(--gold-dim);margin-bottom:0.2rem;">×${copyCount} owned</div>` : ''}
+            <div class="spell-meta">
+              <span class="spell-tag rarity-common">${sp.rarity}</span>
+              <span class="spell-tag ${elemCls}">${sp.element.charAt(0).toUpperCase()+sp.element.slice(1)}</span>
+              <span class="spell-tag sp-tag">SP ${sp.spCost}</span>
+              <span class="spell-tag" style="background:rgba(197,160,89,0.07);border-color:rgba(197,160,89,0.2);color:var(--gold-dim);">LV1 only</span>
+            </div>
+            <div class="spell-desc">${sp.effect || sp.desc}</div>
+            ${inBasket > 0 ? `<div class="basket-qty-badge" style="font-size:0.6rem;color:var(--gold);margin-top:4px;font-family:'Cinzel',serif;letter-spacing:0.1em;">🛒 In basket: ×${inBasket}</div>` : ''}
+          </div>
+          <div class="spell-buy-col">
+            <div class="spell-price">◆ ${sp.price} G</div>
+            <div class="spell-qty-row">
+              <button class="spell-qty-btn${inBasket>0?' in-basket':''}" ${canAfford1?'':'disabled'} onclick="addToBasket('${sp.id}',1)">+1</button>
+              <button class="spell-qty-btn${inBasket>0?' in-basket':''}" ${canAfford10?'':'disabled'} onclick="addToBasket('${sp.id}',10)">+10</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    return { icon:'🏛️', title:'Arcane Market', wide: true, html:`
+      <div class="shop-header">
+        <div>
+          <div class="shop-section-title">${td.badge} — Spell Stall</div>
+          <div class="shop-owned-badge">Copies owned: ${s.spells.length}</div>
+        </div>
+        <div class="shop-gold-display">◆ <span id="shopGoldVal">${s.gold.toLocaleString()}</span> Gold</div>
+      </div>
+      <div class="spell-grid">${cards || '<div class="shop-empty">No spells available.</div>'}</div>
+      <div style="margin-top:1.25rem;padding:0.75rem 1rem;background:rgba(197,160,89,0.04);border:1px solid var(--border-rune);border-radius:2px;font-size:0.68rem;color:var(--text-muted);font-family:'Cinzel',serif;letter-spacing:0.08em;text-align:center;">
+        Only Common spells available here. Rarer magic requires the Catalyst Exchange.
+      </div>
+
+      <div class="basket-bar">
+        <div class="basket-info">
+          <span class="basket-label">🛒 Basket</span>
+          <div class="basket-items" id="basketItemsLabel">${basketCount()>0?basketSummaryText():'— empty —'}</div>
+        </div>
+        <div class="basket-total${basketTotal()>s.gold?' over':''}" id="basketTotalLabel">◆ ${basketTotal().toLocaleString()} G</div>
+        <button class="basket-clear-btn" onclick="clearBasket()">Clear</button>
+        <button class="basket-confirm-btn" id="basketConfirmBtn" ${basketCount()===0||basketTotal()>s.gold?'disabled':''} onclick="confirmPurchase()">
+          ◆ Confirm Purchase
+        </button>
+      </div>`
+    };
+  },
+  fusion(s) {
+    const allCatalog = Object.values(SPELL_CATALOG).flat();
+    const spells = s.spells || [];
+
+    // Group spells by id, count copies per level
+    const grouped = {};
+    spells.forEach(sp => {
+      const key = sp.id + '_' + sp.level;
+      if (!grouped[key]) grouped[key] = { ...sp, count: 0 };
+      grouped[key].count++;
+    });
+
+    const fuseableItems = Object.values(grouped)
+      .filter(g => g.level < 10)
+      .sort((a, b) => a.name.localeCompare(b.name) || a.level - b.level);
+
+    const FUSION_RATES = [0,90,80,70,60,50,40,30,20,10];
+
+    const rateRows = FUSION_RATES.slice(1).map((r, i) => {
+      const lv = i + 1;
+      const cls = r >= 70 ? 'rate-high' : r >= 40 ? 'rate-med' : 'rate-low';
+      return `<tr>
+        <td>LV${lv} + LV${lv}</td>
+        <td>→ LV${lv + 1}</td>
+        <td class="${cls}">${r}%</td>
+        <td style="color:var(--text-muted)">${r < 100 ? 'Both lost on fail' : '—'}</td>
+      </tr>`;
+    }).join('');
+
+    const fusionCards = fuseableItems.length === 0
+      ? `<div class="inv-empty">— No fuseable spell stones —<span class="inv-empty-hint">You need at least 2 copies of the same spell at the same level.</span></div>`
+      : fuseableItems.map(g => {
+          const cat = allCatalog.find(c => c.id === g.id) || {};
+          const canFuse = g.count >= 2;
+          const rate = FUSION_RATES[g.level];
+          const rateCls = rate >= 70 ? 'rate-high' : rate >= 40 ? 'rate-med' : 'rate-low';
+          return `<div class="fusion-card">
+            <div class="fusion-card-info">
+              <div class="fusion-card-name">${spellIconHtml(cat, 'fusion-inline-img')} ${g.name}</div>
+              <div class="fusion-card-meta">
+                <span class="spell-tag elem-${g.element}">${g.element}</span>
+                <span class="lv-badge${g.level >= 6 ? ' high' : ''}">LV${g.level}</span>
+                <span class="spell-tag sp-tag ${rateCls}">Success: ${rate}%</span>
+              </div>
+            </div>
+            <div class="fusion-card-count ${canFuse ? 'enough' : ''}">
+              ×${g.count} owned
+            </div>
+            <button class="fusion-btn" ${canFuse ? '' : 'disabled'}
+              onclick="doFusion('${g.id}', ${g.level})">
+              ${canFuse ? '⚗ Fuse' : 'Need ×2'}
+            </button>
+          </div>`;
+        }).join('');
+
+    return { icon:'🔮', title:'Stone Fusion Crucible', wide: true, html:`
+      <div class="fusion-result-box" id="fusionResult">
+        <div class="fusion-result-icon" id="fusionResultIcon"></div>
+        <div class="fusion-result-title" id="fusionResultTitle"></div>
+        <div class="fusion-result-desc" id="fusionResultDesc"></div>
+      </div>
+
+      <div class="fusion-intro">
+        Combine <strong>2 identical spell stones of the same level</strong> to forge one of higher level.
+        Higher levels carry greater risk — failure destroys both stones permanently.
+      </div>
+
+      <div class="fusion-section-title">◆ &nbsp; Fusion Rate Table</div>
+      <table class="fusion-rate-table">
+        <thead><tr><th>Materials</th><th>Result</th><th>Success</th><th>Failure</th></tr></thead>
+        <tbody>${rateRows}</tbody>
+      </table>
+
+      <div class="fusion-section-title">◆ &nbsp; Your Fuseable Stones</div>
+      <div class="fusion-list" id="fusionList">${fusionCards}</div>
+    `};
+  },
+  rift(s) {
+    const hasBlueprint = (s.blueprint || []).some(Boolean);
+    const warnHtml = !hasBlueprint
+      ? `<div class="rift-warn">⚠ Your battle blueprint is empty. Set at least one spell in <strong>Set Order</strong> before entering a Rift.</div>`
+      : '';
+    return { icon:'🌀', title:'Battle', wide: true, html:`
+      ${warnHtml}
+      <div class="rift-zones">
+        <div class="rift-zone-card" onclick="enterRift('booby_forest')">
+          <div class="rift-zone-icon">🌿</div>
+          <div class="rift-zone-info">
+            <div class="rift-zone-name">Booby Forest</div>
+            <div class="rift-zone-desc">A dense, cursed woodland teeming with weak monsters. The safest place to begin your arcane journey and test your first battle sequence.</div>
+            <div class="rift-zone-meta">
+              <span class="rift-meta-tag easy">Beginner</span>
+              <span class="rift-meta-tag easy">EXP +10</span>
+              <span class="rift-meta-tag easy">Gold +15~30</span>
+            </div>
+          </div>
+          <div class="rift-zone-enter">Enter ›</div>
+        </div>
+        <div class="rift-zone-card locked" title="Requires Level 3">
+          <div class="rift-zone-icon">💀</div>
+          <div class="rift-zone-info">
+            <div class="rift-zone-name">Magi Graveyard</div>
+            <div class="rift-zone-desc">Ancient burial grounds haunted by fallen mages. Stronger enemies, higher rewards. Recommended after stable builds are established.</div>
+            <div class="rift-zone-meta">
+              <span class="rift-meta-tag hard">Level 3+</span>
+              <span class="rift-meta-tag medium">EXP +30</span>
+              <span class="rift-meta-tag medium">Gold +40~80</span>
+            </div>
+          </div>
+          <div class="rift-zone-enter">🔒 Locked</div>
+        </div>
+      </div>
+    `};
+  },
+  library: (s) => {
+    const activeTower = s.tower || 'all';
+    return { icon:'\u{1F4D6}', title:'Spell Library', wide: true, html:`
+    <div class="library-controls">
+      <select class="library-select" id="libraryTowerFilter" onchange="renderSpellLibraryList()">
+        <option value="all" ${activeTower === 'all' ? 'selected' : ''}>All Towers</option>
+        <option value="light" ${activeTower === 'light' ? 'selected' : ''}>Light Tower</option>
+        <option value="dark" ${activeTower === 'dark' ? 'selected' : ''}>Dark Tower</option>
+        <option value="fire" ${activeTower === 'fire' ? 'selected' : ''}>Fire Tower</option>
+      </select>
+      <select class="library-select" id="libraryRarityFilter" onchange="renderSpellLibraryList()">
+        <option value="all">All Rarities</option>
+        <option value="Common">Common</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Rare">Rare</option>
+        <option value="Ultimate">Ultimate</option>
+      </select>
+    </div>
+    <div class="library-count" id="libraryCount"></div>
+    <div class="library-grid" id="libraryList"></div>
+  ` };
+  },
+  wyvern: () => ({ icon:'🐉', title:'Wyvern Roost', html: coming('🐉','Wyvern Companions','Hatch arcane wyvern eggs and raise them as battle companions. Your wyvern provides elemental assists and bonus effects during combat.','Coming Next') }),
+
+  save(s) {
+    return { icon:'💾', title:'Save / Reset', html:`
+      <div class="stat-section-label">Current Session</div>
+      <div class="stat-row"><span class="stat-row-label">Last Saved</span><span class="stat-row-val">${localStorage.getItem('soulrift_saveTime') || '—'}</span></div>
+      <div class="stat-row"><span class="stat-row-label">Tower</span><span class="stat-row-val gold-c">${TOWER[s.tower].badge}</span></div>
+      <div class="stat-row"><span class="stat-row-label">Level</span><span class="stat-row-val">${s.level}</span></div>
+      <div class="stat-row"><span class="stat-row-label">Gold</span><span class="stat-row-val gold-c">${s.gold.toLocaleString()} G</span></div>
+      <div style="margin-top:1.5rem">
+        <button class="hub-btn" onclick="doSave()">◆ &nbsp; Seal Progress in the Arcane Records</button>
+      </div>
+      <div style="margin-top:1.5rem">
+        <div class="reset-warning">⚠ Resetting will permanently erase all progress, spell stones, equipment, gold, and your tower oath. This cannot be undone.</div>
+        <button class="hub-btn danger" onclick="doReset()">✕ &nbsp; Erase All & Return to Origin</button>
+      </div>` };
+  }
+};
+
+function coming(icon, title, text, badge) {
+  return `<div class="panel-coming">
+    <span class="panel-coming-rune">${icon}</span>
+    <div class="panel-coming-title">— ${title} —</div>
+    <div class="panel-coming-text">${text}</div>
+    <span class="panel-coming-badge">${badge}</span>
+  </div>`;
+}
+
+function invTab(tab) {
+  ['spells','equip'].forEach(t => {
+    document.getElementById('itab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('ipane-' + t).classList.toggle('active', t === tab);
+  });
+}
+
+/* ═══════════ SET ORDER ═══════════ */
+var soActiveSlot = null;
+
+function soOpenPicker(slotIdx) {
+  soActiveSlot = slotIdx;
+  const picker = document.getElementById('so-picker');
+  const label  = document.getElementById('so-picker-label');
+  if (!picker || !label) return;
+  label.textContent = 'Select Spell for Turn ' + (slotIdx + 1);
+  picker.classList.add('open');
+  picker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function soClosePicker() {
+  const picker = document.getElementById('so-picker');
+  if (picker) picker.classList.remove('open');
+  soActiveSlot = null;
+}
+
+function soPickSpell(spellId) {
+  if (soActiveSlot === null) return;
+  if (!G.blueprint) G.blueprint = Array(10).fill(null);
+  G.blueprint[soActiveSlot] = spellId;
+  saveState();
+  soClosePicker();
+  soRefreshSlots();
+}
+
+function soClearSlot(slotIdx) {
+  if (!G.blueprint) G.blueprint = Array(10).fill(null);
+  G.blueprint[slotIdx] = null;
+  saveState();
+  soRefreshSlots();
+}
+
+function soRefreshSlots() {
+  const allCatalog = Object.values(SPELL_CATALOG).flat();
+  const blueprint  = G.blueprint || Array(10).fill(null);
+  const totalSP    = blueprint.reduce((sum, id) => {
+    if (!id) return sum;
+    const sp = allCatalog.find(c => c.id === id);
+    return sum + (sp ? sp.spCost : 0);
+  }, 0);
+  const usedSlots = blueprint.filter(Boolean).length;
+  const spColor   = totalSP > G.maxSp ? '#c06060' : '#6090d0';
+
+  // Rebuild slots
+  const slotsEl = document.getElementById('so-slots');
+  if (!slotsEl) return;
+  slotsEl.innerHTML = blueprint.map((spId, i) => {
+    const sp = spId ? allCatalog.find(c => c.id === spId) : null;
+    const filledCls = spId ? ' filled' : '';
+    const warnCls   = (sp && totalSP > G.maxSp) ? ' sp-warn' : '';
+    return `<div class="so-slot${filledCls}${warnCls}" id="so-slot-${i}">
+      <div class="so-turn-num">${i + 1}</div>
+      <div class="so-slot-info">
+        ${sp
+          ? `<div class="so-spell-name">${spellIconHtml(sp, 'so-spell-inline-img')} ${sp.name}</div>
+             <div class="so-spell-sp">SP ${sp.spCost}</div>`
+          : `<div class="so-empty-label">— No spell set (skip turn) —</div>`
+        }
+      </div>
+      <div class="so-slot-actions">
+        <button class="so-btn" onclick="soOpenPicker(${i})">Set</button>
+        ${sp ? `<button class="so-btn clear-btn" onclick="soClearSlot(${i})">✕</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Update SP display
+  const spCurrent = document.querySelector('.so-sp-current');
+  const spDisp = document.querySelector('.so-sp-display span');
+  if (spCurrent) { spCurrent.textContent = totalSP; spCurrent.style.color = spColor; }
+  else if (spDisp) { spDisp.textContent = totalSP; spDisp.style.color = spColor; }
+  const railEl = document.getElementById('so-sequence-rail');
+  if (railEl) {
+    railEl.innerHTML = blueprint.map((spId, i) => `<div class="so-rail-step${spId ? ' filled' : ''}" title="Turn ${i + 1}"></div>`).join('');
+  }
+
+  // Update footer
+  const footerVals = document.querySelectorAll('.so-footer-val');
+  if (footerVals[0]) footerVals[0].textContent = usedSlots + ' / 10';
+  if (footerVals[1]) { footerVals[1].textContent = totalSP + ' SP'; footerVals[1].style.color = spColor; }
+}
+
+function normalizeNavKey(key) {
+  if (key === 'rift') return 'battle';
+  if (key === 'shop') return 'market';
+  return key;
+}
+
+function panelKeyForNav(key) {
+  if (key === 'market') return 'shop';
+  return key;
+}
+
+function openPanel(key) {
+  key = normalizeNavKey(key);
+  if (key === 'battle') { setActivePanel('battle'); return; }
+  const panelKey = panelKeyForNav(key);
+  const p = PANELS[panelKey] ? PANELS[panelKey](G) : null;
+  if (!p) return;
+  document.getElementById('panelIcon').textContent  = p.icon;
+  document.getElementById('panelTitle').textContent = p.title;
+  document.getElementById('panelBody').innerHTML    = p.html;
+  const box = document.getElementById('panelBox');
+  box.classList.toggle('wide', !!p.wide);
+  document.getElementById('panelOverlay').classList.add('open');
+  if (key === 'library') renderSpellLibraryList();
+}
+
+function closePanel() {
+  document.getElementById('panelOverlay').classList.remove('open');
+  shopBasket = {};
+}
+function closePanelOnBg(e) { if (e.target.id === 'panelOverlay') closePanel(); }
+
+/* ═══════════ RIFT & BATTLE ENGINE ═══════════ */
+
+const RIFT_ZONES = {
+  booby_forest: {
+    name: 'Booby Forest',
+    enemies: [
+      { name:'Booby Goblin',   hp:55,  atk:12, def:4,  gold:[8,18],  xp:10 },
+      { name:'Thorn Sprite',   hp:45,  atk:15, def:3,  gold:[10,20], xp:12 },
+      { name:'Mud Crawler',    hp:70,  atk:10, def:6,  gold:[6,15],  xp:10 },
+      { name:'Forest Wisp',    hp:40,  atk:18, def:2,  gold:[12,22], xp:14 },
+    ]
+  }
+};
+
+function rng(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function enterRift(zoneKey) {
+  const zone = RIFT_ZONES[zoneKey];
+  if (!zone) return;
+  const enemyBase = zone.enemies[rng(0, zone.enemies.length - 1)];
+  const enemy = { ...enemyBase, maxHp: enemyBase.hp, currentHp: enemyBase.hp };
+
+  // Build battle panel shell first, then animate
+  showBattleShell(zone, enemy);
+  // Small delay to let DOM render before starting animation
+  setTimeout(() => startBattleAnimation(zone, enemy), 400);
+}
+
+/* ── Build empty battle shell ── */
+function showBattleShell(zone, enemy) {
+  // Show battle in main content area
+  document.getElementById('mainRift').style.display = 'none';
+  document.getElementById('mainPanel').style.display = 'block';
+
+  const html = `
+    <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1.25rem;padding-bottom:0.85rem;border-bottom:1px solid var(--border-rune)">
+      <span style="font-size:1.2rem">⚔</span>
+      <span style="font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase">Battle — ${zone.name}</span>
+    </div>
+    <div class="battle-screen">
+      <div class="battle-header">
+        <span class="battle-zone-name">🌀 ${zone.name}</span>
+        <span style="font-family:'Cinzel',serif;font-size:0.65rem;color:var(--text-muted);letter-spacing:0.1em;">vs ${enemy.name}</span>
+      </div>
+      <div class="battle-hpbars">
+        <div class="bhp-block">
+          <div class="bhp-label">Player</div>
+          <div class="bhp-name">${G.playerName}</div>
+          <div class="bhp-bar-wrap"><div class="bhp-bar-fill player" id="bBarPlayer" style="width:100%"></div></div>
+          <div class="bhp-val" id="bHpPlayer">${G.hp} / ${G.maxHp} HP</div>
+        </div>
+        <div class="bhp-block">
+          <div class="bhp-label">Enemy</div>
+          <div class="bhp-name">${enemy.name}</div>
+          <div class="bhp-bar-wrap"><div class="bhp-bar-fill enemy" id="bBarEnemy" style="width:100%"></div></div>
+          <div class="bhp-val" id="bHpEnemy">${enemy.maxHp} / ${enemy.maxHp} HP</div>
+        </div>
+      </div>
+      <div class="battle-log-wrap" id="battleLogWrap">
+        <div class="blog-line status" style="text-align:center;letter-spacing:0.2em;font-family:'Cinzel',serif;">⚔ Battle Begins...</div>
+      </div>
+      <div class="battle-result" id="battleResult"></div>
+      <button class="hub-btn" id="bReturnBtn" style="margin-top:0.5rem;display:none" onclick="setActivePanel('battle')">◀ &nbsp; Return to Battle</button>
+    </div>`;
+
+  document.getElementById('mainPanelBody').innerHTML = html;
+}
+
+/* ── Compute all turn data upfront, then animate ── */
+function startBattleAnimation(zone, enemy) {
+  const allCatalog = Object.values(SPELL_CATALOG).flat();
+  const blueprint  = G.blueprint || Array(10).fill(null);
+  const td         = TOWER[G.tower];
+
+  let pHp = G.hp, pMaxHp = G.maxHp;
+  let spUsed = 0, eMaxSp = G.maxSp;
+  let eHp = enemy.maxHp;
+  let burnStacks = 0, comboChain = 0, chargeLevel = 0, isCharging = false;
+  let goldGain = 0, xpGain = 0, outcome = 'lose';
+
+  // Each turn = { header, lines: [{text, cls, pHp, eHp}] }
+  const turns = [];
+
+  for (let t = 0; t < 10; t++) {
+    const turnLines = [];
+    let done = false;
+
+    // ── BURN TICK (before enemy attack) ──
+    if (burnStacks > 0) {
+      const burnDmg = burnStacks * 4;
+      eHp = Math.max(0, eHp - burnDmg);
+      burnStacks = Math.max(0, burnStacks - 1);
+      turnLines.push({ text: `🔥 Burn scorches ${enemy.name} for ${burnDmg} damage. (Stacks left: ${burnStacks}) — ${enemy.name} HP: ${eHp}`, cls: 'burn', pHp, eHp });
+      if (eHp <= 0) {
+        turnLines.push({ text: `${enemy.name} is consumed by flames!`, cls: 'result-win', pHp, eHp });
+        turns.push({ turn: t + 1, lines: turnLines });
+        done = true; outcome = 'win';
+        goldGain = rng(enemy.gold[0], enemy.gold[1]) + goldGain;
+        xpGain = enemy.xp;
+        break;
+      }
+    }
+
+    // ── ENEMY ATTACKS ──
+    const def = Math.floor((td.stats.Defense || 10) / 4);
+    const enemyDmg = Math.max(1, rng(enemy.atk - 3, enemy.atk + 3) - def);
+    pHp = Math.max(0, pHp - enemyDmg);
+    turnLines.push({ text: `${enemy.name} attacks — ${enemyDmg} damage dealt. Your HP: ${pHp}/${pMaxHp}`, cls: 'enemy-atk', pHp, eHp });
+    if (pHp <= 0) {
+      turnLines.push({ text: `You have been defeated...`, cls: 'result-lose', pHp: 0, eHp });
+      turns.push({ turn: t + 1, lines: turnLines });
+      outcome = 'lose'; done = true; break;
+    }
+
+    // ── PLAYER TURN ──
+    const spellId = blueprint[t];
+    if (!spellId) {
+      // No spell set — player does nothing
+      turnLines.push({ text: `Turn ${t+1}: No spell set — you stand motionless.`, cls: 'struggle', pHp, eHp });
+    } else {
+      const spell = allCatalog.find(c => c.id === spellId);
+      if (!spell) { turns.push({ turn: t+1, lines: turnLines }); continue; }
+
+      if (spUsed + spell.spCost > eMaxSp) {
+        turnLines.push({ text: `⚠ Insufficient SP for ${spell.name}! Spell fails — you do nothing.`, cls: 'struggle', pHp, eHp });
+      } else {
+        spUsed += spell.spCost;
+        const baseAtk = td.stats.Attack || 10;
+        const baseInt = td.stats.Intelligence || 10;
+        const lvMult  = spellScale(spell.id);
+        const lvLabel = (() => { const copies = G.spells.filter(s => s.id === spell.id); return copies.length ? ' LV' + Math.max(...copies.map(s => s.level)) : ''; })();
+
+        turnLines.push({ text: `You cast ${spell.icon} ${spell.name}${lvLabel}.`, cls: 'player-cast', pHp, eHp });
+
+        if (spell.id === 'light_shot') {
+          const dmg = (rng(baseInt*1.5, baseInt*2)*lvMult)|0;
+          eHp = Math.max(0, eHp-dmg);
+          turnLines.push({ text: `Holy light strikes for ${dmg} damage. ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'damage', pHp, eHp });
+          comboChain=0;
+        } else if (spell.id === 'holy_mend') {
+          const heal = (rng(baseInt,baseInt*1.5)*lvMult)|0;
+          pHp = Math.min(pMaxHp, pHp+heal);
+          turnLines.push({ text: `Divine energy restores ${heal} HP. Your HP: ${pHp}/${pMaxHp}`, cls:'heal', pHp, eHp });
+          comboChain=0;
+        } else if (spell.id === 'sun_barrier') {
+          turnLines.push({ text: `A solar barrier rises — next hit absorbed.`, cls:'status', pHp, eHp });
+          comboChain=0;
+        } else if (spell.id === 'sol_radiance') {
+          const dmg = (rng(baseInt*1.8, baseInt*2.5)*lvMult)|0;
+          eHp = Math.max(0, eHp-dmg);
+          turnLines.push({ text: `Radiant burst hits for ${dmg} damage. ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'damage', pHp, eHp });
+          comboChain=0;
+        } else if (spell.id === 'holy_reflection') {
+          turnLines.push({ text: `Holy Reflection set — next incoming damage reflected.`, cls:'status', pHp, eHp });
+          comboChain=0;
+        } else if (spell.id === 'radiant_charge') {
+          if (!isCharging) { isCharging=true; chargeLevel=1; turnLines.push({ text:`Radiant Charge: charging... (Lv ${chargeLevel})`, cls:'status', pHp, eHp }); }
+          else {
+            chargeLevel++;
+            if (chargeLevel>=3) {
+              const dmg = (rng(baseInt*3, baseInt*5)*chargeLevel*lvMult)|0;
+              eHp = Math.max(0, eHp-dmg);
+              turnLines.push({ text:`⚡ RELEASE! Radiant Charge obliterates for ${dmg} damage! ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'player-cast', pHp, eHp });
+              isCharging=false; chargeLevel=0;
+            } else {
+              turnLines.push({ text:`Radiant Charge: charging... (Lv ${chargeLevel})`, cls:'status', pHp, eHp });
+            }
+          }
+        } else if (spell.id === 'dark_shot') {
+          const dmg=(rng(baseAtk*1.4,baseAtk*2)*lvMult)|0;
+          eHp=Math.max(0,eHp-dmg); comboChain++;
+          turnLines.push({ text:`Void projectile strikes for ${dmg} damage. ${enemy.name} HP: ${eHp}/${enemy.maxHp} (Combo: ${comboChain})`, cls:'void', pHp, eHp });
+        } else if (spell.id === 'dark_combo') {
+          const mult=comboChain>=2?1.5:1.0;
+          const dmg=(rng(baseAtk*1.6,baseAtk*2.2)*mult*lvMult)|0;
+          eHp=Math.max(0,eHp-dmg); comboChain++;
+          turnLines.push({ text:`Dark Combo: ${dmg} damage${mult>1?' (×1.5 COMBO!)':{}}. ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'void', pHp, eHp });
+        } else if (spell.id === 'vampiric_touch') {
+          const dmg=(rng(baseAtk*1.2,baseAtk*1.8)*lvMult)|0;
+          const heal=(dmg*0.5)|0;
+          eHp=Math.max(0,eHp-dmg); pHp=Math.min(pMaxHp,pHp+heal); comboChain++;
+          turnLines.push({ text:`Vampiric Touch: ${dmg} damage, drained ${heal} HP. Your HP: ${pHp}/${pMaxHp} | ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'void', pHp, eHp });
+        } else if (spell.id === 'decay_curse') {
+          enemy.atk=Math.max(1,enemy.atk-3); comboChain=0;
+          turnLines.push({ text:`Decay Curse! ${enemy.name}'s Attack reduced. (ATK now ${enemy.atk})`, cls:'void', pHp, eHp });
+        } else if (spell.id === 'midnight_eclipse') {
+          enemy.atk=Math.max(1,enemy.atk-4); comboChain++;
+          turnLines.push({ text:`Midnight Eclipse! Darkness falls — ${enemy.name}'s ATK crushed to ${enemy.atk}.`, cls:'void', pHp, eHp });
+        } else if (spell.id === 'abyssal_crit') {
+          const isCrit=comboChain>=3||Math.random()<0.35;
+          const dmg=isCrit?(rng(baseAtk*3,baseAtk*4.5)*lvMult|0):(rng(baseAtk*1.5,baseAtk*2.2)*lvMult|0);
+          eHp=Math.max(0,eHp-dmg);
+          comboChain=isCrit?0:comboChain+1;
+          turnLines.push({ text:`Abyssal Crit: ${dmg} damage${isCrit?' — CRITICAL STRIKE!':''}. ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'void', pHp, eHp });
+        } else if (spell.id === 'fire_shot') {
+          const dmg=(rng(baseAtk*1.3,baseAtk*1.9)*lvMult)|0;
+          eHp=Math.max(0,eHp-dmg); burnStacks++; comboChain=0;
+          turnLines.push({ text:`Fireball: ${dmg} damage + Burn applied! (Stacks: ${burnStacks}) ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'burn', pHp, eHp });
+        } else if (spell.id === 'fire_thief') {
+          const dmg=(rng(baseAtk*1.1,baseAtk*1.6)*lvMult)|0;
+          const stolen=rng(2,8);
+          eHp=Math.max(0,eHp-dmg); goldGain+=stolen; burnStacks++; comboChain=0;
+          turnLines.push({ text:`Fire Thief: ${dmg} damage + stolen ${stolen} Gold + Burn! (Stacks: ${burnStacks}) ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'burn', pHp, eHp });
+        } else if (spell.id === 'blaze_chain') {
+          const boost=burnStacks>0?1.4:1.0;
+          const dmg=(rng(baseAtk*1.4,baseAtk*2)*boost*lvMult)|0;
+          if(burnStacks>0) burnStacks++;
+          eHp=Math.max(0,eHp-dmg); comboChain=0;
+          turnLines.push({ text:`Blaze Chain: ${dmg} damage${boost>1?' — Burn intensified! (Stacks: '+burnStacks+')':''}. ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'burn', pHp, eHp });
+        } else if (spell.id === 'combustion') {
+          const dmg=burnStacks>0?(rng(burnStacks*12,burnStacks*20)*lvMult|0):rng(10,18);
+          const stacks=burnStacks; burnStacks=0; comboChain=0;
+          eHp=Math.max(0,eHp-dmg);
+          turnLines.push({ text:`💥 COMBUSTION! ${stacks} burn stacks DETONATE for ${dmg} damage! ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'burn', pHp, eHp });
+        } else if (spell.id === 'inferno_burst') {
+          const dmg=(rng(baseAtk*2,baseAtk*3)*lvMult+burnStacks*8)|0;
+          eHp=Math.max(0,eHp-dmg); comboChain=0;
+          turnLines.push({ text:`🌋 Inferno Burst: ${dmg} damage! ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'burn', pHp, eHp });
+        } else if (spell.id === 'summon_whelp') {
+          const dmg=(rng(8,18)*lvMult)|0;
+          eHp=Math.max(0,eHp-dmg); comboChain=0;
+          turnLines.push({ text:`🐲 Fire Whelp breathes fire — ${dmg} damage! ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'burn', pHp, eHp });
+        } else {
+          const dmg=(rng(baseAtk,baseAtk*1.5)*lvMult)|0;
+          eHp=Math.max(0,eHp-dmg);
+          turnLines.push({ text:`${spell.name} deals ${dmg} damage. ${enemy.name} HP: ${eHp}/${enemy.maxHp}`, cls:'damage', pHp, eHp });
+        }
+      }
+    }
+
+    turns.push({ turn: t+1, lines: turnLines });
+
+    if (eHp <= 0) {
+      const lastTurn = turns[turns.length-1];
+      lastTurn.lines.push({ text:`⚔ ${enemy.name} has been slain!`, cls:'result-win', pHp, eHp:0 });
+      outcome='win';
+      goldGain = rng(enemy.gold[0], enemy.gold[1]) + goldGain;
+      xpGain = enemy.xp;
+      break;
+    }
+    if (pHp <= 0) { outcome='lose'; break; }
+  }
+
+  if (outcome === 'lose' && eHp > 0 && pHp > 0) {
+    outcome = 'timeout';
+    turns.push({ turn: 11, lines: [{ text: `10 turns elapsed — battle ends. ${enemy.name} escapes into the rift.`, cls:'status', pHp, eHp }] });
+  }
+
+  // Apply results to G
+  if (outcome === 'win') {
+    G.gold += goldGain; G.xp += xpGain;
+    if (G.xp >= 100) { G.level++; G.xp -= 100; G.maxHp += 10; G.maxSp += 5; }
+  }
+  G.hp = Math.max(1, Math.min(pHp, G.maxHp)); // keep player at 1hp min on loss for gameplay
+  if (outcome === 'lose') G.hp = 1;
+  saveState(); renderStatusBar();
+
+  // Animate turn by turn
+  animateTurns(turns, outcome, { goldGain, xpGain, enemyMaxHp: enemy.maxHp, playerMaxHp: G.maxHp });
+}
+
+/* ── Animate turns with delay ── */
+function animateTurns(turns, outcome, meta) {
+  const logEl = document.getElementById('battleLogWrap');
+  if (!logEl) return;
+  logEl.innerHTML = '';
+
+  let turnIdx = 0;
+
+  function showNextTurn() {
+    if (turnIdx >= turns.length) {
+      showBattleResult(outcome, meta);
+      return;
+    }
+    const t = turns[turnIdx++];
+
+    // Turn header
+    const hdr = document.createElement('div');
+    hdr.className = 'blog-turn-header';
+    hdr.textContent = `— Turn ${t.turn} —`;
+    logEl.appendChild(hdr);
+
+    // Show lines with staggered delay
+    let lineDelay = 0;
+    t.lines.forEach((line, li) => {
+      lineDelay += 600;
+      setTimeout(() => {
+        const div = document.createElement('div');
+        div.className = 'blog-line ' + line.cls;
+        div.textContent = line.text;
+        logEl.appendChild(div);
+        logEl.scrollTop = logEl.scrollHeight;
+
+        // Update HP bars on last line of each turn
+        if (li === t.lines.length - 1) {
+          updateBattleBars(line.pHp, meta.playerMaxHp, line.eHp, meta.enemyMaxHp);
+        }
+      }, lineDelay);
+    });
+
+    // Next turn after this one's lines finish
+    const turnDuration = lineDelay + 1500;
+    setTimeout(showNextTurn, turnDuration);
+  }
+
+  showNextTurn();
+}
+
+function updateBattleBars(pHp, pMax, eHp, eMax) {
+  const bBarP = document.getElementById('bBarPlayer');
+  const bHpP  = document.getElementById('bHpPlayer');
+  const bBarE = document.getElementById('bBarEnemy');
+  const bHpE  = document.getElementById('bHpEnemy');
+  if (bBarP) bBarP.style.width = Math.max(0, Math.round(pHp/pMax*100)) + '%';
+  if (bHpP)  bHpP.textContent  = Math.max(0,pHp) + ' / ' + pMax + ' HP';
+  if (bBarE) bBarE.style.width = Math.max(0, Math.round(eHp/eMax*100)) + '%';
+  if (bHpE)  bHpE.textContent  = Math.max(0,eHp) + ' / ' + eMax + ' HP';
+}
+
+function showBattleResult(outcome, meta) {
+  const resultEl  = document.getElementById('battleResult');
+  const returnBtn = document.getElementById('bReturnBtn');
+  if (!resultEl) return;
+
+  const isWin = outcome === 'win';
+  const resultCls = isWin ? 'win' : 'lose';
+  const resultTxt = isWin ? '⚔ Victory — Enemy Slain!' : outcome === 'timeout' ? '⏱ Time Out — Battle Ends' : '💀 Defeated — You Have Fallen';
+  const rewardHtml = isWin
+    ? `<div class="battle-result-row"><span>Gold Earned</span><span style="color:var(--gold)">+${meta.goldGain} G</span></div>
+       <div class="battle-result-row"><span>EXP Earned</span><span style="color:#70b070">+${meta.xpGain} EXP</span></div>`
+    : `<div class="battle-result-row"><span>Reward</span><span style="color:#c07070">None</span></div>`;
+
+  resultEl.innerHTML = `
+    <div class="battle-result-title ${resultCls}">${resultTxt}</div>
+    ${rewardHtml}
+    <div class="battle-result-row"><span>Your HP Remaining</span><span>${G.hp} / ${G.maxHp}</span></div>`;
+  resultEl.className = 'battle-result show';
+  if (returnBtn) returnBtn.style.display = 'block';
+}
+
+/* ═══════════ PANEL NAVIGATION ═══════════ */
+var currentNav = 'rift';
+
+function sidebarNav(key) {
+  currentNav = key;
+  document.querySelectorAll('.sidebar-nav-item').forEach(el => el.classList.remove('active'));
+  const snavEl = document.getElementById('snav-' + key);
+  if (snavEl) snavEl.classList.add('active');
+  document.querySelectorAll('.hbn-item').forEach(el => el.classList.remove('active'));
+  const hbnEl = document.getElementById('hbn-' + key);
+  if (hbnEl) hbnEl.classList.add('active');
+
+  if (key === 'rift') {
+    document.getElementById('mainRift').style.display = 'block';
+    document.getElementById('mainPanel').style.display = 'none';
+    renderRiftHome();
+  } else {
+    document.getElementById('mainRift').style.display = 'none';
+    document.getElementById('mainPanel').style.display = 'block';
+    const p = PANELS[key] ? PANELS[key](G) : null;
+    if (p) {
+      document.getElementById('mainPanelBody').innerHTML =
+        `<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1.25rem;padding-bottom:0.85rem;border-bottom:1px solid var(--border-rune)">
+          <span style="font-size:1.2rem">${p.icon}</span>
+          <span style="font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase">${p.title}</span>
+        </div>` + p.html;
+      if (key === 'library') renderSpellLibraryList();
+    }
+  }
+}
+
+/* ═══════════ RIFT HOME RENDER ═══════════ */
+function renderRiftHome() {
+  const allCatalog = Object.values(SPELL_CATALOG).flat();
+  const blueprint  = G.blueprint || Array(10).fill(null);
+  const filled     = blueprint.filter(Boolean).length;
+
+  const rssLevel  = document.getElementById('rssLevel');
+  const rssSpells = document.getElementById('rssSpells');
+  const rssBP     = document.getElementById('rssBlueprintFill');
+  const rssGold   = document.getElementById('rssGold');
+  if (rssLevel)  rssLevel.textContent  = G.level;
+  if (rssSpells) rssSpells.textContent = G.spells.length;
+  if (rssBP)     rssBP.textContent     = filled + '/10';
+  if (rssGold)   rssGold.textContent   = G.gold.toLocaleString();
+
+  const sub = document.getElementById('riftHeroSub');
+  if (sub) sub.textContent = TOWER[G.tower].welcome.replace('Welcome, ','');
+
+  renderRiftHeroBg();
+  renderZoneArt();
+
+  const rbsEl = document.getElementById('rbsSlots');
+  if (rbsEl) {
+    rbsEl.innerHTML = blueprint.map((id, i) => {
+      const sp = id ? allCatalog.find(c => c.id === id) : null;
+      return `<div class="rbs-slot${sp?' filled':''}" title="${sp?sp.name:'Empty — no action'}">
+        ${sp ? spellIconHtml(sp, 'rbs-slot-img') : ''}
+        <span class="rbs-slot-num">${i+1}</span>
+      </div>`;
+    }).join('');
+  }
+
+  const badgeItems = document.getElementById('snavBadgeItems');
+  const badgeOrder = document.getElementById('snavBadgeOrder');
+  if (badgeItems) badgeItems.textContent = G.spells.length;
+  if (badgeOrder) badgeOrder.textContent = filled + '/10';
+}
+
+function renderRiftHeroBg() {
+  const bg = document.getElementById('riftHeroBg');
+  if (!bg) return;
+  const t = G.tower;
+  const colors = { light:['#2a2000','#c5a059','#fff4a0'], dark:['#120820','#6030a0','#d0a0ff'], fire:['#200800','#c04000','#ff8030'] };
+  const c = colors[t] || colors.fire;
+  bg.innerHTML = `<svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;opacity:0.35">
+    <defs>
+      <radialGradient id="rhg1" cx="50%" cy="60%" r="70%">
+        <stop offset="0%" stop-color="${c[1]}" stop-opacity="0.5"/>
+        <stop offset="100%" stop-color="${c[0]}" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="800" height="300" fill="${c[0]}"/>
+    <ellipse cx="400" cy="200" rx="500" ry="200" fill="url(#rhg1)"/>
+    ${Array.from({length:40},(_,i)=>{const x=(Math.sin(i*137.5)*350+400).toFixed(0),y=(Math.cos(i*97.3)*120+130).toFixed(0),r=i%5===0?1.5:0.8;return`<circle cx="${x}" cy="${y}" r="${r}" fill="${c[2]}" opacity="${(0.3+i%4*0.15).toFixed(2)}"/>`;}).join('')}
+    <circle cx="400" cy="150" r="90" fill="none" stroke="${c[1]}" stroke-width="0.5" opacity="0.25"/>
+    <circle cx="400" cy="150" r="120" fill="none" stroke="${c[1]}" stroke-width="0.3" opacity="0.12"/>
+    <line x1="0" y1="220" x2="800" y2="220" stroke="${c[1]}" stroke-width="0.5" opacity="0.12"/>
+  </svg>`;
+}
+
+function renderZoneArt() {
+  const forest = document.getElementById('rzArtForest');
+  if (forest) {
+    forest.innerHTML = `<svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+      <rect width="400" height="140" fill="#060e05"/>
+      <circle cx="320" cy="28" r="18" fill="#c8e8a0" opacity="0.75"/>
+      <circle cx="40" cy="15" r="1" fill="#a0c870" opacity="0.7"/> <circle cx="160" cy="12" r="1" fill="#a0c870" opacity="0.6"/> <circle cx="200" cy="20" r="1.2" fill="#a0c870" opacity="0.8"/>
+      <ellipse cx="200" cy="120" rx="250" ry="40" fill="#0a2008" opacity="0.8"/>
+      <polygon points="20,140 40,60 60,140" fill="#0d1f0a"/> <polygon points="50,140 75,45 100,140" fill="#0f2410"/>
+      <polygon points="130,140 155,50 180,140" fill="#0d1f0a"/> <polygon points="200,140 230,40 260,140" fill="#112810"/>
+      <polygon points="280,140 305,55 330,140" fill="#0d1f0a"/> <polygon points="340,140 365,48 390,140" fill="#0f2410"/>
+      <polygon points="0,140 25,75 50,140" fill="#091508"/> <polygon points="90,140 120,65 150,140" fill="#0a1908"/>
+      <polygon points="175,140 205,70 235,140" fill="#091508"/> <polygon points="260,140 290,60 320,140" fill="#0a1908"/>
+      <circle cx="70" cy="95" r="1.5" fill="#80ff40" opacity="0.8"/> <circle cx="150" cy="105" r="1" fill="#a0ff60" opacity="0.6"/>
+      <circle cx="230" cy="90" r="1.5" fill="#80ff40" opacity="0.7"/> <circle cx="310" cy="100" r="1" fill="#60e030" opacity="0.8"/>
+    </svg>`;
+  }
+
+  const grave = document.getElementById('rzArtGrave');
+  if (grave) {
+    const overlay = grave.querySelector('.rz-locked-overlay');
+    grave.innerHTML = `<svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+      <rect width="400" height="140" fill="#050308"/>
+      <circle cx="320" cy="28" r="18" fill="#7a1010" opacity="0.6"/> <circle cx="320" cy="28" r="10" fill="#c02020" opacity="0.35"/>
+      <ellipse cx="200" cy="125" rx="250" ry="35" fill="#1a0820" opacity="0.9"/>
+      <rect x="30" y="85" width="18" height="30" rx="9" fill="#1a1020" stroke="#3a1840" stroke-width="1"/>
+      <rect x="80" y="78" width="22" height="37" rx="11" fill="#1a1020" stroke="#3a1840" stroke-width="1"/>
+      <rect x="145" y="82" width="20" height="33" rx="10" fill="#180f1e" stroke="#3a1840" stroke-width="1"/>
+      <rect x="220" y="75" width="25" height="40" rx="12" fill="#1a1020" stroke="#4a2050" stroke-width="1"/>
+      <rect x="300" y="80" width="20" height="35" rx="10" fill="#180f1e" stroke="#3a1840" stroke-width="1"/>
+      <rect x="355" y="85" width="18" height="30" rx="9" fill="#1a1020" stroke="#3a1840" stroke-width="1"/>
+      <rect x="0" y="120" width="400" height="20" fill="#0d0818" opacity="0.9"/>
+    </svg>`;
+    if (overlay) grave.appendChild(overlay);
+  }
+}
+
+/* ═══════════ GM PANEL ═══════════ */
+function openGmPanel() {
+  const el = document.getElementById('gmPanelOverlay');
+  if (!el) return;
+  document.getElementById('gmGold').value  = G.gold;
+  document.getElementById('gmHp').value    = G.hp;
+  document.getElementById('gmMaxHp').value = G.maxHp;
+  document.getElementById('gmSp').value    = G.sp;
+  document.getElementById('gmMaxSp').value = G.maxSp;
+  document.getElementById('gmLevel').value = G.level;
+  document.getElementById('gmExp').value   = G.xp;
+  el.classList.add('open');
+}
+function closeGmPanel() {
+  const el = document.getElementById('gmPanelOverlay');
+  if (el) el.classList.remove('open');
+}
+function applyGm() {
+  const get = id => { const v = parseInt(document.getElementById(id).value); return isNaN(v) ? null : v; };
+  if (get('gmGold')  !== null) G.gold  = Math.max(0, get('gmGold'));
+  if (get('gmMaxHp') !== null) G.maxHp = Math.max(1, get('gmMaxHp'));
+  if (get('gmHp')    !== null) G.hp    = Math.min(Math.max(0, get('gmHp')), G.maxHp);
+  if (get('gmMaxSp') !== null) G.maxSp = Math.max(1, get('gmMaxSp'));
+  if (get('gmSp')    !== null) G.sp    = Math.min(Math.max(0, get('gmSp')), G.maxSp);
+  if (get('gmLevel') !== null) G.level = Math.max(1, get('gmLevel'));
+  if (get('gmExp')   !== null) G.xp    = Math.max(0, get('gmExp'));
+  saveState(); renderStatusBar();
+  if (currentNav === 'rift') renderRiftHome();
+  closeGmPanel();
+  showNotify('⚙ GM: Stats updated');
+}
+
+function openMoreMenu() {
+  const el = document.getElementById('moreSheetOverlay');
+  if (el) el.classList.add('open');
+  document.querySelectorAll('.hbn-item').forEach(item => item.classList.remove('active'));
+  const more = document.getElementById('hbn-more');
+  if (more) more.classList.add('active');
+}
+
+function closeMoreMenu() {
+  const el = document.getElementById('moreSheetOverlay');
+  if (el) el.classList.remove('open');
+}
+
+function doSave() {
+  const now = new Date().toLocaleString('en-GB');
+  localStorage.setItem('soulrift_saveTime', now);
+  saveState();
+  closePanel();
+  showNotify('Progress sealed in the Arcane Records — ' + now);
+}
+
+function doReset() {
+  if (!confirm('This will erase all Soulrift data permanently. Continue?')) return;
+  ['soulrift_tower','soulrift_state','soulrift_saveTime'].forEach(k => localStorage.removeItem(k));
+  stopParticles();
+  location.reload();
+}
+
+/* ═══════════ NOTIFY ═══════════ */
+function showNotify(msg) {
+  const el = document.getElementById('notify');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+/* ═══════════ INIT (runs after all functions defined) ═══════════ */
+(function init() {
+  const t = localStorage.getItem('soulrift_tower');
+  if (t && TOWER[t]) {
+    const card = document.querySelector(`[data-tower="${t}"]`);
+    if (card) {
+      card.classList.add('selected');
+      document.getElementById('confirmName').innerHTML = TOWER[t].badge + ' &nbsp;—&nbsp; ' + TOWER[t].label.split('—')[1];
+      document.getElementById('confirmSection').classList.add('visible');
+    }
+    loadState(t);
+    showHub();
+  }
+  // Keyboard for tower cards
+  document.querySelectorAll('.tower-card').forEach(card => {
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTower(card); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
