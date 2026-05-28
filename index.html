@@ -188,7 +188,7 @@
           <button class="arena-close-btn" aria-label="Close battle arena" onclick="leaveBattleArena()"></button>
         </div>
 
-        <div class="combatant-row">
+        <div class="combatant-row" id="combat-hud">
           <div class="combatant-card combatant-card--player">
             <div class="combatant-label">You</div>
             <div class="combatant-name" id="player-combat-name">Riftwalker</div>
@@ -222,6 +222,7 @@
           <div class="battle-result-title" id="battle-result-title">VICTORY</div>
           <div class="battle-result-subtitle" id="battle-result-subtitle">The Rift yields.</div>
           <div class="battle-result-rewards" id="battle-result-rewards"></div>
+          <div id="battle-drops"></div>
         </div>
 
         <button id="battle-start-btn" class="btn btn--primary btn--full arena-action" onclick="runAutoBattle()">

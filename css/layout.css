@@ -423,7 +423,6 @@
 }
 
 /* ── Name input (tower select step 2) ───────────────────── */
-#intro-tower-step { }
 #intro-tower-step.is-hidden { display: none; }
 
 #intro-name-step { display: none; }

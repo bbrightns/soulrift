@@ -184,6 +184,8 @@ function clearBattleOutcome() {
   setText('battle-result-title', '');
   setText('battle-result-subtitle', '');
   setText('battle-result-rewards', '');
+  const dropEl = document.getElementById('battle-drops');
+  if (dropEl) dropEl.innerHTML = '';
 }
 
 function showBattleOutcome(outcome) {
@@ -200,6 +202,17 @@ function showBattleOutcome(outcome) {
       ? '+' + outcome.goldReward + ' Gold  +' + outcome.expReward + ' EXP'
       : 'No rewards claimed'
   );
+
+  const dropEl = document.getElementById('battle-drops');
+  if (dropEl) {
+    if (outcome.drops && outcome.drops.length > 0) {
+      dropEl.innerHTML = outcome.drops.map(d =>
+        '<div class="c-gold" style="font-size:15px;letter-spacing:.04em;margin-top:6px;">✦ You got <strong>' + d.name + '</strong>!</div>'
+      ).join('');
+    } else {
+      dropEl.innerHTML = '';
+    }
+  }
 }
 
 function updateCombatHud(player, enemy, enemyTemplate) {
@@ -236,6 +249,55 @@ function prepareArena(dungeonId) {
   setBattleButton(false, 'Start Auto Battle');
 }
 
+function formatItemName(id) {
+  const names = {
+    catalyst_shard:   'Catalyst Shard',
+    catalyst_core:    'Catalyst Core',
+    catalyst_crystal: 'Catalyst Crystal',
+  };
+  return names[id] || id;
+}
+
+function getRandomUncommonForTower() {
+  const tower = getTower();
+  if (!tower || !window.getAllSpells) return null;
+  const pool = getAllSpells().filter(s =>
+    s.tower === tower && s.rarity === 'uncommon'
+  );
+  if (!pool.length) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function giveCatalyst(id) {
+  const s = getState();
+  if (!Array.isArray(s.items)) s.items = [];
+  const existing = s.items.find(i => i.id === id);
+  if (existing) { existing.qty++; }
+  else { s.items.push({ id, qty: 1 }); }
+}
+
+function rollDrops(enemyTemplate) {
+  const drops = [];
+  if (!enemyTemplate || !Array.isArray(enemyTemplate.dropTable)) return drops;
+
+  enemyTemplate.dropTable.forEach(entry => {
+    if (Math.random() >= entry.chance) return;
+
+    if (entry.type === 'catalyst') {
+      giveCatalyst(entry.id);
+      drops.push({ type: 'catalyst', name: formatItemName(entry.id) });
+
+    } else if (entry.type === 'uncommon_spell') {
+      const spell = getRandomUncommonForTower();
+      if (!spell) return;
+      giveSpell(spell.id, 1);
+      drops.push({ type: 'spell', name: spell.name, rarity: 'uncommon' });
+    }
+  });
+
+  return drops;
+}
+
 async function runAutoBattle(dungeonId) {
   if (_battleRunning) return;
   _battleRunning = true;
@@ -244,6 +306,7 @@ async function runAutoBattle(dungeonId) {
   _selectedDungeonId = activeDungeonId;
   showArenaView(activeDungeonId);
   setBattleButton(true);
+  document.getElementById('combat-hud')?.classList.add('hud--collapsed');
 
   const logWrap = document.getElementById('battle-log');
   if (logWrap) logWrap.innerHTML = '';
@@ -251,7 +314,6 @@ async function runAutoBattle(dungeonId) {
   setBattleResult('<span class="c-gold">Battle running...</span>');
 
   const s = getState();
-  const inventoryBefore = JSON.stringify(s.spells);
   const blueprint = s.blueprint.slice(0, 10);
   const player = { ...s.player, hp: s.player.hpMax, sp: s.player.spMax };
   const enemyTemplate = _preparedEnemyTemplate || (window.getRandomEnemy
@@ -305,8 +367,16 @@ async function runAutoBattle(dungeonId) {
     const expReward = enemy.exp;
     s.gold += goldReward;
     gainExp(expReward);
+
+    const drops = rollDrops(enemyTemplate);
+    saveState();
+
     await appendBattleLog('Victory. Gained ' + goldReward + ' Gold and ' + expReward + ' EXP.', 'reward');
-    showBattleOutcome({ won: true, goldReward, expReward });
+    for (const drop of drops) {
+      await appendBattleLog('✦ Drop: ' + drop.name, 'reward');
+    }
+
+    showBattleOutcome({ won: true, goldReward, expReward, drops });
     setBattleResult('<span class="c-ok">Victory recorded</span>');
   } else {
     await appendBattleLog('Defeat. The tower recalls ' + battlePlayerName() + ' before the Rift closes.', 'warn');
@@ -317,13 +387,9 @@ async function runAutoBattle(dungeonId) {
   s.player.hp = s.player.hpMax;
   s.player.sp = s.player.spMax;
 
-  if (JSON.stringify(s.spells) !== inventoryBefore) {
-    console.warn('[battle] Inventory changed during battle; restoring spell inventory snapshot.');
-    s.spells = JSON.parse(inventoryBefore);
-  }
-
   saveState();
   syncHeader();
+  document.getElementById('combat-hud')?.classList.remove('hud--collapsed');
   setBattleButton(false);
   _battleRunning = false;
 }

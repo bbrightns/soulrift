@@ -17,6 +17,9 @@ const ENEMIES_DATA = [
     exp: 24,
     gold: 70,
     opener: 'A heavy forest beast lowers its head and charges first.',
+    dropTable: [
+      { id: 'catalyst_shard', type: 'catalyst', chance: 0.10 },
+    ],
   },
   {
     id: 'goblin_frenzy',
@@ -29,6 +32,9 @@ const ENEMIES_DATA = [
     exp: 26,
     gold: 65,
     opener: 'A quick goblin darts out of the brush, shrieking for the first strike.',
+    dropTable: [
+      { id: 'catalyst_shard', type: 'catalyst', chance: 0.10 },
+    ],
   },
   {
     id: 'training_shadow',
@@ -41,6 +47,9 @@ const ENEMIES_DATA = [
     exp: 20,
     gold: 55,
     opener: 'A practice shade copies the stance of an old tower apprentice.',
+    dropTable: [
+      { id: 'catalyst_shard', type: 'catalyst', chance: 0.10 },
+    ],
   },
 ];
 

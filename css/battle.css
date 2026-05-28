@@ -3,3 +3,24 @@
    Phase 1 combat presentation styles
    BUILD: Phase 1 (placeholder — populate when battle.js built)
    ============================================================ */
+
+/* ── Collapsed HUD during battle ─────────────────────────── */
+#combat-hud.hud--collapsed .combatant-card {
+  padding-top: var(--sp-1);
+  padding-bottom: var(--sp-1);
+  min-height: 0;
+}
+#combat-hud.hud--collapsed .combatant-label,
+#combat-hud.hud--collapsed .combatant-name {
+  display: none;
+}
+#combat-hud.hud--collapsed .combat-bar {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+/* ── Expanded battle log ─────────────────────────────────── */
+.battle-log {
+  max-height: 52vh;
+  min-height: 180px;
+}
