@@ -379,6 +379,9 @@ async function runAutoBattle(dungeonId) {
     fogActive: null,
     regenStacks: [],
     angelWingActive: 0,
+    demonStacks: [],
+    golemStacks: [],
+    fireStormStacks: [],
   };
 
   updateCombatHud(player, enemy, enemyTemplate);
@@ -394,6 +397,45 @@ async function runAutoBattle(dungeonId) {
       enemy.hp = Math.min(enemyTemplate.hp, enemy.hp + regen);
       updateCombatHud(player, enemy, enemyTemplate);
       await appendBattleLog(enemy.name + ' regenerates ' + regen + ' HP.', 'enemy');
+    }
+
+    // Demon tick
+    if (battleStatus.demonStacks && battleStatus.demonStacks.length > 0) {
+      battleStatus.demonStacks = battleStatus.demonStacks.filter(d => d.turnsLeft > 0);
+      const demonDmg = battleStatus.demonStacks.reduce((sum, d) => sum + d.power, 0);
+      if (demonDmg > 0) {
+        enemy.hp = Math.max(0, enemy.hp - demonDmg);
+        battleStatus.demonStacks.forEach(d => d.turnsLeft--);
+        updateCombatHud(player, enemy, enemyTemplate);
+        await appendBattleLog('The demon strikes for ' + demonDmg + ' dark damage.', 'player');
+        if (enemy.hp <= 0) break;
+      }
+    }
+
+    // Golem tick
+    if (battleStatus.golemStacks && battleStatus.golemStacks.length > 0) {
+      battleStatus.golemStacks = battleStatus.golemStacks.filter(g => g.turnsLeft > 0);
+      const golemDmg = battleStatus.golemStacks.reduce((sum, g) => sum + g.power, 0);
+      if (golemDmg > 0) {
+        enemy.hp = Math.max(0, enemy.hp - golemDmg);
+        battleStatus.golemStacks.forEach(g => g.turnsLeft--);
+        updateCombatHud(player, enemy, enemyTemplate);
+        await appendBattleLog('The golem strikes for ' + golemDmg + ' ice damage.', 'player');
+        if (enemy.hp <= 0) break;
+      }
+    }
+
+    // Fire Storm tick
+    if (battleStatus.fireStormStacks && battleStatus.fireStormStacks.length > 0) {
+      battleStatus.fireStormStacks = battleStatus.fireStormStacks.filter(f => f.turnsLeft > 0);
+      const stormDmg = battleStatus.fireStormStacks.reduce((sum, f) => sum + f.power, 0);
+      if (stormDmg > 0) {
+        enemy.hp = Math.max(0, enemy.hp - stormDmg);
+        battleStatus.fireStormStacks.forEach(f => f.turnsLeft--);
+        updateCombatHud(player, enemy, enemyTemplate);
+        await appendBattleLog('Fire Storm scorches for ' + stormDmg + ' damage.', 'player');
+        if (enemy.hp <= 0) break;
+      }
     }
 
     // Burn tick

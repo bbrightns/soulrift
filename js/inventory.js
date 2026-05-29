@@ -32,4 +32,37 @@ function renderInventory() {
   }).join('');
 }
 
-onScreen('items', renderInventory);
+function renderItems() {
+  renderInventory();
+  renderCatalystItems();
+}
+
+function renderCatalystItems() {
+  const wrap = document.getElementById('catalyst-list');
+  if (!wrap) return;
+
+  const CATALYST_NAMES = {
+    catalyst_shard:   '🟤 Catalyst Shard',
+    catalyst_core:    '🔵 Catalyst Core',
+    catalyst_crystal: '🟡 Catalyst Crystal',
+  };
+
+  const items = (getState().items || []).filter(i => CATALYST_NAMES[i.id] && i.qty > 0);
+
+  if (!items.length) {
+    wrap.innerHTML = '<div style="opacity:0.4;font-size:12px;padding:var(--sp-2) 0">No catalysts owned.</div>';
+    return;
+  }
+
+  wrap.innerHTML = items.map(i =>
+    '<div class="card card--raised row row--between row--gap-3" style="margin-bottom:var(--sp-2);">'
+    + '<div>'
+      + '<div class="spell-card__name">' + CATALYST_NAMES[i.id] + '</div>'
+      + '<div class="spell-card__meta">Fusion catalyst · Increases success rate</div>'
+    + '</div>'
+    + '<span class="badge badge--gold">×' + i.qty + '</span>'
+    + '</div>'
+  ).join('');
+}
+
+onScreen('items', renderItems);

@@ -46,6 +46,7 @@ const DEFAULTS = {
   spells: [],
 
   /* Other inventory */
+  items:       [],
   equipment:   [],
   relics:      [],
 

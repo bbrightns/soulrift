@@ -163,16 +163,44 @@ registerHandler('soul_drain', async (ctx) => {
 
 // fire_shot — basic damage (use default)
 
-// burn — apply burn stack, scales with level
-registerHandler('burn', async (ctx) => {
-  const power = Math.round(ctx.def.basePower * 0.35 * lvlDmgMult(ctx.spellLvl));
-  ctx.battleStatus.burnStacks.push({ turnsLeft: 3, power });
-  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
-  ctx.updateHud();
-  await ctx.log(
-    ctx.playerName + ' casts Burn (Lv ' + ctx.spellLvl + '). Stack applied, ' + power + '/turn. (' + ctx.battleStatus.burnStacks.length + ' active).', 'player'
+// Burn Tick Processor
+async function processBurn(ctx) {
+
+  if (!ctx.battleStatus.burnStacks.length) {
+    return;
+  }
+
+  let totalBurnDamage = 0;
+
+  // process each stack
+  for (const burn of ctx.battleStatus.burnStacks) {
+
+    totalBurnDamage += burn.power;
+
+    burn.turnsLeft--;
+  }
+
+  // remove expired stacks
+  ctx.battleStatus.burnStacks =
+    ctx.battleStatus.burnStacks.filter(
+      burn => burn.turnsLeft > 0
+    );
+
+  // apply total burn damage
+  ctx.enemy.hp = Math.max(
+    0,
+    ctx.enemy.hp - totalBurnDamage
   );
-});
+
+  ctx.updateHud();
+
+  // log
+  await ctx.log(
+    `Burn deals ${totalBurnDamage} damage.`,
+    'burn'
+  );
+
+}
 
 // fire_thief — damage + gold steal, scales with level
 registerHandler('fire_thief', async (ctx) => {
@@ -221,7 +249,7 @@ registerHandler('explosion_burn', async (ctx) => {
 
 // freeze — chance to skip enemy turn
 registerHandler('freeze', async (ctx) => {
-  const chance = lvlChance(0.70, 0.03, 0.90, ctx.spellLvl);
+  const chance = lvlChance(0.30, 0.03, 0.57, ctx.spellLvl);
   const success = Math.random() < chance;
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
   ctx.updateHud();
@@ -278,6 +306,267 @@ registerHandler('mana_burst', async (ctx) => {
   ctx.updateHud();
   await ctx.log(
     ctx.playerName + ' releases Mana Burst (Lv ' + ctx.spellLvl + ', ×' + stacks + ' combo) for ' + total + ' damage!', 'player'
+  );
+});
+
+/* ══════════════════════════════════════════════════════════
+   LIGHT TOWER — remaining handlers
+══════════════════════════════════════════════════════════ */
+
+// divine_reflection — reflect next enemy hit back as holy damage
+registerHandler('divine_reflection', async (ctx) => {
+  const reflectPct = lvlChance(0.60, 0.04, 0.90, ctx.spellLvl);
+  ctx.battleStatus.divineReflect = reflectPct;
+  await ctx.log(
+    ctx.playerName + ' casts Divine Reflection (Lv ' + ctx.spellLvl + '). Next enemy hit is reflected at ' + Math.round(reflectPct * 100) + '%.', 'player'
+  );
+});
+
+// energy_blast — damage that ignores enemy evasion (no fog/angel wing miss)
+// No special handler needed — default damage is sufficient
+// Mark as registered so it's clear it's intentional
+registerHandler('energy_blast', async (ctx) => {
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' casts Energy Blast (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' damage. Ignores evasion.', 'player'
+  );
+});
+
+// heavenfall_chronicle — consume charge stacks + buffs for massive damage
+registerHandler('heavenfall_chronicle', async (ctx) => {
+  const stacks = ctx.battleStatus.chargeStacks || 0;
+  const chargeBonus = Math.floor(stacks * 0.25 * ctx.baseDmg);
+  const total = ctx.baseDmg + chargeBonus;
+  ctx.battleStatus.chargeStacks = 0;
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' calls down Heavenfall Chronicle (Lv ' + ctx.spellLvl + ', ×' + stacks + ' charge) for ' + total + ' holy damage!', 'player'
+  );
+});
+
+/* ══════════════════════════════════════════════════════════
+   DARK TOWER — remaining handlers
+══════════════════════════════════════════════════════════ */
+
+// siege — damage + reduce enemy DEF permanently this battle
+registerHandler('siege', async (ctx) => {
+  const defReduction = Math.floor(ctx.enemy.def * 0.30);
+  ctx.enemy.def = Math.max(0, ctx.enemy.def - defReduction);
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' casts Siege (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Enemy DEF reduced by ' + defReduction + ' permanently.', 'player'
+  );
+});
+
+// dark_combo — damage + build combo counter → crit multiplier
+registerHandler('dark_combo', async (ctx) => {
+  if (!ctx.battleStatus.darkCombo) ctx.battleStatus.darkCombo = 0;
+  if (ctx.battleStatus.darkCombo < 5) ctx.battleStatus.darkCombo++;
+  const combo = ctx.battleStatus.darkCombo;
+  let dmg = ctx.baseDmg;
+  let critMsg = '';
+  if (combo >= 3) {
+    const critChance = 0.40 + (combo - 3) * 0.10;
+    if (Math.random() < critChance) {
+      const critMult = combo >= 5 ? 2.5 : 2.0;
+      dmg = Math.floor(dmg * critMult);
+      critMsg = ' CRITICAL ×' + critMult + '!';
+    }
+  }
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - dmg);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' casts Dark Combo (Lv ' + ctx.spellLvl + ') for ' + dmg + ' dmg. Combo: ' + combo + '/5.' + critMsg, 'player'
+  );
+});
+
+// night_raid — bonus damage between 18:00–06:00 local time
+registerHandler('night_raid', async (ctx) => {
+  const hour = new Date().getHours();
+  const isNight = hour >= 18 || hour < 6;
+  const nightBonus = isNight ? Math.floor(ctx.baseDmg * 0.50) : 0;
+  const total = ctx.baseDmg + nightBonus;
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' casts Night Raid (Lv ' + ctx.spellLvl + ') for ' + total + ' dmg.' + (isNight ? ' Night bonus +50%!' : ''), 'player'
+  );
+});
+
+// dark_rift — true damage, bypasses enemy DEF entirely
+registerHandler('dark_rift', async (ctx) => {
+  // true damage: use basePower + player scaling but skip def reduction
+  const trueDmg = Math.max(1, Math.floor((ctx.player.atk + ctx.player.int) * 0.75 * (1 + (ctx.spellLvl - 1) * 0.18)));
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - trueDmg);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' opens Dark Rift (Lv ' + ctx.spellLvl + ') for ' + trueDmg + ' TRUE damage. Ignores defense.', 'player'
+  );
+});
+
+// demon_summoning — summon DoT for 3 turns
+registerHandler('demon_summoning', async (ctx) => {
+  const demonPower = Math.floor(ctx.baseDmg * 0.60);
+  if (!ctx.battleStatus.demonStacks) ctx.battleStatus.demonStacks = [];
+  // clear old demon first (only 1 active)
+  ctx.battleStatus.demonStacks = [];
+  ctx.battleStatus.demonStacks.push({ turnsLeft: 3, power: demonPower });
+  await ctx.log(
+    ctx.playerName + ' summons a demon (Lv ' + ctx.spellLvl + '). Attacks for ' + demonPower + '/turn for 3 turns.', 'player'
+  );
+});
+
+// oblivion_gospel — massive dark dmg, execute if enemy HP < 20%
+registerHandler('oblivion_gospel', async (ctx) => {
+  const cursed = ctx.battleStatus.curseActive && ctx.battleStatus.curseActive.turnsLeft > 0;
+  const comboMult = 1 + (ctx.battleStatus.darkCombo || 0) * 0.10;
+  const curseMult = cursed ? 1.20 : 1.0;
+  const total = Math.floor(ctx.baseDmg * comboMult * curseMult);
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
+  ctx.updateHud();
+
+  const hpPct = ctx.enemy.hp / ctx.enemyTemplate.hp;
+  let msg = ctx.playerName + ' casts Oblivion Gospel (Lv ' + ctx.spellLvl + ') for ' + total + ' dark damage!';
+  if (hpPct < 0.20 && ctx.enemy.hp > 0) {
+    const executeDmg = ctx.enemy.hp;
+    ctx.enemy.hp = 0;
+    ctx.updateHud();
+    msg += ' EXECUTE! (' + executeDmg + ' remaining HP obliterated)';
+  }
+  await ctx.log(msg, 'player');
+});
+
+/* ══════════════════════════════════════════════════════════
+   FIRE TOWER — remaining handlers
+══════════════════════════════════════════════════════════ */
+
+// melt_armor — damage + reduce enemy DEF (physical focus)
+registerHandler('melt_armor', async (ctx) => {
+  const defReduction = Math.floor(ctx.enemy.def * 0.25);
+  ctx.enemy.def = Math.max(0, ctx.enemy.def - defReduction);
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' casts Melt Armor (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Enemy DEF melted by ' + defReduction + '.', 'player'
+  );
+});
+
+// fire_storm — DoT over 2 turns + 40% chance disrupt (simulated)
+registerHandler('fire_storm', async (ctx) => {
+  const stormPower = Math.floor(ctx.baseDmg * 0.55);
+  if (!ctx.battleStatus.fireStormStacks) ctx.battleStatus.fireStormStacks = [];
+  ctx.battleStatus.fireStormStacks.push({ turnsLeft: 2, power: stormPower });
+  await ctx.log(
+    ctx.playerName + ' unleashes Fire Storm (Lv ' + ctx.spellLvl + '). ' + stormPower + ' fire dmg/turn for 2 turns.', 'player'
+  );
+});
+
+// phoenix_blood — damage scales with missing HP
+registerHandler('phoenix_blood', async (ctx) => {
+  const missingHpPct = 1 - (ctx.player.hp / ctx.player.hpMax);
+  const total = Math.floor(ctx.baseDmg * (1 + missingHpPct));
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' casts Phoenix Blood (Lv ' + ctx.spellLvl + ') for ' + total + ' dmg. (Missing HP: ' + Math.round(missingHpPct * 100) + '%)', 'player'
+  );
+});
+
+// wyvern_kamikaze — heavy physical fire damage, ignores 20% DEF
+registerHandler('wyvern_kamikaze', async (ctx) => {
+  const defIgnore = Math.floor(ctx.enemy.def * 0.20);
+  const total = Math.max(1, ctx.baseDmg + defIgnore);
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' commands Wyvern Kamikaze (Lv ' + ctx.spellLvl + ') for ' + total + ' physical fire damage!', 'player'
+  );
+});
+
+// ragnarok_ignition — consume burn stacks + fire storm for ultimate burst
+registerHandler('ragnarok_ignition', async (ctx) => {
+  const burnStacks = ctx.battleStatus.burnStacks.length;
+  const stormStacks = (ctx.battleStatus.fireStormStacks || []).length;
+  const burnBonus = Math.floor(burnStacks * 0.30 * ctx.baseDmg);
+  const stormBonus = Math.floor(stormStacks * 0.20 * ctx.baseDmg);
+  const total = ctx.baseDmg + burnBonus + stormBonus;
+  ctx.battleStatus.burnStacks = [];
+  ctx.battleStatus.fireStormStacks = [];
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' ignites Ragnarok (Lv ' + ctx.spellLvl + ', ×' + burnStacks + ' burn, ×' + stormStacks + ' storm) for ' + total + ' damage!', 'player'
+  );
+});
+
+/* ══════════════════════════════════════════════════════════
+   ICE TOWER — remaining handlers
+══════════════════════════════════════════════════════════ */
+
+// absolute_zero — heavy damage + high freeze chance
+registerHandler('absolute_zero', async (ctx) => {
+  const freezeChance = lvlChance(0.90, 0.01, 0.95, ctx.spellLvl);
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
+  ctx.updateHud();
+  if (Math.random() < freezeChance) {
+    ctx.battleStatus.enemyFrozen = true;
+    await ctx.log(
+      ctx.playerName + ' casts Absolute Zero (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. FROZEN (' + Math.round(freezeChance * 100) + '% chance)!', 'player'
+    );
+  } else {
+    await ctx.log(
+      ctx.playerName + ' casts Absolute Zero (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Freeze failed.', 'player'
+    );
+  }
+});
+
+// golem_command — summon golem DoT for 3 turns
+registerHandler('golem_command', async (ctx) => {
+  const golemPower = Math.floor(ctx.baseDmg * 0.50);
+  ctx.battleStatus.golemStacks = [{ turnsLeft: 3, power: golemPower }];
+  await ctx.log(
+    ctx.playerName + ' commands a Golem (Lv ' + ctx.spellLvl + '). Attacks for ' + golemPower + '/turn for 3 turns.', 'player'
+  );
+});
+
+// golem_master — upgrade existing golem or summon war golem
+registerHandler('golem_master', async (ctx) => {
+  const existing = ctx.battleStatus.golemStacks && ctx.battleStatus.golemStacks.length > 0;
+  if (existing) {
+    ctx.battleStatus.golemStacks.forEach(g => {
+      g.power = Math.floor(g.power * 1.60);
+      g.turnsLeft = Math.min(g.turnsLeft + 2, 6);
+    });
+    await ctx.log(
+      ctx.playerName + ' upgrades the Golem (Lv ' + ctx.spellLvl + '). Power ×1.6, +2 turns.', 'player'
+    );
+  } else {
+    const warGolemPower = Math.floor(ctx.baseDmg * 0.70);
+    ctx.battleStatus.golemStacks = [{ turnsLeft: 4, power: warGolemPower }];
+    await ctx.log(
+      ctx.playerName + ' summons a War Golem (Lv ' + ctx.spellLvl + '). Attacks for ' + warGolemPower + '/turn for 4 turns.', 'player'
+    );
+  }
+});
+
+// glacial_singularity — consume mana combo + freeze bonus
+registerHandler('glacial_singularity', async (ctx) => {
+  const combo = ctx.battleStatus.manaCombo || 0;
+  const frozen = ctx.battleStatus.enemyFrozen ? 1 : 0;
+  const spPct = ctx.player.sp / ctx.player.spMax;
+  const comboBonus = Math.floor(combo * 0.20 * ctx.baseDmg);
+  const freezeBonus = Math.floor(frozen * 0.30 * ctx.baseDmg);
+  const spBonus = Math.floor(spPct * 0.40 * ctx.baseDmg);
+  const total = ctx.baseDmg + comboBonus + freezeBonus + spBonus;
+  ctx.battleStatus.manaCombo = 0;
+  ctx.battleStatus.enemyFrozen = false;
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
+  ctx.updateHud();
+  await ctx.log(
+    ctx.playerName + ' collapses Glacial Singularity (Lv ' + ctx.spellLvl + ', ×' + combo + ' combo) for ' + total + ' damage!', 'player'
   );
 });
 
