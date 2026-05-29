@@ -6,6 +6,7 @@
 'use strict';
 
 const ENEMIES_DATA = [
+  // Booby Forest enemies
   {
     id: 'booby',
     dungeonId: 'booby_forest',
@@ -51,6 +52,59 @@ const ENEMIES_DATA = [
       { id: 'catalyst_shard', type: 'catalyst', chance: 0.10 },
     ],
   },
+
+  // Magi Graveyard enemies
+  {
+    id: 'bone_magi',
+    dungeonId: 'magi_graveyard',
+    name: 'Bone Magi',
+    area: 'Magi Graveyard',
+    hp: 72,
+    atk: 14,
+    def: 6,
+    exp: 30,
+    gold: 60,
+    regenPerTurn: 5,
+    opener: 'A skeletal mage rises from the grave, dark energy crackling around its bones.',
+    dropTable: [
+      { id: 'catalyst_shard', type: 'catalyst', chance: 0.15 },
+      { id: 'catalyst_core', type: 'catalyst', chance: 0.05 },
+    ],
+  },
+  {
+    id: 'cursed_arcanist',
+    dungeonId: 'magi_graveyard',
+    name: 'Cursed Arcanist',
+    area: 'Magi Graveyard',
+    hp: 68,
+    atk: 16,
+    def: 4,
+    exp: 32,
+    gold: 65,
+    regenPerTurn: 4,
+    opener: 'A fallen mage bound by an ancient curse turns its hollow eyes toward you.',
+    dropTable: [
+      { id: 'catalyst_shard', type: 'catalyst', chance: 0.15 },
+      { id: 'catalyst_core', type: 'catalyst', chance: 0.05 },
+    ],
+  },
+  {
+    id: 'grave_lich',
+    dungeonId: 'magi_graveyard',
+    name: 'Grave Lich',
+    area: 'Magi Graveyard',
+    hp: 80,
+    atk: 18,
+    def: 5,
+    exp: 35,
+    gold: 80,
+    regenPerTurn: 6,
+    opener: 'A lich lord stirs from its eternal slumber, hungry for living mana.',
+    dropTable: [
+      { id: 'catalyst_core', type: 'catalyst', chance: 0.15 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.05 },
+    ],
+  },
 ];
 
 const DUNGEONS_DATA = [
@@ -69,7 +123,7 @@ const DUNGEONS_DATA = [
     name: 'Magi Graveyard',
     icon: 'skull',
     levelReq: 5,
-    unlocked: false,
+    unlocked: true,
     expRange: '+25~35',
     goldRange: '+35~80',
     description: 'Ancient burial grounds haunted by fallen mages. Higher danger, greater rewards. Requires stable builds to survive.',
