@@ -1,5 +1,5 @@
 /* ============================================================
-   SOULRIFT — inventory.js
+   SOULRIFT — /js/inventory.js
    Spell inventory and library renderers.
    ============================================================ */
 

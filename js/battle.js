@@ -1,5 +1,5 @@
 /* ============================================================
-   SOULRIFT - /battle.js
+   SOULRIFT - /js/battle.js
    Dungeon entry screen + automatic 10-turn text battle.
    ============================================================ */
 
@@ -281,6 +281,13 @@ function giveCatalyst(id) {
   else { s.items.push({ id, qty: 1 }); }
 }
 
+const CLOCKTOWER_SPELL_TIERS = {
+  light: { weak: 'angel_wing', mid: 'energy_blast', strong: 'charge_release_light_shot' },
+  dark: { weak: 'siege', mid: 'night_raid', strong: 'dark_combo' },
+  fire: { weak: 'melt_armor', mid: 'fire_storm', strong: 'explosion_burn' },
+  ice: { weak: 'golem_command', mid: 'mana_combo', strong: 'mana_burst' },
+};
+
 function rollDrops(enemyTemplate) {
   const drops = [];
   if (!enemyTemplate || !Array.isArray(enemyTemplate.dropTable)) return drops;
@@ -292,10 +299,17 @@ function rollDrops(enemyTemplate) {
       giveCatalyst(entry.id);
       drops.push({ type: 'catalyst', name: formatItemName(entry.id) });
 
-    } else if (entry.type === 'uncommon_spell') {
-      const spell = getRandomUncommonForTower();
+    } else if (entry.type === 'uncommon_spell_tiered') {
+      if (Math.random() >= (entry.chance ?? 1)) return;
+      const tower = getTower();
+      const tierMap = CLOCKTOWER_SPELL_TIERS[tower];
+      if (!tierMap) return;
+      const spellId = tierMap[entry.tier];
+      if (!spellId) return;
+
+      const spell = getSpellDef(spellId);
       if (!spell) return;
-      giveSpell(spell.id, 1);
+      giveSpell(spellId, 1);
       drops.push({ type: 'spell', name: spell.name, rarity: 'uncommon' });
     }
   });

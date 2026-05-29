@@ -66,7 +66,7 @@ const ENEMIES_DATA = [
   {
     id: 'grave_lich',
     dungeonId: 'magi_graveyard',
-    weight: 2,
+    weight: 200,
     name: 'Grave Lich',
     area: 'Magi Graveyard',
     hp: 80, atk: 18, def: 5, exp: 35, gold: 80,
@@ -75,6 +75,67 @@ const ENEMIES_DATA = [
     dropTable: [
       { id: 'catalyst_core', type: 'catalyst', chance: 0.15 },
       { id: 'catalyst_crystal', type: 'catalyst', chance: 0.05 },
+    ],
+  },
+
+  // Cursed Clocktower enemies
+  {
+    id: 'tick_sprite',
+    dungeonId: 'cursed_clocktower',
+    weight: 5,
+    name: 'Tick Sprite',
+    area: 'Cursed Clocktower',
+    hp: 90, atk: 20, def: 6, exp: 40, gold: 90,
+    opener: 'A small clockwork imp skitters across the gears, eyes ticking like a watch.',
+    dropTable: [],
+  },
+  {
+    id: 'clockwork_soldier',
+    dungeonId: 'cursed_clocktower',
+    weight: 4,
+    name: 'Clockwork Soldier',
+    area: 'Cursed Clocktower',
+    hp: 100, atk: 22, def: 9, exp: 44, gold: 95,
+    opener: 'A soldier of brass and springs snaps to attention, blade raised.',
+    dropTable: [],
+  },
+  {
+    id: 'time_worn_mage',
+    dungeonId: 'cursed_clocktower',
+    weight: 3,
+    name: 'Time-Worn Mage',
+    area: 'Cursed Clocktower',
+    hp: 95, atk: 25, def: 7, exp: 48, gold: 100,
+    regenPerTurn: 4,
+    opener: 'A mage frozen mid-cast for centuries finally completes the spell — aimed at you.',
+    dropTable: [
+      { type: 'uncommon_spell_tiered', tier: 'weak', chance: 0.2 },
+    ],
+  },
+  {
+    id: 'rusted_warden',
+    dungeonId: 'cursed_clocktower',
+    weight: 2,
+    name: 'Rusted Warden',
+    area: 'Cursed Clocktower',
+    hp: 110, atk: 26, def: 10, exp: 52, gold: 110,
+    regenPerTurn: 5,
+    opener: 'Ancient mechanisms grind as the warden lurches forward, unstoppable.',
+    dropTable: [
+      { type: 'uncommon_spell_tiered', tier: 'mid', chance: 0.15 },
+    ],
+  },
+  {
+    id: 'chronolith',
+    dungeonId: 'cursed_clocktower',
+    weight: 1,
+    name: 'Chronolith',
+    area: 'Cursed Clocktower',
+    hp: 130, atk: 30, def: 12, exp: 60, gold: 130,
+    regenPerTurn: 8,
+    opener: "The tower's core awakens. Time stutters. The Chronolith has no patience for the living.",
+    dropTable: [
+      { type: 'uncommon_spell_tiered', tier: 'strong', chance: 0.1 },
     ],
   },
 ];
@@ -100,6 +161,16 @@ const DUNGEONS_DATA = [
     goldRange: '+35~80',
     description: 'Ancient burial grounds haunted by fallen mages. Higher danger, greater rewards. Requires stable builds to survive.',
   },
+  {
+    id: 'cursed_clocktower',
+    name: 'Cursed Clocktower',
+    icon: 'clock',
+    levelReq: 10,
+    unlocked: true,
+    expRange: '+40~60',
+    goldRange: '+90~130',
+    description: 'A twisted tower of gears and mechanisms, home to time-worn creatures. A true test of skill and strategy.',
+  }
 ];
 
 function getDungeonDef(id) {
@@ -116,7 +187,7 @@ function getRandomEnemy(dungeonId) {
   let roll = Math.random() * totalWeight;
   for (const e of list) {
     roll -= (e.weight || 1);
-    if (roll <= 0) return e;
+    if (roll < 0) return e;
   }
   return list[list.length - 1];
 }
