@@ -7,7 +7,7 @@
 
 const ENEMIES_DATA = [
   // Booby Forest enemies
-  {
+  { // Training Shadow
     id: 'training_shadow',
     dungeonId: 'booby_forest',
     weight: 5,
@@ -17,7 +17,7 @@ const ENEMIES_DATA = [
     opener: 'A practice shade copies the stance of an old tower apprentice.',
     dropTable: [],
   },
-  {
+  { // Goblin Frenzy
     id: 'goblin_frenzy',
     dungeonId: 'booby_forest',
     weight: 3,
@@ -27,8 +27,9 @@ const ENEMIES_DATA = [
     opener: 'A quick goblin darts out of the brush, shrieking for the first strike.',
     dropTable: [],
   },
-  {
+  { // Booby
     id: 'booby',
+    isBoss: true,
     dungeonId: 'booby_forest',
     weight: 2,
     name: 'Booby',
@@ -41,7 +42,7 @@ const ENEMIES_DATA = [
   },
 
   // Magi Graveyard enemies
-  {
+  { // Bone Magi
     id: 'bone_magi',
     dungeonId: 'magi_graveyard',
     weight: 5,
@@ -52,7 +53,7 @@ const ENEMIES_DATA = [
     opener: 'A skeletal mage rises from the grave, dark energy crackling around its bones.',
     dropTable: [],
   },
-  {
+  { // Cursed Arcanist
     id: 'cursed_arcanist',
     dungeonId: 'magi_graveyard',
     weight: 3,
@@ -63,8 +64,9 @@ const ENEMIES_DATA = [
     opener: 'A fallen mage bound by an ancient curse turns its hollow eyes toward you.',
     dropTable: [],
   },
-  {
+  { // Grave Lich
     id: 'grave_lich',
+    isBoss: true,
     dungeonId: 'magi_graveyard',
     weight: 200,
     name: 'Grave Lich',
@@ -79,7 +81,7 @@ const ENEMIES_DATA = [
   },
 
   // Cursed Clocktower enemies
-  {
+  { // Tick Sprite
     id: 'tick_sprite',
     dungeonId: 'cursed_clocktower',
     weight: 5,
@@ -89,7 +91,7 @@ const ENEMIES_DATA = [
     opener: 'A small clockwork imp skitters across the gears, eyes ticking like a watch.',
     dropTable: [],
   },
-  {
+  { // Clockwork Soldier
     id: 'clockwork_soldier',
     dungeonId: 'cursed_clocktower',
     weight: 4,
@@ -99,7 +101,7 @@ const ENEMIES_DATA = [
     opener: 'A soldier of brass and springs snaps to attention, blade raised.',
     dropTable: [],
   },
-  {
+  { // Time-Worn Mage
     id: 'time_worn_mage',
     dungeonId: 'cursed_clocktower',
     weight: 3,
@@ -112,10 +114,10 @@ const ENEMIES_DATA = [
       { type: 'uncommon_spell_tiered', tier: 'weak', chance: 0.2 },
     ],
   },
-  {
+  { // Rusted Warden
     id: 'rusted_warden',
     dungeonId: 'cursed_clocktower',
-    weight: 2,
+    weight: 2000,
     name: 'Rusted Warden',
     area: 'Cursed Clocktower',
     hp: 110, atk: 26, def: 10, exp: 52, gold: 110,
@@ -125,8 +127,9 @@ const ENEMIES_DATA = [
       { type: 'uncommon_spell_tiered', tier: 'mid', chance: 0.2 },
     ],
   },
-  {
+  { // Chronolith
     id: 'chronolith',
+    isBoss: true,
     dungeonId: 'cursed_clocktower',
     weight: 1,
     name: 'Chronolith',
@@ -141,8 +144,9 @@ const ENEMIES_DATA = [
 ];
 
 const DUNGEONS_DATA = [
-  {
+  { // Booby Forest
     id: 'booby_forest',
+    perks: [],
     name: 'Booby Forest',
     icon: 'leaf',
     levelReq: 1,
@@ -151,8 +155,9 @@ const DUNGEONS_DATA = [
     goldRange: '+6~22',
     description: 'A cursed woodland teeming with weak monsters. The perfect hunting ground for new mages testing their first spell sequences.',
   },
-  {
+  { // Magi Graveyard
     id: 'magi_graveyard',
+    perks: [],
     name: 'Magi Graveyard',
     icon: 'skull',
     levelReq: 5,
@@ -161,8 +166,11 @@ const DUNGEONS_DATA = [
     goldRange: '+35~80',
     description: 'Ancient burial grounds haunted by fallen mages. Higher danger, greater rewards. Requires stable builds to survive.',
   },
-  {
+  { // Cursed Clocktower
     id: 'cursed_clocktower',
+    perks: [
+      { type: 'time_pressure', startTurn: 6, atkBonusPerTurn: 0.15 }
+    ],
     name: 'Cursed Clocktower',
     icon: 'clock',
     levelReq: 10,

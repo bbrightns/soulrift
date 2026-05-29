@@ -17,6 +17,15 @@ function randDelay(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
+function getDungeonPerks() {
+  const dungeon = window.getDungeonDef ? getDungeonDef(_selectedDungeonId) : null;
+  return (dungeon && Array.isArray(dungeon.perks)) ? dungeon.perks : [];
+}
+
+function getPerk(type) {
+  return getDungeonPerks().find(p => p.type === type) || null;
+}
+
 function clampPct(current, max) {
   if (!max || max <= 0) return 0;
   return Math.max(0, Math.min(100, Math.round((current / max) * 100)));
@@ -384,6 +393,10 @@ async function runAutoBattle(dungeonId) {
       if (enemy.hp <= 0) break;
     }
 
+    const timePressure = getPerk('time_pressure');
+    const timePressureBonus = (timePressure && turn >= timePressure.startTurn)
+      ? 1 + (turn - timePressure.startTurn + 1) * timePressure.atkBonusPerTurn
+      : 1;
     // Regen tick (Chorus of Sanctuary)
     if (battleStatus.regenStacks && battleStatus.regenStacks.length > 0) {
       battleStatus.regenStacks = battleStatus.regenStacks.filter(r => r.turnsLeft > 0);
@@ -421,10 +434,13 @@ async function runAutoBattle(dungeonId) {
           battleStatus.angelWingActive = 0;
         }
         if (!dodged) {
-          const hit = enemyStrike(enemy, player, turn);
+          const hit = Math.floor(enemyStrike(enemy, player, turn) * timePressureBonus);
           player.hp = Math.max(0, player.hp - hit);
           updateCombatHud(player, enemy, enemyTemplate);
           await appendBattleLog(enemy.name + ' strikes for ' + hit + ' damage.', 'enemy');
+          if (timePressure && turn === timePressure.startTurn) {
+            await appendBattleLog('The clocktower groans. "TIME OUT" — every strike hits harder.', 'system');
+          }
           if (player.hp <= 0) break;
         }
       }
