@@ -299,6 +299,13 @@ const CLOCKTOWER_SPELL_TIERS = {
   ice: { weak: 'golem_command', mid: 'mana_combo', strong: 'mana_burst' },
 };
 
+const CODEX_SPELL_TIERS = {
+  light: 'divine_reflection',
+  dark: 'demon_summoning',
+  fire: 'phoenix_blood',
+  ice: 'absolute_zero',
+};
+
 function rollDrops(enemyTemplate) {
   const drops = [];
   if (!enemyTemplate || !Array.isArray(enemyTemplate.dropTable)) return drops;
@@ -323,6 +330,15 @@ function rollDrops(enemyTemplate) {
       if (!spell) return;
       giveSpell(spellId, 1);
       drops.push({ type: 'spell', name: spell.name, rarity: 'uncommon' });
+    } else if (entry.type === 'rare_spell_tiered') {
+      const tower = getTower();
+      const spellId = CODEX_SPELL_TIERS[tower];
+      if (!spellId) return;
+
+      const spell = getSpellDef(spellId);
+      if (!spell) return;
+      giveSpell(spellId, 1);
+      drops.push({ type: 'spell', name: spell.name, rarity: 'rare' });
     }
   });
 
@@ -459,8 +475,22 @@ async function runAutoBattle(dungeonId) {
       await appendBattleLog(battlePlayerName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.', 'player');
     } else if (player.sp >= def.spCost) {
       player.sp -= def.spCost;
-      await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl);
-      updateCombatHud(player, enemy, enemyTemplate);
+      const inkBleed = getPerk('ink_bleed');
+      const inkChance = inkBleed
+        ? (enemyTemplate.isBoss ? inkBleed.chanceBoss : inkBleed.chanceNormal)
+        : 0;
+      let inkBleedRoll = Math.random();
+      console.log("Ink Bleed Roll:", inkBleedRoll, "Chance:", inkChance);
+      if (inkBleed && inkBleedRoll < inkChance) {
+        updateCombatHud(player, enemy, enemyTemplate);
+        await appendBattleLog(
+          'Drowned ink seeps into the spell circle — ' + def.name + ' dissolves into black water.',
+          'warn'
+        );
+      } else {
+        await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus);
+        updateCombatHud(player, enemy, enemyTemplate);
+      }
     } else {
       const dmg = struggleDamage(player, enemy);
       enemy.hp = Math.max(0, enemy.hp - dmg);

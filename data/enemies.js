@@ -117,7 +117,7 @@ const ENEMIES_DATA = [
   { // Rusted Warden
     id: 'rusted_warden',
     dungeonId: 'cursed_clocktower',
-    weight: 2000,
+    weight: 2,
     name: 'Rusted Warden',
     area: 'Cursed Clocktower',
     hp: 110, atk: 26, def: 10, exp: 52, gold: 110,
@@ -139,6 +139,64 @@ const ENEMIES_DATA = [
     opener: "The tower's core awakens. Time stutters. The Chronolith has no patience for the living.",
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'strong', chance: 0.2 },
+    ],
+  },
+
+  // Drowned Codex enemies
+  { // Ink Wraith
+    id: 'ink_wraith',
+    dungeonId: 'drowned_codex',
+    weight: 5,
+    name: 'Ink Wraith',
+    area: 'Drowned Codex',
+    hp: 130, atk: 32, def: 10, exp: 65, gold: 140,
+    opener: 'A dissolved scholar bleeds back into form, its final thesis still clutched in translucent hands.',
+    dropTable: [],
+  },
+  { // Vellum Specter
+    id: 'vellum_specter',
+    dungeonId: 'drowned_codex',
+    weight: 4,
+    name: 'Vellum Specter',
+    area: 'Drowned Codex',
+    hp: 125, atk: 35, def: 8, exp: 68, gold: 145,
+    opener: 'Pages of cursed parchment orbit a hollow core, slicing anything that passes.',
+    dropTable: [],
+  },
+  { // Archive Golem
+    id: 'archive_golem',
+    dungeonId: 'drowned_codex',
+    weight: 3,
+    name: 'Archive Golem',
+    area: 'Drowned Codex',
+    hp: 150, atk: 30, def: 15, exp: 70, gold: 150,
+    regenPerTurn: 6,
+    opener: 'Built to guard the stacks, now guarding nothing — still faithfully lethal.',
+    dropTable: [],
+  },
+  { // Drowned Scribe
+    id: 'drowned_scribe',
+    dungeonId: 'drowned_codex',
+    weight: 2,
+    name: 'Drowned Scribe',
+    area: 'Drowned Codex',
+    hp: 140, atk: 38, def: 12, exp: 72, gold: 155,
+    regenPerTurn: 5,
+    opener: "It hasn't stopped writing. It never will. The ink it uses is yours.",
+    dropTable: [],
+  },
+  { // Codex Sovereign
+    id: 'codex_sovereign',
+    dungeonId: 'drowned_codex',
+    isBoss: true,
+    weight: 1,
+    name: 'Codex Sovereign',
+    area: 'Drowned Codex',
+    hp: 180, atk: 42, def: 18, exp: 85, gold: 180,
+    regenPerTurn: 8,
+    opener: 'The library\'s last head archivist. It indexed everything — including how you die.',
+    dropTable: [
+      { type: 'rare_spell_tiered', chance: 0.05 },
     ],
   },
 ];
@@ -169,7 +227,7 @@ const DUNGEONS_DATA = [
   { // Cursed Clocktower
     id: 'cursed_clocktower',
     perks: [
-      { type: 'time_pressure', startTurn: 6, atkBonusPerTurn: 0.15 }
+      { type: 'time_pressure', startTurn: 6, atkBonusPerTurn: 0.15 },
     ],
     name: 'Cursed Clocktower',
     icon: 'clock',
@@ -178,7 +236,20 @@ const DUNGEONS_DATA = [
     expRange: '+40~60',
     goldRange: '+90~130',
     description: 'A twisted tower of gears and mechanisms, home to time-worn creatures. A true test of skill and strategy.',
-  }
+  },
+  { // Drowned Codex
+    id: 'drowned_codex',
+    name: 'Drowned Codex',
+    icon: 'book',
+    levelReq: 15,
+    unlocked: true,
+    expRange: '+65~85',
+    goldRange: '+140~180',
+    description: 'A sunken arcane library frozen mid-collapse. Books float in void-water, ink bleeds into darkness. Magic itself is unreliable here.',
+    perks: [
+      { type: 'ink_bleed', chanceNormal: 0.15, chanceBoss: 0.20 }
+    ],
+  },
 ];
 
 function getDungeonDef(id) {
