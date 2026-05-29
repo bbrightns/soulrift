@@ -221,11 +221,11 @@ function updateCombatHud(player, enemy, enemyTemplate) {
 
   setFill('player-hp-fill', clampPct(player.hp, player.hpMax));
   setFill('player-sp-fill', clampPct(player.sp, player.spMax));
-  setFill('enemy-hp-fill',  clampPct(enemy.hp, enemyTemplate.hp));
+  setFill('enemy-hp-fill', clampPct(enemy.hp, enemyTemplate.hp));
 
   setText('player-hp-text', 'HP ' + player.hp + ' / ' + player.hpMax);
   setText('player-sp-text', 'SP ' + player.sp + ' / ' + player.spMax);
-  setText('enemy-hp-text',  'HP ' + enemy.hp + ' / ' + enemyTemplate.hp);
+  setText('enemy-hp-text', 'HP ' + enemy.hp + ' / ' + enemyTemplate.hp);
 }
 
 function prepareArena(dungeonId) {
@@ -242,6 +242,7 @@ function prepareArena(dungeonId) {
     logWrap.innerHTML = '<div class="battle-log-line">Prepare your 10-turn blueprint, then begin the fight.</div>';
   }
   clearBattleOutcome();
+  document.getElementById('combat-hud')?.classList.remove('hud--post-battle');
   updateCombatHud(player, enemy, _preparedEnemyTemplate);
   setBattleResult('Ready for a 10-turn auto battle.');
   setBattleButton(false, 'Start Auto Battle');
@@ -249,8 +250,8 @@ function prepareArena(dungeonId) {
 
 function formatItemName(id) {
   const names = {
-    catalyst_shard:   'Catalyst Shard',
-    catalyst_core:    'Catalyst Core',
+    catalyst_shard: 'Catalyst Shard',
+    catalyst_core: 'Catalyst Core',
     catalyst_crystal: 'Catalyst Crystal',
   };
   return names[id] || id;
@@ -304,7 +305,6 @@ async function runAutoBattle(dungeonId) {
   _selectedDungeonId = activeDungeonId;
   showArenaView(activeDungeonId);
   setBattleButton(true);
-  document.getElementById('combat-hud')?.classList.add('hud--collapsed');
 
   const logWrap = document.getElementById('battle-log');
   if (logWrap) logWrap.innerHTML = '';
@@ -387,7 +387,12 @@ async function runAutoBattle(dungeonId) {
 
   saveState();
   syncHeader();
+
+  // Keep HUD visible but compact — collapse after short delay so player sees final state
+  await sleep(600);
+  document.getElementById('combat-hud')?.classList.add('hud--post-battle');
   document.getElementById('combat-hud')?.classList.remove('hud--collapsed');
+
   setBattleButton(false);
   _battleRunning = false;
 }

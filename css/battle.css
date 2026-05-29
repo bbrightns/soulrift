@@ -10,10 +10,12 @@
   padding-bottom: var(--sp-1);
   min-height: 0;
 }
+
 #combat-hud.hud--collapsed .combatant-label,
 #combat-hud.hud--collapsed .combatant-name {
   display: none;
 }
+
 #combat-hud.hud--collapsed .combat-bar {
   margin-top: 2px;
   margin-bottom: 2px;
@@ -23,4 +25,24 @@
 .battle-log {
   max-height: 52vh;
   min-height: 180px;
+}
+
+.combatant-row {
+  align-items: stretch;
+}
+
+.combatant-card--enemy {
+  display: flex;
+  flex-direction: column;
+}
+
+.combatant-card--enemy .combatant-label,
+.combatant-card--enemy .combatant-name {
+  flex: 0 0 auto;
+}
+
+.enemy-hp-group {
+  flex: 0 0 auto;
+  margin-top: auto;
+  margin-bottom: auto;
 }
