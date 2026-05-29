@@ -4,6 +4,11 @@
    BUILD: Phase 1 (placeholder — populate when battle.js built)
    ============================================================ */
 
+/* ── Collapsed Enemy HUD before battle ─────────────────────────── */
+#combat-hud.hud--hidden-enemy .combatant-card--enemy {
+  filter: blur(1px);
+}
+
 /* ── Collapsed HUD during battle ─────────────────────────── */
 #combat-hud.hud--collapsed .combatant-card {
   padding-top: var(--sp-1);
@@ -28,6 +33,7 @@
   opacity: 0.5;
   transition: max-height 0.4s ease, opacity 0.4s ease;
 }
+
 #combat-hud.hud--post-battle .combatant-name,
 #combat-hud.hud--post-battle .combatant-label,
 #combat-hud.hud--post-battle .combat-bar,

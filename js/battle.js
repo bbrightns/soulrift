@@ -240,12 +240,16 @@ function prepareArena(dungeonId) {
   const player = { ...getState().player, hp: getState().player.hpMax, sp: getState().player.spMax };
   const enemy = { ..._preparedEnemyTemplate };
   const logWrap = document.getElementById('battle-log');
+
   if (logWrap) {
     logWrap.innerHTML = '<div class="battle-log-line">Prepare your 10-turn blueprint, then begin the fight.</div>';
   }
   clearBattleOutcome();
   document.getElementById('combat-hud')?.classList.remove('hud--post-battle');
-  updateCombatHud(player, enemy, _preparedEnemyTemplate);
+  document.getElementById('combat-hud')?.classList.add('hud--hidden-enemy');
+  const hiddenEnemy = { ..._preparedEnemyTemplate, name: '???' };
+  updateCombatHud(player, hiddenEnemy, _preparedEnemyTemplate);
+  setText('enemy-hp-text', 'HP ?? / ??');
   setBattleResult('Ready for a 10-turn auto battle.');
   setBattleButton(false, 'Start Auto Battle');
 }
@@ -308,6 +312,7 @@ async function runAutoBattle(dungeonId) {
   showArenaView(activeDungeonId);
   setBattleButton(true);
   document.getElementById('combat-hud')?.classList.remove('hud--post-battle');
+  document.getElementById('combat-hud')?.classList.remove('hud--hidden-enemy');
 
   const logWrap = document.getElementById('battle-log');
   if (logWrap) logWrap.innerHTML = '';
