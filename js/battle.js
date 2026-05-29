@@ -340,6 +340,13 @@ async function runAutoBattle(dungeonId) {
     await sleep(randDelay(700, 1200));
     await appendBattleLog('Turn ' + turn + '.', 'turn');
 
+    if (enemyTemplate.regenPerTurn && enemy.hp > 0) {
+      const regen = enemyTemplate.regenPerTurn;
+      enemy.hp = Math.min(enemyTemplate.hp, enemy.hp + regen);
+      updateCombatHud(player, enemy, enemyTemplate);
+      await appendBattleLog(enemy.name + ' regenerates ' + regen + ' HP.', 'enemy');
+    }
+
     // Burn tick
     battleStatus.burnStacks = battleStatus.burnStacks.filter(s => s.turnsLeft > 0);
     if (battleStatus.burnStacks.length > 0) {
