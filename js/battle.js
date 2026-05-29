@@ -32,12 +32,14 @@ function setText(id, text) {
   if (el) el.textContent = text;
 }
 
-function spellPower(def, player) {
+function spellPower(def, player, spellLvl) {
+  const lvl = spellLvl || 1;
   if (!def) return Math.max(4, Math.floor(player.atk * 0.45));
   const base = Math.max(5, Math.floor((player.atk + player.int) * 0.75));
   const towerBonus = def.tower === getTower() ? 4 : 0;
   const roleBonus = def.role.toLowerCase().includes('basic') ? 0 : 3;
-  return base + towerBonus + roleBonus;
+  const levelBonus = Math.floor((lvl - 1) * 0.18 * (base + towerBonus + roleBonus));
+  return base + towerBonus + roleBonus + levelBonus;
 }
 
 function struggleDamage(player, enemy) {
@@ -342,8 +344,15 @@ async function runAutoBattle(dungeonId) {
   _preparedEnemyTemplate = null;
   const enemy = { ...enemyTemplate };
   const battleStatus = {
-    burnStacks: [],   // array of { turnsLeft } — แต่ละ element = 1 stack
+    burnStacks: [],
+    chargeStacks: 0,
+    manaCombo: 0,
     totalGoldStolen: 0,
+    enemyFrozen: false,
+    curseActive: null,
+    fogActive: null,
+    regenStacks: [],
+    angelWingActive: 0,
   };
 
   updateCombatHud(player, enemy, enemyTemplate);
@@ -364,7 +373,7 @@ async function runAutoBattle(dungeonId) {
     // Burn tick
     battleStatus.burnStacks = battleStatus.burnStacks.filter(s => s.turnsLeft > 0);
     if (battleStatus.burnStacks.length > 0) {
-      const burnDmg = battleStatus.burnStacks.reduce((sum, s) => sum + Math.round(12 * 0.35), 0);
+      const burnDmg = battleStatus.burnStacks.reduce((sum, s) => sum + (s.power || Math.round(12 * 0.35)), 0);
       enemy.hp = Math.max(0, enemy.hp - burnDmg);
       battleStatus.burnStacks.forEach(s => s.turnsLeft--);
       updateCombatHud(player, enemy, enemyTemplate);
@@ -374,14 +383,57 @@ async function runAutoBattle(dungeonId) {
       if (enemy.hp <= 0) break;
     }
 
-    const hit = enemyStrike(enemy, player, turn);
-    player.hp = Math.max(0, player.hp - hit);
-    updateCombatHud(player, enemy, enemyTemplate);
-    await appendBattleLog(enemy.name + ' strikes for ' + hit + ' damage.', 'enemy');
-    if (player.hp <= 0) break;
+    // Regen tick (Chorus of Sanctuary)
+    if (battleStatus.regenStacks && battleStatus.regenStacks.length > 0) {
+      battleStatus.regenStacks = battleStatus.regenStacks.filter(r => r.turnsLeft > 0);
+      const totalRegen = battleStatus.regenStacks.reduce((sum, r) => sum + r.amount, 0);
+      if (totalRegen > 0) {
+        player.hp = Math.min(player.hpMax, player.hp + totalRegen);
+        battleStatus.regenStacks.forEach(r => r.turnsLeft--);
+        updateCombatHud(player, enemy, enemyTemplate);
+        await appendBattleLog('Sanctuary restores ' + totalRegen + ' HP.', 'player');
+      }
+    }
 
-    const spellId = blueprint[turn - 1] || null;
-    const def = window.getSpellDef ? getSpellDef(spellId) : null;
+    if (battleStatus.enemyFrozen) {
+      battleStatus.enemyFrozen = false;
+      await appendBattleLog(enemy.name + ' is frozen and cannot act this turn.', 'enemy');
+    } else {
+      // Fog miss check
+      let missed = false;
+      if (battleStatus.fogActive && battleStatus.fogActive.turnsLeft > 0) {
+        if (Math.random() < battleStatus.fogActive.missChance) {
+          missed = true;
+          await appendBattleLog(enemy.name + ' attacks but misses through the fog!', 'enemy');
+        }
+        battleStatus.fogActive.turnsLeft--;
+        if (battleStatus.fogActive.turnsLeft <= 0) battleStatus.fogActive = null;
+      }
+      if (!missed) {
+        // Angel Wing dodge check
+        let dodged = false;
+        if (battleStatus.angelWingActive > 0) {
+          if (Math.random() < battleStatus.angelWingActive) {
+            dodged = true;
+            await appendBattleLog(enemy.name + ' attacks but ' + battlePlayerName() + ' dodges with Angel Wing!', 'player');
+          }
+          battleStatus.angelWingActive = 0;
+        }
+        if (!dodged) {
+          const hit = enemyStrike(enemy, player, turn);
+          player.hp = Math.max(0, player.hp - hit);
+          updateCombatHud(player, enemy, enemyTemplate);
+          await appendBattleLog(enemy.name + ' strikes for ' + hit + ' damage.', 'enemy');
+          if (player.hp <= 0) break;
+        }
+      }
+    }
+
+    const raw = blueprint[turn - 1] || null;
+    const parts = raw ? raw.split('|') : [];
+    const spellId = parts[0] || null;
+    const spellLvl = parseInt(parts[1]) || 1;
+    const def = spellId && window.getSpellDef ? getSpellDef(spellId) : null;
 
     if (!def) {
       const dmg = struggleDamage(player, enemy);
@@ -390,7 +442,7 @@ async function runAutoBattle(dungeonId) {
       await appendBattleLog(battlePlayerName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.', 'player');
     } else if (player.sp >= def.spCost) {
       player.sp -= def.spCost;
-      await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus);
+      await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl);
       updateCombatHud(player, enemy, enemyTemplate);
     } else {
       const dmg = struggleDamage(player, enemy);
@@ -443,47 +495,28 @@ async function runAutoBattle(dungeonId) {
   _battleRunning = false;
 }
 
-async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus) {
-  const dmg = Math.max(1, spellPower(def, player) - enemy.def);
+async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl) {
+  const baseDmg = Math.max(1, spellPower(def, player, spellLvl) - enemy.def);
 
-  if (def.id === 'fire_thief') {
-    const stolen = 12 + Math.floor(Math.random() * 10);
-    getState().gold += stolen;
-    saveState();
-    syncHeader();
-    battleStatus.totalGoldStolen += stolen;
-    await appendBattleLog(
-      battlePlayerName() + ' casts Fire Thief, spending ' + def.spCost + ' SP and stealing ' + stolen + ' Gold.', 'player'
-    );
-  }
+  const handler = window.getSpellHandler ? getSpellHandler(def.id) : null;
 
-  if (def.id === 'energy_refill') {
-    const refill = 16;
-    player.sp = Math.min(player.spMax, player.sp + refill);
-    await appendBattleLog(battlePlayerName() + ' casts Energy Refill and restores ' + refill + ' SP.', 'player');
+  if (handler) {
+    const ctx = {
+      def, player, enemy, enemyTemplate, battleStatus,
+      spellLvl: spellLvl || 1,
+      playerName: battlePlayerName(),
+      baseDmg,
+      log: appendBattleLog,
+      updateHud: () => updateCombatHud(player, enemy, enemyTemplate),
+    };
+    await handler(ctx);
     return;
   }
 
-  if (def.id === 'burn') {
-    battleStatus.burnStacks.push({ turnsLeft: 3 });
-    await appendBattleLog(
-      battlePlayerName() + ' casts Burn, spending ' + def.spCost + ' SP. Burn stack applied (' + battleStatus.burnStacks.length + ' active).', 'player'
-    );
-    // ยังคง deal baseDmg ด้วย
-    enemy.hp = Math.max(0, enemy.hp - dmg);
-    updateCombatHud(player, enemy, enemyTemplate);
-    return;
-  }
-
-  if (def.id === 'holy_guard' || def.id === 'ember_skin' || def.id === 'frost_ward') {
-    player.hp = Math.min(player.hpMax, player.hp + 8);
-    await appendBattleLog(battlePlayerName() + ' casts ' + def.name + ', spending ' + def.spCost + ' SP and stabilizing behind a ward.', 'player');
-    return;
-  }
-
-  enemy.hp = Math.max(0, enemy.hp - dmg);
+  // Default: deal damage
+  enemy.hp = Math.max(0, enemy.hp - baseDmg);
   await appendBattleLog(
-    battlePlayerName() + ' casts ' + def.name + ', spending ' + def.spCost + ' SP for ' + dmg + ' damage.',
+    battlePlayerName() + ' casts ' + def.name + ', spending ' + def.spCost + ' SP for ' + baseDmg + ' damage.',
     'player'
   );
 }

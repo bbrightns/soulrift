@@ -9,20 +9,24 @@
 let _selectedBlueprintSlot = 0;
 
 function getOwnedSpellOptions() {
-  const byId = new Map();
+  const options = [];
   getSpells().forEach(stone => {
-    if (!stone || !stone.id || byId.has(stone.id)) return;
+    if (!stone || !stone.id || stone.qty < 1) return;
     const def = window.getSpellDef ? getSpellDef(stone.id) : null;
-    byId.set(stone.id, {
+    if (!def) return;
+    options.push({
       id: stone.id,
-      name: def ? def.name : stone.id,
-      role: def ? def.role : 'Spell Stone',
-      spCost: def ? def.spCost : 0,
-      tower: def ? def.tower : 'gold',
+      lvl: stone.lvl || 1,
+      key: stone.id + '_lv' + (stone.lvl || 1),
+      name: def.name,
+      role: def.role,
+      spCost: def.spCost,
+      tower: def.tower,
       qty: stone.qty,
     });
   });
-  return Array.from(byId.values());
+  options.sort((a, b) => a.name.localeCompare(b.name) || b.lvl - a.lvl);
+  return options;
 }
 
 function renderBlueprint() {
@@ -32,14 +36,17 @@ function renderBlueprint() {
 
   grid.innerHTML = '';
   bp.forEach((spellId, i) => {
-    const def = window.getSpellDef ? getSpellDef(spellId) : null;
+    const parts = spellId ? spellId.split('|') : [];
+    const baseId = parts[0] || null;
+    const slotLvl = parseInt(parts[1]) || 1;
+    const def = baseId && window.getSpellDef ? getSpellDef(baseId) : null;
     const slot = document.createElement('button');
     slot.type = 'button';
     slot.className = 'card card--raised blueprint-slot' + (i === _selectedBlueprintSlot ? ' is-selected' : '');
     slot.onclick = () => selectBlueprintSlot(i);
 
     slot.innerHTML = '<span class="blueprint-slot__turn">T' + (i + 1) + '</span>'
-      + '<span class="blueprint-slot__spell">' + (def ? def.name : (spellId || 'Empty - Struggle')) + '</span>'
+      + '<span class="blueprint-slot__spell">' + (def ? def.name + (slotLvl > 1 ? ' <small>Lv' + slotLvl + '</small>' : '') : (spellId || 'Empty')) + '</span>'
       + '<span class="blueprint-slot__cost">' + (def ? 'SP ' + def.spCost : '-') + '</span>';
 
     grid.appendChild(slot);
@@ -54,8 +61,9 @@ function selectBlueprintSlot(index) {
   renderBlueprint();
 }
 
-function assignSpellToSelectedSlot(spellId) {
-  setBlueprintSlot(_selectedBlueprintSlot, spellId || null);
+function assignSpellToSelectedSlot(spellId, lvl) {
+  const val = (spellId && lvl) ? spellId + '|' + lvl : null;
+  setBlueprintSlot(_selectedBlueprintSlot, val);
   renderBlueprint();
 }
 
@@ -77,16 +85,13 @@ function renderSpellPicker() {
   wrap.innerHTML = '<div class="section-label" style="margin-top:var(--sp-4);">Assign Turn ' + (_selectedBlueprintSlot + 1) + '</div>'
     + '<div class="spell-picker__grid">'
     + options.map(option => {
-      const active = option.id === current ? ' is-selected' : '';
-      return '<button type="button" class="spell-picker__option' + active + '" onclick="assignSpellToSelectedSlot(\'' + option.id + '\')">'
-        + '<span class="spell-picker__name">' + option.name + '</span>'
-        + '<span class="spell-picker__meta">SP ' + option.spCost + ' · owned x' + option.qty + '</span>'
+      const active = option.key === current ? ' is-selected' : '';
+      const lvlBadge = ' <span class="badge badge--lv">Lv ' + option.lvl + '</span>';
+      return '<button type="button" class="spell-picker__option' + active + '" onclick="assignSpellToSelectedSlot(\'' + option.id + '\',' + option.lvl + ')">'
+        + '<span class="spell-picker__name">' + option.name + lvlBadge + '</span>'
+        + '<span class="spell-picker__meta">SP ' + option.spCost + ' · owned ×' + option.qty + '</span>'
         + '</button>';
     }).join('')
-    + '<button type="button" class="spell-picker__option" onclick="assignSpellToSelectedSlot(null)">'
-      + '<span class="spell-picker__name">Empty - Struggle</span>'
-      + '<span class="spell-picker__meta">No SP cost</span>'
-    + '</button>'
     + '</div>';
 }
 
@@ -95,7 +100,8 @@ function renderBlueprintSummary() {
   if (!wrap) return;
 
   const totalSp = getBlueprint().reduce((sum, spellId) => {
-    const def = window.getSpellDef ? getSpellDef(spellId) : null;
+    const baseId = spellId ? spellId.split('|')[0] : null;
+    const def = baseId && window.getSpellDef ? getSpellDef(baseId) : null;
     return sum + (def ? def.spCost : 0);
   }, 0);
   const player = getPlayer();
