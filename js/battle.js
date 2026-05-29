@@ -327,6 +327,10 @@ async function runAutoBattle(dungeonId) {
     : { name: 'Training Shadow', area: 'Booby Forest', hp: 45, atk: 7, def: 2, exp: 20, gold: 55, opener: 'A shadow stirs.' });
   _preparedEnemyTemplate = null;
   const enemy = { ...enemyTemplate };
+  const battleStatus = {
+    burnStacks: [],   // array of { turnsLeft } — แต่ละ element = 1 stack
+    totalGoldStolen: 0,
+  };
 
   updateCombatHud(player, enemy, enemyTemplate);
   await appendBattleLog('Battle begins in ' + enemy.area + '.', 'system');
@@ -335,6 +339,19 @@ async function runAutoBattle(dungeonId) {
   for (let turn = 1; turn <= 10; turn++) {
     await sleep(randDelay(700, 1200));
     await appendBattleLog('Turn ' + turn + '.', 'turn');
+
+    // Burn tick
+    battleStatus.burnStacks = battleStatus.burnStacks.filter(s => s.turnsLeft > 0);
+    if (battleStatus.burnStacks.length > 0) {
+      const burnDmg = battleStatus.burnStacks.reduce((sum, s) => sum + Math.round(12 * 0.35), 0);
+      enemy.hp = Math.max(0, enemy.hp - burnDmg);
+      battleStatus.burnStacks.forEach(s => s.turnsLeft--);
+      updateCombatHud(player, enemy, enemyTemplate);
+      await appendBattleLog(
+        'Burn deals ' + burnDmg + ' damage (' + battleStatus.burnStacks.length + ' stack).', 'player'
+      );
+      if (enemy.hp <= 0) break;
+    }
 
     const hit = enemyStrike(enemy, player, turn);
     player.hp = Math.max(0, player.hp - hit);
@@ -352,7 +369,7 @@ async function runAutoBattle(dungeonId) {
       await appendBattleLog(battlePlayerName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.', 'player');
     } else if (player.sp >= def.spCost) {
       player.sp -= def.spCost;
-      await castPreparedSpell(def, player, enemy, enemyTemplate);
+      await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus);
       updateCombatHud(player, enemy, enemyTemplate);
     } else {
       const dmg = struggleDamage(player, enemy);
@@ -378,6 +395,11 @@ async function runAutoBattle(dungeonId) {
     saveState();
 
     await appendBattleLog('Victory. Gained ' + goldReward + ' Gold and ' + expReward + ' EXP.', 'reward');
+    if (battleStatus.totalGoldStolen > 0) {
+      await appendBattleLog(
+        'Fire Thief total: stole ' + battleStatus.totalGoldStolen + ' Gold during battle.', 'reward'
+      );
+    }
     for (const drop of drops) {
       await appendBattleLog('✦ Drop: ' + drop.name, 'reward');
     }
@@ -400,19 +422,35 @@ async function runAutoBattle(dungeonId) {
   _battleRunning = false;
 }
 
-async function castPreparedSpell(def, player, enemy, enemyTemplate) {
+async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus) {
   const dmg = Math.max(1, spellPower(def, player) - enemy.def);
 
   if (def.id === 'fire_thief') {
     const stolen = 12 + Math.floor(Math.random() * 10);
     getState().gold += stolen;
-    await appendBattleLog(battlePlayerName() + ' casts Fire Thief, spending ' + def.spCost + ' SP and stealing ' + stolen + ' Gold.', 'player');
+    saveState();
+    syncHeader();
+    battleStatus.totalGoldStolen += stolen;
+    await appendBattleLog(
+      battlePlayerName() + ' casts Fire Thief, spending ' + def.spCost + ' SP and stealing ' + stolen + ' Gold.', 'player'
+    );
   }
 
   if (def.id === 'energy_refill') {
     const refill = 16;
     player.sp = Math.min(player.spMax, player.sp + refill);
     await appendBattleLog(battlePlayerName() + ' casts Energy Refill and restores ' + refill + ' SP.', 'player');
+    return;
+  }
+
+  if (def.id === 'burn') {
+    battleStatus.burnStacks.push({ turnsLeft: 3 });
+    await appendBattleLog(
+      battlePlayerName() + ' casts Burn, spending ' + def.spCost + ' SP. Burn stack applied (' + battleStatus.burnStacks.length + ' active).', 'player'
+    );
+    // ยังคง deal baseDmg ด้วย
+    enemy.hp = Math.max(0, enemy.hp - dmg);
+    updateCombatHud(player, enemy, enemyTemplate);
     return;
   }
 
