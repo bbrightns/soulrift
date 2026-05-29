@@ -50,7 +50,7 @@ function renderFusionSpellList() {
     return '<div class="fusion-stone-card' + (active ? ' is-active' : '') + '" '
       + 'onclick="selectFusionSpell(\'' + s.id + '\',' + s.lvl + ')">'
       + (active ? '<div class="fusion-stone-card__sel">SEL</div>' : '')
-      + '<div class="fusion-stone-card__gem" style="color:' + color + '">◆</div>'
+      + '<div class="fusion-stone-card__name">' + def.name + '</div>'
       + '<div class="fusion-stone-card__lv">LV.' + s.lvl + '</div>'
       + '<div class="fusion-stone-card__qty">×' + s.qty + '</div>'
       + '</div>';

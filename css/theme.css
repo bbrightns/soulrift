@@ -676,13 +676,12 @@ body {
 .fusion-inventory-head { margin-bottom: var(--sp-3); }
 .fusion-stone-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--sp-2);
   padding-bottom: var(--sp-6);
 }
 .fusion-stone-card {
   position: relative;
-  aspect-ratio: 1;
   background: var(--c-raised);
   border: 1.5px solid var(--c-border);
   border-radius: var(--r-md);
@@ -692,9 +691,9 @@ body {
   justify-content: center;
   cursor: pointer;
   overflow: hidden;
-  padding: var(--sp-2) var(--sp-1) var(--sp-1);
+  padding: var(--sp-3) var(--sp-2);
   text-align: center;
-  gap: 2px;
+  gap: 3px;
   transition: border-color var(--ease-base);
 }
 .fusion-stone-card.is-active {
@@ -703,8 +702,8 @@ body {
 }
 .fusion-stone-card__sel {
   position: absolute;
-  top: 3px;
-  left: 3px;
+  top: 4px;
+  left: 4px;
   font-size: 7px;
   font-weight: 700;
   font-family: var(--f-head);
@@ -714,15 +713,25 @@ body {
   padding: 1px 4px;
   border-radius: 3px;
 }
-.fusion-stone-card__gem { font-size: 28px; line-height: 1; }
-.fusion-stone-card__lv  {
-  font-size: 8px;
+.fusion-stone-card__name {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--f-head);
+  color: var(--c-text-1);
+  letter-spacing: .03em;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.fusion-stone-card__lv {
+  font-size: 11px;
   font-weight: 700;
   font-family: var(--f-head);
   color: var(--c-gold-text);
   letter-spacing: .04em;
 }
-.fusion-stone-card__qty { font-size: 11px; color: var(--c-text-2); }
+.fusion-stone-card__qty { font-size: 12px; color: var(--c-text-2); font-weight: 600; }
 .fusion-no-stones {
   grid-column: 1 / -1;
   text-align: center;
