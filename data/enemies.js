@@ -8,48 +8,35 @@
 const ENEMIES_DATA = [
   // Booby Forest enemies
   {
-    id: 'booby',
+    id: 'training_shadow',
     dungeonId: 'booby_forest',
-    name: 'Booby',
+    weight: 5,
+    name: 'Training Shadow',
     area: 'Booby Forest',
-    hp: 48,
-    atk: 8,
-    def: 3,
-    exp: 24,
-    gold: 70,
-    opener: 'A heavy forest beast lowers its head and charges first.',
-    dropTable: [
-      { id: 'catalyst_shard', type: 'catalyst', chance: 0.10 },
-    ],
+    hp: 45, atk: 7, def: 2, exp: 20, gold: 55,
+    opener: 'A practice shade copies the stance of an old tower apprentice.',
+    dropTable: [],
   },
   {
     id: 'goblin_frenzy',
     dungeonId: 'booby_forest',
+    weight: 3,
     name: 'Goblin Frenzy',
     area: 'Booby Forest',
-    hp: 42,
-    atk: 9,
-    def: 2,
-    exp: 26,
-    gold: 65,
+    hp: 42, atk: 9, def: 2, exp: 26, gold: 65,
     opener: 'A quick goblin darts out of the brush, shrieking for the first strike.',
-    dropTable: [
-      { id: 'catalyst_shard', type: 'catalyst', chance: 0.10 },
-    ],
+    dropTable: [],
   },
   {
-    id: 'training_shadow',
+    id: 'booby',
     dungeonId: 'booby_forest',
-    name: 'Training Shadow',
+    weight: 2,
+    name: 'Booby',
     area: 'Booby Forest',
-    hp: 45,
-    atk: 7,
-    def: 2,
-    exp: 20,
-    gold: 55,
-    opener: 'A practice shade copies the stance of an old tower apprentice.',
+    hp: 48, atk: 8, def: 3, exp: 24, gold: 70,
+    opener: 'A heavy forest beast lowers its head and charges first.',
     dropTable: [
-      { id: 'catalyst_shard', type: 'catalyst', chance: 0.10 },
+      { id: 'catalyst_shard', type: 'catalyst', chance: 0.2 },
     ],
   },
 
@@ -57,47 +44,32 @@ const ENEMIES_DATA = [
   {
     id: 'bone_magi',
     dungeonId: 'magi_graveyard',
+    weight: 5,
     name: 'Bone Magi',
     area: 'Magi Graveyard',
-    hp: 72,
-    atk: 14,
-    def: 6,
-    exp: 30,
-    gold: 60,
+    hp: 72, atk: 14, def: 6, exp: 30, gold: 60,
     regenPerTurn: 5,
     opener: 'A skeletal mage rises from the grave, dark energy crackling around its bones.',
-    dropTable: [
-      { id: 'catalyst_shard', type: 'catalyst', chance: 0.15 },
-      { id: 'catalyst_core', type: 'catalyst', chance: 0.05 },
-    ],
+    dropTable: [],
   },
   {
     id: 'cursed_arcanist',
     dungeonId: 'magi_graveyard',
+    weight: 3,
     name: 'Cursed Arcanist',
     area: 'Magi Graveyard',
-    hp: 68,
-    atk: 16,
-    def: 4,
-    exp: 32,
-    gold: 65,
+    hp: 68, atk: 16, def: 4, exp: 32, gold: 65,
     regenPerTurn: 4,
     opener: 'A fallen mage bound by an ancient curse turns its hollow eyes toward you.',
-    dropTable: [
-      { id: 'catalyst_shard', type: 'catalyst', chance: 0.15 },
-      { id: 'catalyst_core', type: 'catalyst', chance: 0.05 },
-    ],
+    dropTable: [],
   },
   {
     id: 'grave_lich',
     dungeonId: 'magi_graveyard',
+    weight: 2,
     name: 'Grave Lich',
     area: 'Magi Graveyard',
-    hp: 80,
-    atk: 18,
-    def: 5,
-    exp: 35,
-    gold: 80,
+    hp: 80, atk: 18, def: 5, exp: 35, gold: 80,
     regenPerTurn: 6,
     opener: 'A lich lord stirs from its eternal slumber, hungry for living mana.',
     dropTable: [
@@ -136,10 +108,17 @@ function getDungeonDef(id) {
 
 function getRandomEnemy(dungeonId) {
   const pool = dungeonId
-    ? ENEMIES_DATA.filter(enemy => enemy.dungeonId === dungeonId)
+    ? ENEMIES_DATA.filter(e => e.dungeonId === dungeonId)
     : ENEMIES_DATA;
   const list = pool.length ? pool : ENEMIES_DATA;
-  return list[Math.floor(Math.random() * list.length)];
+
+  const totalWeight = list.reduce((sum, e) => sum + (e.weight || 1), 0);
+  let roll = Math.random() * totalWeight;
+  for (const e of list) {
+    roll -= (e.weight || 1);
+    if (roll <= 0) return e;
+  }
+  return list[list.length - 1];
 }
 
 window.DUNGEONS_DATA = DUNGEONS_DATA;
