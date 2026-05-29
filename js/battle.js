@@ -1,5 +1,5 @@
 /* ============================================================
-   SOULRIFT - battle.js
+   SOULRIFT - /battle.js
    Dungeon entry screen + automatic 10-turn text battle.
    ============================================================ */
 
@@ -221,13 +221,11 @@ function updateCombatHud(player, enemy, enemyTemplate) {
 
   setFill('player-hp-fill', clampPct(player.hp, player.hpMax));
   setFill('player-sp-fill', clampPct(player.sp, player.spMax));
-  setFill('enemy-hp-fill', clampPct(enemy.hp, enemyTemplate.hp));
-  setFill('enemy-threat-fill', clampPct(enemy.atk, 18));
+  setFill('enemy-hp-fill',  clampPct(enemy.hp, enemyTemplate.hp));
 
   setText('player-hp-text', 'HP ' + player.hp + ' / ' + player.hpMax);
   setText('player-sp-text', 'SP ' + player.sp + ' / ' + player.spMax);
-  setText('enemy-hp-text', 'HP ' + enemy.hp + ' / ' + enemyTemplate.hp);
-  setText('enemy-threat-text', 'ATK ' + enemy.atk + ' / DEF ' + enemy.def);
+  setText('enemy-hp-text',  'HP ' + enemy.hp + ' / ' + enemyTemplate.hp);
 }
 
 function prepareArena(dungeonId) {

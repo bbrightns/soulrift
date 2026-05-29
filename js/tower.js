@@ -1,5 +1,5 @@
 /* ============================================================
-   SOULRIFT — tower.js
+   SOULRIFT — /js/tower.js
    First-run tower selection and name flow.
    ============================================================ */
 

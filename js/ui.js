@@ -1,5 +1,5 @@
 /* ============================================================
-   SOULRIFT — ui.js
+   SOULRIFT — /js/ui.js
    Screen router, bottom nav, header sync, toast, utilities.
    Depends on: state.js loaded first.
    ============================================================ */

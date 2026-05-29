@@ -1,7 +1,7 @@
 'use strict';
 
 /* ============================================================
-   SOULRIFT — data/spells.js
+   SOULRIFT — /data/spells.js
    Complete 40-spell catalog across Light, Dark, Fire, Ice towers.
    ============================================================ */
 

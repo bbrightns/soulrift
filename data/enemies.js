@@ -1,5 +1,5 @@
 /* ============================================================
-   SOULRIFT — data/enemies.js
+   SOULRIFT — /data/enemies.js
    Phase 1 enemy data for automatic text battles.
    ============================================================ */
 

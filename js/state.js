@@ -1,5 +1,5 @@
 /* ============================================================
-   SOULRIFT — state.js
+   SOULRIFT — /js/state.js
    Single source of truth. All systems read/write here only.
    No framework. No imports. Loaded before all other scripts.
    ============================================================ */
