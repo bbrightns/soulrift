@@ -267,12 +267,74 @@
 
     <!-- FUSION -->
     <div class="screen" id="screen-fusion">
-      <div class="screen-title">Fusion</div>
-      <div class="screen-sub">Merge spell stones to upgrade them</div>
-      <div class="empty-state">
-        <div class="empty-state__icon">&#9879;</div>
-        <div class="empty-state__title">Fusion Lab</div>
-        <div class="empty-state__body">Spell fusion system — Phase 2.</div>
+
+      <!-- Header -->
+      <div class="fusion-forge-header">
+        <div class="fusion-forge-header__sub">ELDER FORGE</div>
+        <div class="fusion-forge-header__title">FUSION CRUCIBLE</div>
+        <div class="fusion-forge-header__orn">◈</div>
+      </div>
+
+      <!-- Crucible slots -->
+      <div class="fusion-crucible-row">
+        <div class="fusion-slot" id="fusion-slot-left"
+             onclick="document.getElementById('fusion-spell-list').scrollIntoView({behavior:'smooth'})">
+          <div class="fusion-slot__inner" id="fusion-slot-left-inner">
+            <span class="fusion-slot__empty-icon">+</span>
+            <span class="fusion-slot__empty-text">Select</span>
+          </div>
+        </div>
+
+        <div class="fusion-crucible-mid">
+          <div class="fusion-rate-badge is-hidden" id="fusion-rate-badge">
+            <div class="fusion-rate-badge__label">SUCCESS</div>
+            <div class="fusion-rate-badge__pct" id="fusion-rate-badge-pct">--</div>
+          </div>
+          <div class="fusion-crucible-icon">⚗</div>
+        </div>
+
+        <div class="fusion-slot" id="fusion-slot-right">
+          <div class="fusion-slot__inner" id="fusion-slot-right-inner">
+            <span class="fusion-slot__empty-icon">+</span>
+            <span class="fusion-slot__empty-text">Select</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fusion-slot-labels">
+        <span>CORE I</span>
+        <span></span>
+        <span>CORE II</span>
+      </div>
+
+      <!-- Catalyst -->
+      <div class="fusion-catalyst-section">
+        <div class="fusion-cat-label">CATALYST SLOT</div>
+        <div class="fusion-cat-slot" id="fusion-cat-display"
+             onclick="toggleFusionCatalystPicker()">
+          <span id="fusion-cat-display-text">None</span>
+        </div>
+        <div id="fusion-catalyst-list" class="fusion-cat-picker is-hidden"></div>
+      </div>
+
+      <!-- Cost + Invoke -->
+      <div id="fusion-panel"></div>
+
+      <!-- Divider -->
+      <div class="fusion-divider">◆</div>
+
+      <!-- Inventory -->
+      <div class="fusion-inventory-head">
+        <span class="section-label" style="margin:0">INVENTORY: STONES</span>
+      </div>
+      <div id="fusion-spell-list" class="fusion-stone-grid"></div>
+
+      <!-- Result Modal -->
+      <div id="fusion-result-modal" class="modal-overlay is-hidden" onclick="closeFusionResult()">
+        <div class="modal-card" onclick="event.stopPropagation()">
+          <div id="fusion-result-body"></div>
+          <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4)" onclick="closeFusionResult()">Continue</button>
+        </div>
       </div>
     </div>
 
@@ -449,6 +511,7 @@
 <script src="js/shop.js?v=phase1-1"></script>
 <script src="js/inventory.js?v=phase1-1"></script>
 <script src="js/battle.js?v=phase1-1"></script>
+<script src="js/fusion.js?v=phase1-1"></script>
 <script src="js/app.js?v=phase1-1"></script>
 <script> lucide.createIcons(); </script>
 

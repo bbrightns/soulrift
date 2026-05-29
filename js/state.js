@@ -182,6 +182,20 @@ function giveSpell(id, lvl = 1) {
   saveState();
 }
 
+function removeSpell(id, lvl, qty = 1) {
+  const list = getSpells();
+  const found = list.find(s => s.id === id && s.lvl === lvl);
+  if (!found) return false;
+  found.qty -= qty;
+  if (found.qty <= 0) {
+    const idx = list.indexOf(found);
+    list.splice(idx, 1);
+  }
+  saveState();
+  return true;
+}
+window.removeSpell = removeSpell;
+
 const TOWER_STARTERS = {
   light: {
     spellId: 'light_shot',
