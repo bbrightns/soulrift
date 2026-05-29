@@ -31,6 +31,15 @@
   align-items: stretch;
 }
 
+.combatant-card {
+  padding: 8px 10px;
+}
+
+.combatant-name {
+  margin: 2px 0 4px;
+  min-height: 0;
+}
+
 .combatant-card--enemy {
   display: flex;
   flex-direction: column;
