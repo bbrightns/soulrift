@@ -120,6 +120,7 @@ function showDungeonView() {
   if (dungeonView) dungeonView.classList.remove('is-hidden');
   if (arenaView) arenaView.classList.add('is-hidden');
   renderDungeonList();
+  document.querySelector('#screen-battle .screen-sub').style.display = '';
 }
 
 function showArenaView(dungeonId) {
@@ -129,6 +130,7 @@ function showArenaView(dungeonId) {
   if (dungeonView) dungeonView.classList.add('is-hidden');
   if (arenaView) arenaView.classList.remove('is-hidden');
   setText('arena-dungeon-name', dungeon ? dungeon.name : 'Unknown Rift');
+  document.querySelector('#screen-battle .screen-sub').style.display = 'none';
 }
 
 async function enterDungeon(dungeonId) {
@@ -305,6 +307,7 @@ async function runAutoBattle(dungeonId) {
   _selectedDungeonId = activeDungeonId;
   showArenaView(activeDungeonId);
   setBattleButton(true);
+  document.getElementById('combat-hud')?.classList.remove('hud--post-battle');
 
   const logWrap = document.getElementById('battle-log');
   if (logWrap) logWrap.innerHTML = '';
@@ -387,13 +390,8 @@ async function runAutoBattle(dungeonId) {
 
   saveState();
   syncHeader();
-
-  // Keep HUD visible but compact — collapse after short delay so player sees final state
-  await sleep(600);
   document.getElementById('combat-hud')?.classList.add('hud--post-battle');
-  document.getElementById('combat-hud')?.classList.remove('hud--collapsed');
-
-  setBattleButton(false);
+  setBattleButton(false, 'Fight Again');
   _battleRunning = false;
 }
 

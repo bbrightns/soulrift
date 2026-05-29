@@ -21,6 +21,22 @@
   margin-bottom: 2px;
 }
 
+/* ── Collapsed HUD after battle ─────────────────────────── */
+#combat-hud.hud--post-battle {
+  max-height: 48px;
+  overflow: hidden;
+  opacity: 0.5;
+  transition: max-height 0.4s ease, opacity 0.4s ease;
+}
+#combat-hud.hud--post-battle .combatant-name,
+#combat-hud.hud--post-battle .combatant-label,
+#combat-hud.hud--post-battle .combat-bar,
+#combat-hud.hud--post-battle .combat-stat,
+#combat-hud.hud--post-battle .enemy-hp-group,
+#combat-hud.hud--post-battle .combat-vs {
+  display: none;
+}
+
 /* ── Expanded battle log ─────────────────────────────────── */
 .battle-log {
   max-height: 52vh;
