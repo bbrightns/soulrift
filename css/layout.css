@@ -389,6 +389,41 @@
   line-height: 1.6;
 }
 
+/* ── Shop buy row ────────────────────────────────────────── */
+.shop-price-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-gold-text);
+  background: rgba(180,140,60,0.10);
+  border: 1px solid var(--c-gold-dim);
+  border-radius: var(--r-sm);
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.shop-buy-row {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--c-border-md);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  margin-top: var(--sp-3);
+}
+.shop-buy-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--c-text-hi);
+  font-size: 13px;
+  font-weight: 600;
+  padding: var(--sp-2) var(--sp-4);
+  cursor: pointer;
+  transition: background var(--ease-fast);
+}
+.shop-buy-btn:hover  { background: rgba(255,255,255,0.06); }
+.shop-buy-btn:active { background: rgba(255,255,255,0.10); }
+.shop-buy-btn--right { border-left: 1px solid var(--c-border-md); }
+
 /* ── Toast ───────────────────────────────────────────────── */
 #toast-wrap {
   position: fixed;

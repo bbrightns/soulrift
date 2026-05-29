@@ -497,6 +497,17 @@
     </div>
   </div><!-- /profile-panel -->
 
+  <!-- Shop confirm modal -->
+  <div id="shop-confirm-modal" class="modal-overlay is-hidden" onclick="closeShopConfirm()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div id="shop-confirm-body"></div>
+      <div style="display:flex;gap:var(--sp-3);margin-top:var(--sp-5)">
+        <button class="btn btn--ghost btn--full" onclick="closeShopConfirm()">Cancel</button>
+        <button class="btn btn--primary btn--full" onclick="confirmShopBuy()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /app -->
 
 
