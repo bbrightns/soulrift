@@ -122,7 +122,7 @@ const ENEMIES_DATA = [
     regenPerTurn: 5,
     opener: 'Ancient mechanisms grind as the warden lurches forward, unstoppable.',
     dropTable: [
-      { type: 'uncommon_spell_tiered', tier: 'mid', chance: 0.15 },
+      { type: 'uncommon_spell_tiered', tier: 'mid', chance: 0.2 },
     ],
   },
   {
@@ -135,7 +135,7 @@ const ENEMIES_DATA = [
     regenPerTurn: 8,
     opener: "The tower's core awakens. Time stutters. The Chronolith has no patience for the living.",
     dropTable: [
-      { type: 'uncommon_spell_tiered', tier: 'strong', chance: 0.1 },
+      { type: 'uncommon_spell_tiered', tier: 'strong', chance: 0.2 },
     ],
   },
 ];

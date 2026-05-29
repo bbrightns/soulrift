@@ -295,14 +295,15 @@ function rollDrops(enemyTemplate) {
   if (!enemyTemplate || !Array.isArray(enemyTemplate.dropTable)) return drops;
 
   enemyTemplate.dropTable.forEach(entry => {
-    if (Math.random() >= entry.chance) return;
+    let roll = Math.random();
+    console.log("Drop roll: " + roll + ", chance: " + entry.chance);
+    if (roll >= entry.chance) return;
 
     if (entry.type === 'catalyst') {
       giveCatalyst(entry.id);
       drops.push({ type: 'catalyst', name: formatItemName(entry.id) });
 
     } else if (entry.type === 'uncommon_spell_tiered') {
-      if (Math.random() >= (entry.chance ?? 1)) return;
       const tower = getTower();
       const tierMap = CLOCKTOWER_SPELL_TIERS[tower];
       if (!tierMap) return;
