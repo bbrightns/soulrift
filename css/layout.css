@@ -1467,11 +1467,28 @@
     linear-gradient(180deg, #061307 0%, #061007 58%, #09110b 100%);
 }
 
+.dungeon-scene--booby_forest {
+  background-image: url('/asset/dungeon_scene/booby_forest.png');
+  background-size: cover;
+  background-position: center;
+}
+
 .dungeon-scene--magi_graveyard {
-  background:
-    radial-gradient(circle at 76% 24%, rgba(91, 26, 26, .60) 0 18px, transparent 19px),
-    radial-gradient(circle at 36% 23%, rgba(197, 160, 89, .55) 0 1px, transparent 2px),
-    linear-gradient(180deg, #09070c 0%, #07060a 62%, #0c0810 100%);
+  background-image: url('/asset/dungeon_scene/magi_graveyard.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.dungeon-scene--cursed_clocktower {
+  background-image: url('/asset/dungeon_scene/cursed_clocktower.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.dungeon-scene--drowned_codex {
+  background-image: url('/asset/dungeon_scene/drowned_codex.png');
+  background-size: cover;
+  background-position: center;
 }
 
 .forest-moon,
