@@ -99,6 +99,7 @@ function renderDungeonList() {
 
   const s = getState();
   const dungeons = window.DUNGEONS_DATA || [];
+  const allEnemies = window.ENEMIES_DATA || [];
   wrap.innerHTML = dungeons.map(dungeon => {
     const unlocked = dungeon.unlocked && s.player.level >= dungeon.levelReq;
     const stateClass = unlocked ? '' : ' is-locked';
@@ -108,14 +109,42 @@ function renderDungeonList() {
     const lock = unlocked ? '' : '<div class="dungeon-lock" aria-hidden="true">&#128274;</div>';
     const onclick = unlocked ? " onclick=\"enterDungeon('" + dungeon.id + "')\"" : '';
 
+    const enemies = allEnemies.filter(e => e.dungeonId === dungeon.id);
+    let expLabel, goldLabel;
+    if (enemies.length === 0) {
+      expLabel = '—';
+      goldLabel = '—';
+    } else {
+      const expMin  = Math.min(...enemies.map(e => e.exp));
+      const expMax  = Math.max(...enemies.map(e => e.exp));
+      const goldMin = Math.min(...enemies.map(e => e.gold));
+      const goldMax = Math.max(...enemies.map(e => e.gold));
+      expLabel  = '+' + expMin  + '~' + expMax;
+      goldLabel = '+' + goldMin + '~' + goldMax;
+    }
+
     return ''
       + '<article class="dungeon-card' + stateClass + '"' + onclick + '>'
-      + '  <div class="dungeon-scene dungeon-scene--' + dungeon.id + '">' + lock
+      + '  <div class="dungeon-scene">'
+      + '    <img src="' + dungeon.image + '" alt="' + dungeon.name + '">'
+      + '    <div class="firefly f1"></div>'
+      + '    <div class="firefly f2"></div>'
+      + '    <div class="firefly f3"></div>'
+      + '    <div class="dungeon-level-badge">LV. ' + dungeon.levelReq + '</div>'
+      + '    <div class="dungeon-overlay-text">'
+      + '      <div class="dungeon-tag">' + (dungeon.tag || '') + '</div>'
+      + '      <div class="dungeon-hero-name">' + dungeon.name + '</div>'
+      + '    </div>'
+      + lock
       + '  </div>'
+      + '  <div class="dungeon-gold-accent"></div>'
       + '  <div class="dungeon-body">'
-      + '    <div class="dungeon-name">' + dungeonIcon(dungeon.icon) + ' ' + dungeon.name + '</div>'
-      + '    <p class="dungeon-desc">' + dungeon.description + '</p>'
-      + '    <div class="dungeon-reward">Beginner <b>EXP ' + dungeon.expRange + '</b> <b>Gold ' + dungeon.goldRange + '</b></div>'
+      + '    <div class="dungeon-desc">' + dungeon.description + '</div>'
+      + '    <div class="dungeon-rewards">'
+      + '      <div class="dungeon-pill"><span class="dungeon-pill-label">Experience</span><span class="dungeon-pill-val">' + expLabel + '</span></div>'
+      + '      <div class="dungeon-pill"><span class="dungeon-pill-label">Gold</span><span class="dungeon-pill-val">' + goldLabel + '</span></div>'
+      + '      <div class="dungeon-pill"><span class="dungeon-pill-label">Difficulty</span><span class="dungeon-pill-val diff-' + (dungeon.difficulty || '').toLowerCase() + '">' + (dungeon.difficulty || '') + '</span></div>'
+      + '    </div>'
       + '  </div>'
       + '  ' + action
       + '</article>';
