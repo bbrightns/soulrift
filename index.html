@@ -1,6 +1,7 @@
 <!-- /index.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -14,521 +15,515 @@
   <link rel="stylesheet" href="css/library.css?v=phase1-1">
   <link rel="stylesheet" href="css/battle.css">
 </head>
+
 <body>
 
-<!-- Toast layer -->
-<div id="toast-wrap" aria-live="polite"></div>
+  <!-- Toast layer -->
+  <div id="toast-wrap" aria-live="polite"></div>
 
-<!-- App root -->
-<div id="app">
+  <!-- App root -->
+  <div id="app">
 
-  <!-- ── Header ─────────────────────────────────────────── -->
-  <header id="app-header">
-    <div class="header-logo">SOUL<em>RIFT</em></div>
-    <!-- Clicking the HUD opens the profile panel -->
-    <div class="header-hud" onclick="openProfilePanel()" title="View Profile">
-      <div class="hud-name" id="hud-name">Arcane Wanderer</div>
-      <div class="hud-gold" id="hud-gold">1,000</div>
-      <div class="hud-level" id="hud-level">Lv 1</div>
-    </div>
-  </header>
-
-  <!-- ── Tower Select Intro (first run only) ────────────── -->
-  <div id="screen-intro">
-    <div class="landing-shell">
-
-      <!-- Step 1: Tower selection -->
-      <div id="intro-tower-step">
-        <header class="landing-header">
-          <div class="landing-rune">◆ World of Arcadia ◆</div>
-          <div class="landing-title">SOULRIFT</div>
-          <div class="landing-subtitle">RPG Chronicles</div>
-        </header>
-
-        <div class="landing-ornament" aria-hidden="true">
-          <span></span>
-          <i></i>
-          <b>Choose Your Tower</b>
-          <i></i>
-          <span></span>
-        </div>
-
-        <div class="landing-copy">
-          <p>
-            You stand at the threshold of the Rift.<br>
-            Choose your tower. Begin your ascension.
-          </p>
-        </div>
-
-        <div class="tower-select-grid">
-
-          <button class="tower-card" data-tower="light" onclick="chooseTower('light')">
-            <div class="card-glow light-glow"></div>
-            <div class="tower-card__glyph">
-              <i data-lucide="sun"></i>
-            </div>
-            <div class="tower-card__name">Light Tower</div>
-            <div class="tower-card__tagline color-light">Sol Radiance</div>
-            <div class="tower-card__desc">High HP/SP · Guard · Reflection · Charge release</div>
-            <div class="tower-card__footer">
-              <span class="badge badge--light">HP</span>
-              <span class="badge badge--light">SP</span>
-              <span class="tower-card__diff">Medium</span>
-            </div>
-          </button>
-
-          <button class="tower-card" data-tower="dark" onclick="chooseTower('dark')">
-            <div class="card-glow dark-glow"></div>
-            <div class="tower-card__glyph">
-              <i data-lucide="moon"></i>
-            </div>
-            <div class="tower-card__name">Dark Tower</div>
-            <div class="tower-card__tagline color-dark">Covenant of Shadows</div>
-            <div class="tower-card__desc">Highest damage · Curse · Fog · Night raid</div>
-            <div class="tower-card__footer">
-              <span class="badge badge--dark">ATK</span>
-              <span class="badge badge--dark">HEX</span>
-              <span class="tower-card__diff">Medium</span>
-            </div>
-          </button>
-
-          <button class="tower-card" data-tower="fire" onclick="chooseTower('fire')">
-            <div class="card-glow fire-glow"></div>
-            <div class="tower-card__glyph">
-              <i data-lucide="flame"></i>
-            </div>
-            <div class="tower-card__name">Fire Tower</div>
-            <div class="tower-card__tagline color-fire">Inferno Forge</div>
-            <div class="tower-card__desc">Highest HP · Burn stacking · Credit stealing · Wyvern path</div>
-            <div class="tower-card__footer">
-              <span class="badge badge--fire">HP</span>
-              <span class="badge badge--fire">ATK</span>
-              <span class="tower-card__diff">Easy</span>
-            </div>
-          </button>
-
-          <button class="tower-card" data-tower="ice" onclick="chooseTower('ice')">
-            <div class="card-glow ice-glow"></div>
-            <div class="tower-card__glyph">
-              <i data-lucide="diamond"></i>
-            </div>
-            <div class="tower-card__name">Ice Tower</div>
-            <div class="tower-card__tagline color-ice">Glacial Singularity</div>
-            <div class="tower-card__desc">Highest SP · Freeze control · Energy refill · Golem route</div>
-            <div class="tower-card__footer">
-              <span class="badge badge--ice">SP</span>
-              <span class="badge badge--ice">CTRL</span>
-              <span class="tower-card__diff">Hard</span>
-            </div>
-          </button>
-
-        </div>
-
-        <p class="landing-footnote">
-          Classic four-tower alignment restored
-        </p>
-      </div><!-- /intro-tower-step -->
-
-      <!-- Step 2: Name input -->
-      <div id="intro-name-step">
-        <div class="landing-name-head">
-          <div id="intro-chosen-glyph" class="landing-chosen-glyph"></div>
-          <div class="landing-chosen-name" id="intro-chosen-name"></div>
-          <div class="landing-name-copy">
-            Tower selected. Name your Arcanist.
-          </div>
-        </div>
-
-        <div class="divider--gold divider"></div>
-
-        <div class="name-input-wrap">
-          <label class="name-input-label" for="player-name-input">Your name</label>
-          <input
-            type="text"
-            id="player-name-input"
-            class="name-input"
-            placeholder="Riftwalker"
-            maxlength="24"
-            autocomplete="off"
-            spellcheck="false"
-          >
-        </div>
-
-        <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4);"
-                onclick="confirmStart()">
-          Enter the Rift
-        </button>
-        <button class="btn btn--ghost btn--full" style="margin-top:var(--sp-2);"
-                onclick="backToTowerSelect()">
-          Back — Change Tower
-        </button>
-      </div><!-- /intro-name-step -->
-
-    </div>
-  </div><!-- /screen-intro -->
-
-
-  <!-- ── Main Screens ───────────────────────────────────── -->
-  <main id="screens">
-
-    <!-- BATTLE -->
-    <div class="screen" id="screen-battle">
-      <div class="screen-title">Battle</div>
-      <div class="screen-sub">Enter the Rift and challenge enemies</div>
-
-      <div id="battle-dungeon-view" class="battle-view">
-        <div class="section-label">Enter Dungeons and Challenge Enemies</div>
-        <div id="dungeon-list" class="dungeon-list"></div>
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <header id="app-header">
+      <div class="header-logo">SOUL<em>RIFT</em></div>
+      <!-- Clicking the HUD opens the profile panel -->
+      <div class="header-hud" onclick="openProfilePanel()" title="View Profile">
+        <div class="hud-name" id="hud-name">Arcane Wanderer</div>
+        <div class="hud-gold" id="hud-gold">1,000</div>
+        <div class="hud-level" id="hud-level">Lv 1</div>
       </div>
+    </header>
 
-      <div id="battle-arena-view" class="battle-arena-view is-hidden">
-        <div class="arena-topbar">
-          <div>
-            <div class="arena-title" id="arena-dungeon-name">Booby Forest</div>
-            <div class="arena-sub" id="battle-result">Ready for a 10-turn auto battle.</div>
+    <!-- ── Tower Select Intro (first run only) ────────────── -->
+    <div id="screen-intro">
+      <div class="landing-shell">
+
+        <!-- Step 1: Tower selection -->
+        <div id="intro-tower-step">
+          <header class="landing-header">
+            <div class="landing-rune">◆ World of Arcadia ◆</div>
+            <div class="landing-title">SOULRIFT</div>
+            <div class="landing-subtitle">RPG Chronicles</div>
+          </header>
+
+          <div class="landing-ornament" aria-hidden="true">
+            <span></span>
+            <i></i>
+            <b>Choose Your Tower</b>
+            <i></i>
+            <span></span>
           </div>
-          <button class="arena-close-btn" aria-label="Close battle arena" onclick="leaveBattleArena()"></button>
+
+          <div class="landing-copy">
+            <p>
+              You stand at the threshold of the Rift.<br>
+              Choose your tower. Begin your ascension.
+            </p>
+          </div>
+
+          <div class="tower-select-grid">
+
+            <button class="tower-card" data-tower="light" onclick="chooseTower('light')">
+              <div class="card-glow light-glow"></div>
+              <div class="tower-card__glyph">
+                <i data-lucide="sun"></i>
+              </div>
+              <div class="tower-card__name">Light Tower</div>
+              <div class="tower-card__tagline color-light">Sol Radiance</div>
+              <div class="tower-card__desc">High HP/SP · Guard · Reflection · Charge release</div>
+              <div class="tower-card__footer">
+                <span class="badge badge--light">HP</span>
+                <span class="badge badge--light">SP</span>
+                <span class="tower-card__diff">Medium</span>
+              </div>
+            </button>
+
+            <button class="tower-card" data-tower="dark" onclick="chooseTower('dark')">
+              <div class="card-glow dark-glow"></div>
+              <div class="tower-card__glyph">
+                <i data-lucide="moon"></i>
+              </div>
+              <div class="tower-card__name">Dark Tower</div>
+              <div class="tower-card__tagline color-dark">Covenant of Shadows</div>
+              <div class="tower-card__desc">Highest damage · Curse · Fog · Night raid</div>
+              <div class="tower-card__footer">
+                <span class="badge badge--dark">ATK</span>
+                <span class="badge badge--dark">HEX</span>
+                <span class="tower-card__diff">Medium</span>
+              </div>
+            </button>
+
+            <button class="tower-card" data-tower="fire" onclick="chooseTower('fire')">
+              <div class="card-glow fire-glow"></div>
+              <div class="tower-card__glyph">
+                <i data-lucide="flame"></i>
+              </div>
+              <div class="tower-card__name">Fire Tower</div>
+              <div class="tower-card__tagline color-fire">Inferno Forge</div>
+              <div class="tower-card__desc">Highest HP · Burn stacking · Credit stealing · Wyvern path</div>
+              <div class="tower-card__footer">
+                <span class="badge badge--fire">HP</span>
+                <span class="badge badge--fire">ATK</span>
+                <span class="tower-card__diff">Easy</span>
+              </div>
+            </button>
+
+            <button class="tower-card" data-tower="ice" onclick="chooseTower('ice')">
+              <div class="card-glow ice-glow"></div>
+              <div class="tower-card__glyph">
+                <i data-lucide="diamond"></i>
+              </div>
+              <div class="tower-card__name">Ice Tower</div>
+              <div class="tower-card__tagline color-ice">Glacial Singularity</div>
+              <div class="tower-card__desc">Highest SP · Freeze control · Energy refill · Golem route</div>
+              <div class="tower-card__footer">
+                <span class="badge badge--ice">SP</span>
+                <span class="badge badge--ice">CTRL</span>
+                <span class="tower-card__diff">Hard</span>
+              </div>
+            </button>
+
+          </div>
+
+          <p class="landing-footnote">
+            Classic four-tower alignment restored
+          </p>
+        </div><!-- /intro-tower-step -->
+
+        <!-- Step 2: Name input -->
+        <div id="intro-name-step">
+          <div class="landing-name-head">
+            <div id="intro-chosen-glyph" class="landing-chosen-glyph"></div>
+            <div class="landing-chosen-name" id="intro-chosen-name"></div>
+            <div class="landing-name-copy">
+              Tower selected. Name your Arcanist.
+            </div>
+          </div>
+
+          <div class="divider--gold divider"></div>
+
+          <div class="name-input-wrap">
+            <label class="name-input-label" for="player-name-input">Your name</label>
+            <input type="text" id="player-name-input" class="name-input" placeholder="Riftwalker" maxlength="24"
+              autocomplete="off" spellcheck="false">
+          </div>
+
+          <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4);" onclick="confirmStart()">
+            Enter the Rift
+          </button>
+          <button class="btn btn--ghost btn--full" style="margin-top:var(--sp-2);" onclick="backToTowerSelect()">
+            Back — Change Tower
+          </button>
+        </div><!-- /intro-name-step -->
+
+      </div>
+    </div><!-- /screen-intro -->
+
+
+    <!-- ── Main Screens ───────────────────────────────────── -->
+    <main id="screens">
+
+      <!-- BATTLE -->
+      <div class="screen" id="screen-battle">
+        <div class="screen-title">Battle</div>
+        <div class="screen-sub">Enter the Rift and challenge enemies</div>
+
+        <div id="battle-dungeon-view" class="battle-view">
+          <div class="section-label">Enter Dungeons and Challenge Enemies</div>
+          <div id="dungeon-list" class="dungeon-list"></div>
         </div>
 
-        <div class="combatant-row" id="combat-hud">
-          <div class="combatant-card combatant-card--player">
-            <div class="combatant-label">You</div>
-            <div class="combatant-name" id="player-combat-name">Riftwalker</div>
-            <div class="combat-bar combat-bar--hp">
-              <span id="player-hp-fill"></span>
+        <div id="battle-arena-view" class="battle-arena-view is-hidden">
+          <div class="arena-topbar">
+            <div>
+              <div class="arena-title" id="arena-dungeon-name">Booby Forest</div>
+              <div class="arena-sub" id="battle-result">Ready for a 10-turn auto battle.</div>
             </div>
-            <div class="combat-stat" id="player-hp-text">HP -- / --</div>
-            <div class="combat-bar combat-bar--sp">
-              <span id="player-sp-fill"></span>
-            </div>
-            <div class="combat-stat" id="player-sp-text">SP -- / --</div>
+            <button class="arena-close-btn" aria-label="Close battle arena" onclick="leaveBattleArena()"></button>
           </div>
 
-          <div class="combat-vs">VS</div>
+          <div class="combatant-row" id="combat-hud">
+            <div class="combatant-card combatant-card--player">
+              <div class="combatant-label">You</div>
+              <div class="combatant-name" id="player-combat-name">Riftwalker</div>
+              <div class="combat-bar combat-bar--hp">
+                <span id="player-hp-fill"></span>
+              </div>
+              <div class="combat-stat" id="player-hp-text">HP -- / --</div>
+              <div class="combat-bar combat-bar--sp">
+                <span id="player-sp-fill"></span>
+              </div>
+              <div class="combat-stat" id="player-sp-text">SP -- / --</div>
+            </div>
 
-          <div class="combatant-card combatant-card--enemy">
-            <div class="combatant-label">Enemy</div>
-            <div class="combatant-name" id="enemy-combat-name">Unknown</div>
+            <div class="combat-vs">VS</div>
+
+            <div class="combatant-card combatant-card--enemy">
+              <div class="combatant-label">Enemy</div>
+              <div class="combatant-name" id="enemy-combat-name">Unknown</div>
               <div class="enemy-hp-group">
                 <div class="combat-bar combat-bar--hp">
                   <span id="enemy-hp-fill"></span>
                 </div>
                 <div class="combat-stat" id="enemy-hp-text">HP -- / --</div>
               </div>
+            </div>
+          </div>
+
+          <div id="battle-result-panel" class="battle-result-panel is-hidden" aria-live="polite">
+            <div class="battle-result-title" id="battle-result-title">VICTORY</div>
+            <div class="battle-result-subtitle" id="battle-result-subtitle">The Rift yields.</div>
+            <div class="battle-result-rewards" id="battle-result-rewards"></div>
+            <div id="battle-drops"></div>
+          </div>
+
+          <div class="arena-action-row arena-action">
+            <button id="battle-start-btn" class="btn btn--primary" onclick="runAutoBattle()">
+              Start Auto Battle
+            </button>
+            <button id="auto-loop-btn" class="arena-auto-btn" onclick="toggleAutoLoop()"
+              title="Auto-refight the same dungeon on loop">
+              Auto
+            </button>
+          </div>
+
+          <div class="section-label">Combat Log</div>
+          <div id="battle-log" class="battle-log"></div>
+        </div>
+      </div>
+
+      <!-- ORDER -->
+      <div class="screen" id="screen-order">
+        <div class="screen-title">Order</div>
+        <div class="screen-sub">Assign your 10-turn spell sequence</div>
+        <div class="section-label">Battle Blueprint</div>
+        <div id="blueprint-summary" style="margin-bottom:var(--sp-1);"></div>
+        <div id="blueprint-grid" class="blueprint-grid"></div>
+        <div id="spell-picker-header" class="spell-picker-header"></div>
+        <div id="spell-picker" class="spell-picker"></div>
+        <div style="margin-top:var(--sp-2);padding-bottom:var(--sp-2);">
+          <button class="btn btn--ghost btn--full" onclick="clearBlueprintAndRender();">
+            Clear All Slots
+          </button>
+        </div>
+      </div>
+
+      <!-- MARKET -->
+      <div class="screen" id="screen-market">
+        <div class="screen-title">Market</div>
+        <div class="screen-sub">Buy spell stones for your tower</div>
+        <div class="section-label">Tower Shop</div>
+        <div id="market-list"></div>
+      </div>
+
+      <!-- ITEMS -->
+      <div class="screen" id="screen-items">
+        <div class="screen-title">Items</div>
+        <div class="screen-sub">Spell stones, equipment and relics</div>
+        <div class="section-label">Spell Inventory</div>
+        <div id="inventory-list"></div>
+        <div class="section-label" style="margin-top:var(--sp-4)">Catalysts</div>
+        <div id="catalyst-list"></div>
+      </div>
+
+      <!-- FUSION -->
+      <div class="screen" id="screen-fusion">
+
+        <div class="screen-title">Fusion</div>
+        <div class="screen-sub">Combine spell stones to raise their level</div>
+
+        <!-- Crucible slots -->
+        <div class="fusion-crucible-row">
+          <div class="fusion-slot" id="fusion-slot-left"
+            onclick="document.getElementById('fusion-spell-list').scrollIntoView({behavior:'smooth'})">
+            <div class="fusion-slot__inner" id="fusion-slot-left-inner">
+              <span class="fusion-slot__empty-icon">+</span>
+              <span class="fusion-slot__empty-text">Select</span>
+            </div>
+          </div>
+
+          <div class="fusion-crucible-mid">
+            <div class="fusion-rate-badge is-hidden" id="fusion-rate-badge">
+              <div class="fusion-rate-badge__label">SUCCESS</div>
+              <div class="fusion-rate-badge__pct" id="fusion-rate-badge-pct">--</div>
+            </div>
+            <div class="fusion-crucible-icon">⚗</div>
+          </div>
+
+          <div class="fusion-slot" id="fusion-slot-right">
+            <div class="fusion-slot__inner" id="fusion-slot-right-inner">
+              <span class="fusion-slot__empty-icon">+</span>
+              <span class="fusion-slot__empty-text">Select</span>
+            </div>
           </div>
         </div>
 
-        <div id="battle-result-panel" class="battle-result-panel is-hidden" aria-live="polite">
-          <div class="battle-result-title" id="battle-result-title">VICTORY</div>
-          <div class="battle-result-subtitle" id="battle-result-subtitle">The Rift yields.</div>
-          <div class="battle-result-rewards" id="battle-result-rewards"></div>
-          <div id="battle-drops"></div>
+        <div class="fusion-slot-labels">
+          <span>CORE I</span>
+          <span></span>
+          <span>CORE II</span>
         </div>
 
-        <div class="arena-action-row arena-action">
-          <button id="battle-start-btn" class="btn btn--primary" onclick="runAutoBattle()">
-            Start Auto Battle
-          </button>
-          <button id="auto-loop-btn" class="arena-auto-btn" onclick="toggleAutoLoop()" title="Auto-refight the same dungeon on loop">
-            Auto
-          </button>
+        <!-- Catalyst -->
+        <div class="fusion-catalyst-section">
+          <div class="fusion-cat-label">CATALYST SLOT</div>
+          <div class="fusion-cat-slot" id="fusion-cat-display" onclick="toggleFusionCatalystPicker()">
+            <span id="fusion-cat-display-text">None</span>
+          </div>
+          <div id="fusion-catalyst-list" class="fusion-cat-picker is-hidden"></div>
         </div>
 
-        <div class="section-label">Combat Log</div>
-        <div id="battle-log" class="battle-log"></div>
+        <!-- Cost + Invoke -->
+        <div id="fusion-panel"></div>
+
+        <!-- Divider -->
+        <div class="fusion-divider">◆</div>
+
+        <!-- Inventory -->
+        <div class="fusion-inventory-head">
+          <span class="section-label" style="margin:0">INVENTORY: STONES</span>
+        </div>
+        <div id="fusion-spell-list" class="fusion-stone-grid"></div>
+
+        <!-- Result Modal -->
+        <div id="fusion-result-modal" class="modal-overlay is-hidden" onclick="closeFusionResult()">
+          <div class="modal-card" onclick="event.stopPropagation()">
+            <div id="fusion-result-body"></div>
+            <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4)"
+              onclick="closeFusionResult()">Continue</button>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- ORDER -->
-    <div class="screen" id="screen-order">
-      <div class="screen-title">Order</div>
-      <div class="screen-sub">Program your 10-turn spell sequence</div>
-      <div class="section-label">Battle Blueprint</div>
-      <div id="blueprint-summary" style="margin-bottom:var(--sp-3);"></div>
-      <div id="blueprint-grid" class="blueprint-grid"></div>
-      <div id="spell-picker" class="spell-picker"></div>
-      <div style="margin-top:var(--sp-4);">
-        <button class="btn btn--ghost btn--full" onclick="clearBlueprintAndRender();">
-          Clear All Slots
+      <!-- LIBRARY -->
+      <div class="screen" id="screen-library">
+        <div class="screen-title">Library</div>
+        <div class="screen-sub">Your collected spell stones</div>
+        <div class="section-label" style="margin-top:var(--sp-4)">Tower</div>
+        <div id="library-tower-filter" class="filter-row"></div>
+        <div class="section-label" style="margin-top:var(--sp-3)">Rarity</div>
+        <div id="library-rarity-filter" class="filter-row"></div>
+        <div id="library-list">
+          <div class="empty-state">
+            <div class="empty-state__icon">▤</div>
+            <div class="empty-state__title">No Spells Yet</div>
+            <div class="empty-state__body">Visit the Market to acquire your first spell stones.</div>
+          </div>
+        </div>
+      </div>
+
+    </main><!-- /screens -->
+
+
+    <!-- ── Bottom Navigation ──────────────────────────────── -->
+    <nav id="bottom-nav">
+      <button class="nav-btn" id="nav-battle">
+        <span class="nav-btn__icon">⚔</span>
+        <span class="nav-btn__label">Battle</span>
+      </button>
+      <button class="nav-btn" id="nav-order">
+        <span class="nav-btn__icon">☰</span>
+        <span class="nav-btn__label">Order</span>
+      </button>
+      <button class="nav-btn" id="nav-market">
+        <span class="nav-btn__icon">◈</span>
+        <span class="nav-btn__label">Market</span>
+      </button>
+      <button class="nav-btn" id="nav-items">
+        <span class="nav-btn__icon">◆</span>
+        <span class="nav-btn__label">Items</span>
+      </button>
+      <button class="nav-btn" id="nav-fusion">
+        <span class="nav-btn__icon">⚗</span>
+        <span class="nav-btn__label">Fusion</span>
+      </button>
+      <button class="nav-btn" id="nav-library">
+        <span class="nav-btn__icon">▤</span>
+        <span class="nav-btn__label">Library</span>
+      </button>
+    </nav>
+
+
+    <!-- ── Profile Panel (slide-up overlay) ──────────────── -->
+    <div id="profile-panel" onclick="if(event.target===this)closeProfilePanel()">
+      <div class="profile-sheet">
+        <div class="profile-handle"></div>
+
+        <!-- Hero -->
+        <div class="profile-hero">
+          <div class="profile-avatar" id="prof-avatar">🧙</div>
+          <div>
+            <div class="profile-hero__name" id="prof-name">Arcane Wanderer</div>
+            <div class="profile-hero__sub">
+              <span id="prof-tower-badge" class="badge badge--gold">--</span>
+              <span id="prof-tower" style="font-size:12px;color:var(--c-text-2);">--</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider--gold divider"></div>
+
+        <!-- Progression -->
+        <div class="prof-section-head">
+          <span class="prof-section-head__icon">◆</span>
+          <span class="prof-section-head__title">PROGRESSION</span>
+        </div>
+        <div class="card card--raised" style="margin-bottom:var(--sp-4);">
+          <div class="stat-row">
+            <span class="stat-row__key">Level</span>
+            <span class="stat-row__val stat-row__val--gold" id="prof-level">1</span>
+          </div>
+          <div class="vital-row">
+            <div class="vital-row__head">
+              <span class="vital-row__key">EXP</span>
+              <span class="vital-row__frac" id="prof-exp">0 / 100</span>
+            </div>
+            <div class="vital-bar">
+              <div class="vital-bar__fill vital-bar__fill--exp" id="prof-exp-bar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__key">Gold</span>
+            <span class="stat-row__val stat-row__val--gold" id="prof-gold">1,000</span>
+          </div>
+        </div>
+
+        <!-- Vitals -->
+        <div class="prof-section-head">
+          <span class="prof-section-head__icon">◆</span>
+          <span class="prof-section-head__title">VITALS</span>
+        </div>
+        <div class="card card--raised" style="margin-bottom:var(--sp-4);">
+          <div class="vital-row">
+            <div class="vital-row__head">
+              <span class="vital-row__key">HP</span>
+              <span class="vital-row__frac" id="prof-hp">80 / 80</span>
+            </div>
+            <div class="vital-bar">
+              <div class="vital-bar__fill vital-bar__fill--hp" id="prof-hp-bar" style="width:100%"></div>
+            </div>
+          </div>
+          <div class="vital-row">
+            <div class="vital-row__head">
+              <span class="vital-row__key">SP</span>
+              <span class="vital-row__frac" id="prof-sp">40 / 40</span>
+            </div>
+            <div class="vital-bar">
+              <div class="vital-bar__fill vital-bar__fill--sp" id="prof-sp-bar" style="width:100%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Core Stats -->
+        <div class="prof-section-head">
+          <span class="prof-section-head__icon">◆</span>
+          <span class="prof-section-head__title">STATS</span>
+        </div>
+        <div class="card card--raised" style="margin-bottom:var(--sp-5);">
+          <div class="stat-row">
+            <span class="stat-row__key">💪 Strength</span>
+            <span class="stat-row__val" id="prof-str">8</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__key">⚔ Attack</span>
+            <span class="stat-row__val" id="prof-atk">10</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__key">🧠 Intelligence</span>
+            <span class="stat-row__val" id="prof-int">8</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__key">⚡ Agility</span>
+            <span class="stat-row__val" id="prof-agi">6</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__key">🛡 Defense</span>
+            <span class="stat-row__val" id="prof-def">5</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <button class="btn btn--ghost btn--full" style="margin-bottom:var(--sp-2);" onclick="closeProfilePanel()">
+          Close
         </button>
+        <button class="btn btn--danger btn--full" onclick="resetGame()">
+          Reset Tower
+        </button>
+
       </div>
-    </div>
+    </div><!-- /profile-panel -->
 
-    <!-- MARKET -->
-    <div class="screen" id="screen-market">
-      <div class="screen-title">Market</div>
-      <div class="screen-sub">Buy spell stones for your tower</div>
-      <div class="section-label">Tower Shop</div>
-      <div id="market-list"></div>
-    </div>
-
-    <!-- ITEMS -->
-    <div class="screen" id="screen-items">
-      <div class="screen-title">Items</div>
-      <div class="screen-sub">Spell stones, equipment and relics</div>
-      <div class="section-label">Spell Inventory</div>
-      <div id="inventory-list"></div>
-      <div class="section-label" style="margin-top:var(--sp-4)">Catalysts</div>
-      <div id="catalyst-list"></div>
-    </div>
-
-    <!-- FUSION -->
-    <div class="screen" id="screen-fusion">
-
-      <div class="screen-title">Fusion</div>
-      <div class="screen-sub">Combine spell stones to raise their level</div>
-
-      <!-- Crucible slots -->
-      <div class="fusion-crucible-row">
-        <div class="fusion-slot" id="fusion-slot-left"
-             onclick="document.getElementById('fusion-spell-list').scrollIntoView({behavior:'smooth'})">
-          <div class="fusion-slot__inner" id="fusion-slot-left-inner">
-            <span class="fusion-slot__empty-icon">+</span>
-            <span class="fusion-slot__empty-text">Select</span>
-          </div>
-        </div>
-
-        <div class="fusion-crucible-mid">
-          <div class="fusion-rate-badge is-hidden" id="fusion-rate-badge">
-            <div class="fusion-rate-badge__label">SUCCESS</div>
-            <div class="fusion-rate-badge__pct" id="fusion-rate-badge-pct">--</div>
-          </div>
-          <div class="fusion-crucible-icon">⚗</div>
-        </div>
-
-        <div class="fusion-slot" id="fusion-slot-right">
-          <div class="fusion-slot__inner" id="fusion-slot-right-inner">
-            <span class="fusion-slot__empty-icon">+</span>
-            <span class="fusion-slot__empty-text">Select</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="fusion-slot-labels">
-        <span>CORE I</span>
-        <span></span>
-        <span>CORE II</span>
-      </div>
-
-      <!-- Catalyst -->
-      <div class="fusion-catalyst-section">
-        <div class="fusion-cat-label">CATALYST SLOT</div>
-        <div class="fusion-cat-slot" id="fusion-cat-display"
-             onclick="toggleFusionCatalystPicker()">
-          <span id="fusion-cat-display-text">None</span>
-        </div>
-        <div id="fusion-catalyst-list" class="fusion-cat-picker is-hidden"></div>
-      </div>
-
-      <!-- Cost + Invoke -->
-      <div id="fusion-panel"></div>
-
-      <!-- Divider -->
-      <div class="fusion-divider">◆</div>
-
-      <!-- Inventory -->
-      <div class="fusion-inventory-head">
-        <span class="section-label" style="margin:0">INVENTORY: STONES</span>
-      </div>
-      <div id="fusion-spell-list" class="fusion-stone-grid"></div>
-
-      <!-- Result Modal -->
-      <div id="fusion-result-modal" class="modal-overlay is-hidden" onclick="closeFusionResult()">
-        <div class="modal-card" onclick="event.stopPropagation()">
-          <div id="fusion-result-body"></div>
-          <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4)" onclick="closeFusionResult()">Continue</button>
+    <!-- Shop confirm modal -->
+    <div id="shop-confirm-modal" class="modal-overlay is-hidden" onclick="closeShopConfirm()">
+      <div class="modal-card" onclick="event.stopPropagation()">
+        <div id="shop-confirm-body"></div>
+        <div style="display:flex;gap:var(--sp-3);margin-top:var(--sp-5)">
+          <button class="btn btn--ghost btn--full" onclick="closeShopConfirm()">Cancel</button>
+          <button class="btn btn--primary btn--full" onclick="confirmShopBuy()">Confirm</button>
         </div>
       </div>
     </div>
 
-    <!-- LIBRARY -->
-    <div class="screen" id="screen-library">
-      <div class="screen-title">Library</div>
-      <div class="screen-sub">Your collected spell stones</div>
-      <div class="section-label" style="margin-top:var(--sp-4)">Tower</div>
-      <div id="library-tower-filter" class="filter-row"></div>
-      <div class="section-label" style="margin-top:var(--sp-3)">Rarity</div>
-      <div id="library-rarity-filter" class="filter-row"></div>
-      <div id="library-list">
-        <div class="empty-state">
-          <div class="empty-state__icon">▤</div>
-          <div class="empty-state__title">No Spells Yet</div>
-          <div class="empty-state__body">Visit the Market to acquire your first spell stones.</div>
-        </div>
-      </div>
-    </div>
-
-  </main><!-- /screens -->
+  </div><!-- /app -->
 
 
-  <!-- ── Bottom Navigation ──────────────────────────────── -->
-  <nav id="bottom-nav">
-    <button class="nav-btn" id="nav-battle">
-      <span class="nav-btn__icon">⚔</span>
-      <span class="nav-btn__label">Battle</span>
-    </button>
-    <button class="nav-btn" id="nav-order">
-      <span class="nav-btn__icon">☰</span>
-      <span class="nav-btn__label">Order</span>
-    </button>
-    <button class="nav-btn" id="nav-market">
-      <span class="nav-btn__icon">◈</span>
-      <span class="nav-btn__label">Market</span>
-    </button>
-    <button class="nav-btn" id="nav-items">
-      <span class="nav-btn__icon">◆</span>
-      <span class="nav-btn__label">Items</span>
-    </button>
-    <button class="nav-btn" id="nav-fusion">
-      <span class="nav-btn__icon">⚗</span>
-      <span class="nav-btn__label">Fusion</span>
-    </button>
-    <button class="nav-btn" id="nav-library">
-      <span class="nav-btn__icon">▤</span>
-      <span class="nav-btn__label">Library</span>
-    </button>
-  </nav>
-
-
-  <!-- ── Profile Panel (slide-up overlay) ──────────────── -->
-  <div id="profile-panel" onclick="if(event.target===this)closeProfilePanel()">
-    <div class="profile-sheet">
-      <div class="profile-handle"></div>
-
-      <!-- Hero -->
-      <div class="profile-hero">
-        <div class="profile-avatar" id="prof-avatar">🧙</div>
-        <div>
-          <div class="profile-hero__name" id="prof-name">Arcane Wanderer</div>
-          <div class="profile-hero__sub">
-            <span id="prof-tower-badge" class="badge badge--gold">--</span>
-            <span id="prof-tower" style="font-size:12px;color:var(--c-text-2);">--</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider--gold divider"></div>
-
-      <!-- Progression -->
-      <div class="prof-section-head">
-        <span class="prof-section-head__icon">◆</span>
-        <span class="prof-section-head__title">PROGRESSION</span>
-      </div>
-      <div class="card card--raised" style="margin-bottom:var(--sp-4);">
-        <div class="stat-row">
-          <span class="stat-row__key">Level</span>
-          <span class="stat-row__val stat-row__val--gold" id="prof-level">1</span>
-        </div>
-        <div class="vital-row">
-          <div class="vital-row__head">
-            <span class="vital-row__key">EXP</span>
-            <span class="vital-row__frac" id="prof-exp">0 / 100</span>
-          </div>
-          <div class="vital-bar">
-            <div class="vital-bar__fill vital-bar__fill--exp" id="prof-exp-bar" style="width:0%"></div>
-          </div>
-        </div>
-        <div class="stat-row">
-          <span class="stat-row__key">Gold</span>
-          <span class="stat-row__val stat-row__val--gold" id="prof-gold">1,000</span>
-        </div>
-      </div>
-
-      <!-- Vitals -->
-      <div class="prof-section-head">
-        <span class="prof-section-head__icon">◆</span>
-        <span class="prof-section-head__title">VITALS</span>
-      </div>
-      <div class="card card--raised" style="margin-bottom:var(--sp-4);">
-        <div class="vital-row">
-          <div class="vital-row__head">
-            <span class="vital-row__key">HP</span>
-            <span class="vital-row__frac" id="prof-hp">80 / 80</span>
-          </div>
-          <div class="vital-bar">
-            <div class="vital-bar__fill vital-bar__fill--hp" id="prof-hp-bar" style="width:100%"></div>
-          </div>
-        </div>
-        <div class="vital-row">
-          <div class="vital-row__head">
-            <span class="vital-row__key">SP</span>
-            <span class="vital-row__frac" id="prof-sp">40 / 40</span>
-          </div>
-          <div class="vital-bar">
-            <div class="vital-bar__fill vital-bar__fill--sp" id="prof-sp-bar" style="width:100%"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Core Stats -->
-      <div class="prof-section-head">
-        <span class="prof-section-head__icon">◆</span>
-        <span class="prof-section-head__title">STATS</span>
-      </div>
-      <div class="card card--raised" style="margin-bottom:var(--sp-5);">
-        <div class="stat-row">
-          <span class="stat-row__key">💪 Strength</span>
-          <span class="stat-row__val" id="prof-str">8</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-row__key">⚔ Attack</span>
-          <span class="stat-row__val" id="prof-atk">10</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-row__key">🧠 Intelligence</span>
-          <span class="stat-row__val" id="prof-int">8</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-row__key">⚡ Agility</span>
-          <span class="stat-row__val" id="prof-agi">6</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-row__key">🛡 Defense</span>
-          <span class="stat-row__val" id="prof-def">5</span>
-        </div>
-      </div>
-
-      <!-- Actions -->
-      <button class="btn btn--ghost btn--full" style="margin-bottom:var(--sp-2);"
-              onclick="closeProfilePanel()">
-        Close
-      </button>
-      <button class="btn btn--danger btn--full" onclick="resetGame()">
-        Reset Tower
-      </button>
-
-    </div>
-  </div><!-- /profile-panel -->
-
-  <!-- Shop confirm modal -->
-  <div id="shop-confirm-modal" class="modal-overlay is-hidden" onclick="closeShopConfirm()">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <div id="shop-confirm-body"></div>
-      <div style="display:flex;gap:var(--sp-3);margin-top:var(--sp-5)">
-        <button class="btn btn--ghost btn--full" onclick="closeShopConfirm()">Cancel</button>
-        <button class="btn btn--primary btn--full" onclick="confirmShopBuy()">Confirm</button>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /app -->
-
-
-<!-- Scripts — load order matters -->
-<script src="https://unpkg.com/lucide@latest"></script>
-<script src="data/spells.js?v=phase1-1"></script>
-<script src="data/enemies.js?v=phase1-1"></script>
-<script src="js/state.js?v=phase1-1"></script>
-<script src="js/ui.js?v=phase1-1"></script>
-<script src="js/tower.js?v=phase1-1"></script>
-<script src="js/order.js?v=phase1-1"></script>
-<script src="js/shop.js?v=phase1-1"></script>
-<script src="js/inventory.js?v=phase1-1"></script>
-<script src="js/spellHandlers.js?v=phase1-1"></script>
-<script src="js/battle.js?v=phase1-1"></script>
-<script src="js/fusion.js?v=phase1-1"></script>
-<script src="js/app.js?v=phase1-1"></script>
-<script> lucide.createIcons(); </script>
+  <!-- Scripts — load order matters -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="data/spells.js?v=phase1-1"></script>
+  <script src="data/enemies.js?v=phase1-1"></script>
+  <script src="js/state.js?v=phase1-1"></script>
+  <script src="js/ui.js?v=phase1-1"></script>
+  <script src="js/tower.js?v=phase1-1"></script>
+  <script src="js/order.js?v=phase1-1"></script>
+  <script src="js/shop.js?v=phase1-1"></script>
+  <script src="js/inventory.js?v=phase1-1"></script>
+  <script src="js/spellHandlers.js?v=phase1-1"></script>
+  <script src="js/battle.js?v=phase1-1"></script>
+  <script src="js/fusion.js?v=phase1-1"></script>
+  <script src="js/app.js?v=phase1-1"></script>
+  <script> lucide.createIcons(); </script>
 
 </body>
+
 </html>

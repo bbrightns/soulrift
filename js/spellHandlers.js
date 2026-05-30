@@ -182,7 +182,7 @@ registerHandler('burn', async (ctx) => {
     ctxGoldenName(ctx) + ' casts Burn (Lv ' + ctx.spellLvl + '). Direct ' + directDmg + ' dmg. Stack applied, ' + power + '/turn. (' + ctx.battleStatus.burnStacks.length + ' active).', 'player'
   );
 
-}
+});
 
 // fire_thief — damage + gold steal, scales with level
 registerHandler('fire_thief', async (ctx) => {

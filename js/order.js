@@ -25,6 +25,7 @@ function getOwnedSpellOptions() {
       qty: stone.qty,
     });
   });
+  //options.sort((a, b) => b.lvl - a.lvl || b.spCost - a.spCost);
   options.sort((a, b) => a.name.localeCompare(b.name) || b.lvl - a.lvl);
   return options;
 }
@@ -57,13 +58,14 @@ function renderBlueprint() {
       + (isEmpty ? ' blueprint-slot--empty' : '');
     slot.onclick = () => selectBlueprintSlot(i);
 
+    const lvlBadge = slotLvl > 1 ? ' <span class="badge--lv">' + slotLvl + '</span>' : '';
     const spellSpan = isEmpty
       ? '<span class="blueprint-slot__spell blueprint-slot__spell--empty">Empty</span>'
-      : '<span class="blueprint-slot__spell">' + def.name + (slotLvl > 1 ? ' <small>Lv' + slotLvl + '</small>' : '') + '</span>';
+      : '<span class="blueprint-slot__spell">' + def.name + lvlBadge + '</span>';
 
     slot.innerHTML = '<span class="blueprint-slot__turn">T' + (i + 1) + '</span>'
       + spellSpan
-      + '<span class="blueprint-slot__cost">' + (def ? 'SP ' + def.spCost : '-') + '</span>'
+      + '<span class="blueprint-slot__cost">' + (def ? def.spCost : '') + '</span>'
       + '<span class="blueprint-slot__clear" onclick="event.stopPropagation(); clearBlueprintSlot(' + i + ')" title="Clear slot">✕</span>';
 
     grid.appendChild(slot);
@@ -116,15 +118,16 @@ function renderSpellPicker() {
   }
 
   const current = getBlueprint()[_selectedBlueprintSlot];
-  wrap.innerHTML = '<div class="section-label" style="margin-top:var(--sp-4);">Assign Turn ' + (_selectedBlueprintSlot + 1) + '</div>'
-    + '<div class="spell-picker__grid">'
+  const header = document.getElementById('spell-picker-header');
+  if (header) header.innerHTML = '<div class="section-label" style="margin:0;">Assign Turn ' + (_selectedBlueprintSlot + 1) + '</div>';
+
+  wrap.innerHTML = '<div class="spell-picker__grid">'
     + options.map(option => {
       const active = (option.id + '|' + option.lvl) === current ? ' is-selected' : '';
       const lvlBadge = ' <span class="badge badge--lv">Lv ' + option.lvl + '</span>';
       return '<div class="spell-picker__option-row">'
         + '<button type="button" class="spell-picker__option' + active + '" onclick="assignSpellToSelectedSlot(\'' + option.id + '\',' + option.lvl + ')">'
-        + '<span class="spell-picker__name">' + option.name + lvlBadge + '</span>'
-        + '<span class="spell-picker__meta">SP ' + option.spCost + ' · owned ×' + option.qty + '</span>'
+        + '<span class="spell-picker__name">' + option.name + lvlBadge + '<span class="spell-picker__meta">SP ' + option.spCost + '</span></span>'
         + '</button>'
         + '<div class="spell-picker__fills">'
         + '<button type="button" class="spell-picker__fill-btn" onclick="fillBlueprintAll(\'' + option.id + '\',' + option.lvl + ')" title="Fill all 10 turns with this spell">Fill All</button>'
@@ -145,13 +148,14 @@ function renderBlueprintSummary() {
     return sum + (def ? def.spCost : 0);
   }, 0);
   const player = getPlayer();
-  const warning = totalSp > player.spMax
-    ? '<span class="c-bad">SP risk: later turns may Struggle</span>'
-    : '<span class="c-ok">Within max SP</span>';
+  const pct = Math.min(100, Math.round((totalSp / player.spMax) * 100));
+  const over = totalSp > player.spMax;
 
-  wrap.innerHTML = '<div class="card card--raised row row--between row--gap-3">'
-    + '<span class="spell-card__meta">Estimated sequence cost</span>'
-    + '<span class="stat-row__val stat-row__val--gold">' + totalSp + ' / ' + player.spMax + ' SP · ' + warning + '</span>'
+  wrap.innerHTML = '<div class="bp-sp-gauge">'
+    + '<div class="bp-sp-gauge__track">'
+    + '<div class="bp-sp-gauge__fill' + (over ? ' bp-sp-gauge__fill--over' : '') + '" style="width:' + pct + '%"></div>'
+    + '<span class="bp-sp-gauge__label">' + totalSp + ' / ' + player.spMax + ' SP</span>'
+    + '</div>'
     + '</div>';
 }
 
