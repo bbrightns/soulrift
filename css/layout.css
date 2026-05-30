@@ -855,6 +855,40 @@
   gap: 1px 8px;
   text-align: left;
   cursor: pointer;
+  position: relative;
+}
+
+.blueprint-slot--empty {
+  border-color: rgba(184,48,48,.38);
+}
+
+.blueprint-slot__spell--empty {
+  color: var(--c-bad);
+}
+
+.blueprint-slot__clear {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  color: var(--c-text-3);
+  font-size: 9px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color var(--ease-fast), border-color var(--ease-fast), background var(--ease-fast);
+}
+
+.blueprint-slot__clear:hover {
+  color: var(--c-bad);
+  border-color: rgba(184,48,48,.38);
+  background: rgba(184,48,48,.08);
 }
 
 .blueprint-slot.is-selected {
@@ -939,6 +973,52 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--sp-2);
+}
+
+.spell-picker__option-row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--sp-2);
+}
+
+.spell-picker__option-row .spell-picker__option {
+  flex: 1;
+  min-width: 0;
+}
+
+.spell-picker__fills {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.spell-picker__fill-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(197,160,89,.08);
+  border: 1px solid var(--c-border-md);
+  border-radius: var(--r-sm);
+  color: var(--c-text-2);
+  font-size: 9px;
+  font-family: var(--f-head);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 0 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--ease-fast), color var(--ease-fast), border-color var(--ease-fast);
+}
+
+.spell-picker__fill-btn:hover {
+  background: rgba(197,160,89,.16);
+  color: var(--c-gold-text);
+  border-color: var(--c-border-hi);
+}
+
+.spell-picker__fill-btn:active {
+  filter: brightness(.88);
 }
 
 .spell-picker__option {
