@@ -158,8 +158,8 @@ function renderProfilePanel() {
   fill('prof-tower',  towerNames[s.tower] || '—');
   fill('prof-level',  p.level);
   fill('prof-exp',    p.exp + ' / ' + p.expNext);
-  fill('prof-hp',     p.hp + ' / ' + p.hpMax);
-  fill('prof-sp',     p.sp + ' / ' + p.spMax);
+  fill('prof-hp',     p.hpMax);
+  fill('prof-sp',     p.spMax);
   fill('prof-gold',   s.gold.toLocaleString());
   fill('prof-str',    p.str);
   fill('prof-atk',    p.atk);
@@ -179,8 +179,6 @@ function renderProfilePanel() {
     const el = document.getElementById(id);
     if (el) el.style.width = Math.min(100, Math.max(0, pct)) + '%';
   };
-  setBar('prof-hp-bar',  (p.hp  / p.hpMax)   * 100);
-  setBar('prof-sp-bar',  (p.sp  / p.spMax)   * 100);
   setBar('prof-exp-bar', (p.exp / p.expNext) * 100);
 
   /* avatar tower glow */

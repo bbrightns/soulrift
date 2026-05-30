@@ -396,10 +396,14 @@
     </nav>
 
 
-    <!-- ── Profile Panel (slide-up overlay) ──────────────── -->
-    <div id="profile-panel" onclick="if(event.target===this)closeProfilePanel()">
-      <div class="profile-sheet">
+  <!-- ── Profile Panel (slide-up overlay) ──────────────── -->
+  <div id="profile-panel" onclick="if(event.target===this)closeProfilePanel()">
+    <div class="profile-sheet">
+      <div class="profile-sheet-topbar">
         <div class="profile-handle"></div>
+        <button class="arena-close-btn" style="position:absolute;right:0;top:-4px;"
+                onclick="closeProfilePanel()" aria-label="Close profile"></button>
+      </div>
 
         <!-- Hero -->
         <div class="profile-hero">
@@ -440,67 +444,52 @@
           </div>
         </div>
 
-        <!-- Vitals -->
-        <div class="prof-section-head">
-          <span class="prof-section-head__icon">◆</span>
-          <span class="prof-section-head__title">VITALS</span>
+      <!-- Stats (includes vitals) -->
+      <div class="prof-section-head">
+        <span class="prof-section-head__icon">◆</span>
+        <span class="prof-section-head__title">STATS</span>
+      </div>
+      <div class="prof-stats-grid" style="margin-bottom:var(--sp-5);">
+
+        <div class="prof-chip-vitals">
+          <div class="prof-chip-hp">
+            <span class="prof-chip__key">❤ HP</span>
+            <span class="prof-chip__val prof-chip__val--red" id="prof-hp">80</span>
+          </div>
+          <div class="prof-chip-sp">
+            <span class="prof-chip__key">💧 SP</span>
+            <span class="prof-chip__val prof-chip__val--blue" id="prof-sp">40</span>
+          </div>
         </div>
-        <div class="card card--raised" style="margin-bottom:var(--sp-4);">
-          <div class="vital-row">
-            <div class="vital-row__head">
-              <span class="vital-row__key">HP</span>
-              <span class="vital-row__frac" id="prof-hp">80 / 80</span>
-            </div>
-            <div class="vital-bar">
-              <div class="vital-bar__fill vital-bar__fill--hp" id="prof-hp-bar" style="width:100%"></div>
-            </div>
-          </div>
-          <div class="vital-row">
-            <div class="vital-row__head">
-              <span class="vital-row__key">SP</span>
-              <span class="vital-row__frac" id="prof-sp">40 / 40</span>
-            </div>
-            <div class="vital-bar">
-              <div class="vital-bar__fill vital-bar__fill--sp" id="prof-sp-bar" style="width:100%"></div>
-            </div>
-          </div>
+        <div class="prof-chip">
+          <span class="prof-chip__key">💪 Strength</span>
+          <span class="prof-chip__val" id="prof-str">8</span>
         </div>
 
-        <!-- Core Stats -->
-        <div class="prof-section-head">
-          <span class="prof-section-head__icon">◆</span>
-          <span class="prof-section-head__title">STATS</span>
+        <div class="prof-chip">
+          <span class="prof-chip__key">🧠 Intel</span>
+          <span class="prof-chip__val" id="prof-int">8</span>
         </div>
-        <div class="card card--raised" style="margin-bottom:var(--sp-5);">
-          <div class="stat-row">
-            <span class="stat-row__key">💪 Strength</span>
-            <span class="stat-row__val" id="prof-str">8</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-row__key">⚔ Attack</span>
-            <span class="stat-row__val" id="prof-atk">10</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-row__key">🧠 Intelligence</span>
-            <span class="stat-row__val" id="prof-int">8</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-row__key">⚡ Agility</span>
-            <span class="stat-row__val" id="prof-agi">6</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-row__key">🛡 Defense</span>
-            <span class="stat-row__val" id="prof-def">5</span>
-          </div>
+        <div class="prof-chip">
+          <span class="prof-chip__key">⚔ Attack</span>
+          <span class="prof-chip__val" id="prof-atk">10</span>
         </div>
 
-        <!-- Actions -->
-        <button class="btn btn--ghost btn--full" style="margin-bottom:var(--sp-2);" onclick="closeProfilePanel()">
-          Close
-        </button>
-        <button class="btn btn--danger btn--full" onclick="resetGame()">
-          Reset Tower
-        </button>
+        <div class="prof-chip">
+          <span class="prof-chip__key">⚡ Agility</span>
+          <span class="prof-chip__val" id="prof-agi">6</span>
+        </div>
+        <div class="prof-chip">
+          <span class="prof-chip__key">🛡 Defense</span>
+          <span class="prof-chip__val" id="prof-def">5</span>
+        </div>
+
+      </div>
+
+      <!-- Actions -->
+      <button class="btn btn--danger btn--full" onclick="resetGame()">
+        Reset Tower
+      </button>
 
       </div>
     </div><!-- /profile-panel -->
