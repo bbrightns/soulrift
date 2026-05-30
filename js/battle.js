@@ -554,7 +554,7 @@ async function runAutoBattle(dungeonId) {
           'warn'
         );
       } else {
-        await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus);
+        await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl);
         updateCombatHud(player, enemy, enemyTemplate);
       }
     } else {
