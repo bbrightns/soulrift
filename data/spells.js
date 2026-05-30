@@ -8,7 +8,7 @@
 const SPELLS_DATA = [
 
   /* ── LIGHT TOWER ─────────────────────────────────────────── */
-  {
+  { // Light Shot
     id: 'light_shot',
     name: 'Light Shot',
     tower: 'light',
@@ -31,7 +31,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Light Charge
     id: 'light_charge',
     name: 'Light Charge',
     tower: 'light',
@@ -54,7 +54,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Holy Guard
     id: 'holy_guard',
     name: 'Holy Guard',
     tower: 'light',
@@ -77,7 +77,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Shield of Absorption
     id: 'shield_of_absorption',
     name: 'Shield of Absorption',
     tower: 'light',
@@ -100,7 +100,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Charge Release - Light Shot
     id: 'charge_release_light_shot',
     name: 'Charge Release - Light Shot',
     tower: 'light',
@@ -123,7 +123,7 @@ const SPELLS_DATA = [
     },
     rules: ['Consumes all Light Charge stacks.']
   },
-  {
+  { // Energy Blast
     id: 'energy_blast',
     name: 'Energy Blast',
     tower: 'light',
@@ -146,7 +146,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Angel Wing
     id: 'angel_wing',
     name: 'Angel Wing',
     tower: 'light',
@@ -169,7 +169,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Divine Reflection
     id: 'divine_reflection',
     name: 'Divine Reflection',
     tower: 'light',
@@ -196,7 +196,7 @@ const SPELLS_DATA = [
       'Expires after one enemy action.'
     ]
   },
-  {
+  { // Chorus of Sanctuary
     id: 'chorus_of_sanctuary',
     name: 'Chorus of Sanctuary',
     tower: 'light',
@@ -219,7 +219,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Heavenfall Chronicle
     id: 'heavenfall_chronicle',
     name: 'Heavenfall Chronicle',
     tower: 'light',
@@ -244,7 +244,7 @@ const SPELLS_DATA = [
   },
 
   /* ── DARK TOWER ──────────────────────────────────────────── */
-  {
+  { // Dark Shot
     id: 'dark_shot',
     name: 'Dark Shot',
     tower: 'dark',
@@ -267,7 +267,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Curse Fang
     id: 'curse_fang',
     name: 'Curse Fang',
     tower: 'dark',
@@ -290,7 +290,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Fog
     id: 'fog',
     name: 'Fog',
     tower: 'dark',
@@ -313,7 +313,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Soul Drain
     id: 'soul_drain',
     name: 'Soul Drain',
     tower: 'dark',
@@ -336,7 +336,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Siege
     id: 'siege',
     name: 'Siege',
     tower: 'dark',
@@ -359,7 +359,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Dark Combo
     id: 'dark_combo',
     name: 'Dark Combo',
     tower: 'dark',
@@ -382,7 +382,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Night Raid
     id: 'night_raid',
     name: 'Night Raid',
     tower: 'dark',
@@ -405,7 +405,7 @@ const SPELLS_DATA = [
     },
     rules: ['In local-only MVP, simulate server time using player\'s local time.']
   },
-  {
+  { // Dark Rift
     id: 'dark_rift',
     name: 'Dark Rift',
     tower: 'dark',
@@ -428,7 +428,7 @@ const SPELLS_DATA = [
     },
     rules: ['True damage bypasses defense but not immunity.']
   },
-  {
+  { // Demon Summoning
     id: 'demon_summoning',
     name: 'Demon Summoning',
     tower: 'dark',
@@ -451,7 +451,7 @@ const SPELLS_DATA = [
     },
     rules: ['Summon attacks shown in text logs only.']
   },
-  {
+  { // Oblivion Gospel
     id: 'oblivion_gospel',
     name: 'Oblivion Gospel',
     tower: 'dark',
@@ -476,7 +476,7 @@ const SPELLS_DATA = [
   },
 
   /* ── FIRE TOWER ──────────────────────────────────────────── */
-  {
+  { // Fire Shot
     id: 'fire_shot',
     name: 'Fire Shot',
     tower: 'fire',
@@ -499,7 +499,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Burn
     id: 'burn',
     name: 'Burn',
     tower: 'fire',
@@ -522,7 +522,7 @@ const SPELLS_DATA = [
     },
     rules: ['Burn stacks but has a practical cap for balance.']
   },
-  {
+  { // Fire Thief
     id: 'fire_thief',
     name: 'Fire Thief',
     tower: 'fire',
@@ -545,7 +545,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Ember Skin
     id: 'ember_skin',
     name: 'Ember Skin',
     tower: 'fire',
@@ -568,7 +568,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Explosion Burn
     id: 'explosion_burn',
     name: 'Explosion Burn',
     tower: 'fire',
@@ -591,7 +591,7 @@ const SPELLS_DATA = [
     },
     rules: ['Consumes Burn stacks. Damage scales with stack count.']
   },
-  {
+  { // Melt Armor
     id: 'melt_armor',
     name: 'Melt Armor',
     tower: 'fire',
@@ -614,7 +614,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Fire Storm
     id: 'fire_storm',
     name: 'Fire Storm',
     tower: 'fire',
@@ -637,7 +637,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Phoenix Blood
     id: 'phoenix_blood',
     name: 'Phoenix Blood',
     tower: 'fire',
@@ -660,7 +660,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Wyvern Kamikaze
     id: 'wyvern_kamikaze',
     name: 'Wyvern Kamikaze',
     tower: 'fire',
@@ -683,7 +683,7 @@ const SPELLS_DATA = [
     },
     rules: ['Gate this spell behind a placeholder condition until pet systems exist.']
   },
-  {
+  { // Ragnarok Ignition
     id: 'ragnarok_ignition',
     name: 'Ragnarok Ignition',
     tower: 'fire',
@@ -708,7 +708,7 @@ const SPELLS_DATA = [
   },
 
   /* ── ICE TOWER ───────────────────────────────────────────── */
-  {
+  { // Ice Shot
     id: 'ice_shot',
     name: 'Ice Shot',
     tower: 'ice',
@@ -731,7 +731,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Freeze
     id: 'freeze',
     name: 'Freeze',
     tower: 'ice',
@@ -754,7 +754,7 @@ const SPELLS_DATA = [
     },
     rules: ['Bosses may resist or reduce Freeze duration.']
   },
-  {
+  { // Energy Refill
     id: 'energy_refill',
     name: 'Energy Refill',
     tower: 'ice',
@@ -777,7 +777,7 @@ const SPELLS_DATA = [
     },
     rules: ['This spell should never fail due to SP cost.']
   },
-  {
+  { // Frost Ward
     id: 'frost_ward',
     name: 'Frost Ward',
     tower: 'ice',
@@ -800,7 +800,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Mana Combo
     id: 'mana_combo',
     name: 'Mana Combo',
     tower: 'ice',
@@ -823,7 +823,7 @@ const SPELLS_DATA = [
     },
     rules: []
   },
-  {
+  { // Mana Burst
     id: 'mana_burst',
     name: 'Mana Burst',
     tower: 'ice',
@@ -846,7 +846,7 @@ const SPELLS_DATA = [
     },
     rules: ['Consumes Mana Combo stacks.']
   },
-  {
+  { // Golem Command
     id: 'golem_command',
     name: 'Golem Command',
     tower: 'ice',
@@ -869,7 +869,7 @@ const SPELLS_DATA = [
     },
     rules: ['Represent golem actions in text logs only.']
   },
-  {
+  { // Absolute Zero
     id: 'absolute_zero',
     name: 'Absolute Zero',
     tower: 'ice',
@@ -892,7 +892,7 @@ const SPELLS_DATA = [
     },
     rules: ['Boss control duration should be reduced for balance.']
   },
-  {
+  { // Golem Master
     id: 'golem_master',
     name: 'Golem Master',
     tower: 'ice',
@@ -915,7 +915,7 @@ const SPELLS_DATA = [
     },
     rules: ['Gate usage behind progression if summon systems are not implemented yet.']
   },
-  {
+  { // Glacial Singularity
     id: 'glacial_singularity',
     name: 'Glacial Singularity',
     tower: 'ice',
