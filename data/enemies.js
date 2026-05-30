@@ -68,7 +68,7 @@ const ENEMIES_DATA = [
     id: 'grave_lich',
     isBoss: true,
     dungeonId: 'magi_graveyard',
-    weight: 200,
+    weight: 2,
     name: 'Grave Lich',
     area: 'Magi Graveyard',
     hp: 80, atk: 18, def: 5, exp: 35, gold: 80,
