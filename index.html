@@ -24,16 +24,29 @@
   <!-- App root -->
   <div id="app">
 
-    <!-- ── Header ─────────────────────────────────────────── -->
-    <header id="app-header">
-      <div class="header-logo">SOUL<em>RIFT</em></div>
-      <!-- Clicking the HUD opens the profile panel -->
-      <div class="header-hud" onclick="openProfilePanel()" title="View Profile">
-        <div class="hud-name" id="hud-name">Arcane Wanderer</div>
-        <div class="hud-gold" id="hud-gold">1,000</div>
-        <div class="hud-level" id="hud-level">Lv 1</div>
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header id="app-header">
+    <div class="header-hud-row">
+      <div class="header-logo">
+        <span class="logo-soul">SOUL</span><span class="logo-rift">RIFT</span>
       </div>
-    </header>
+      <div class="header-hud" onclick="openProfilePanel()" title="View Profile">
+        <div class="hud-player">
+          <span class="hud-tower-icon" id="hud-tower-icon">🔥</span>
+          <span class="hud-name" id="hud-name">BRIGHT</span>
+        </div>
+        <div class="hud-sep"></div>
+        <div class="hud-gold" id="hud-gold">
+          <span class="hud-coin">🪙</span>
+          <span id="hud-gold-val">3,608</span>
+        </div>
+        <div class="hud-level" id="hud-level">LV 7</div>
+      </div>
+    </div>
+    <div class="hud-exp-strip">
+      <div class="hud-exp-fill" id="hud-exp-fill" style="width: 72%"></div>
+    </div>
+  </header>
 
     <!-- ── Tower Select Intro (first run only) ────────────── -->
     <div id="screen-intro">

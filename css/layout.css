@@ -35,18 +35,27 @@
   left: 0;
   right: 0;
   z-index: 100;
-  height: var(--header-h);
+  height: 50px;
   background:
     linear-gradient(180deg,
       rgba(13, 13, 20, 0.78),
       rgba(13, 13, 20, 0.58));
   border-bottom: 1px solid var(--c-border-md);
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  flex-shrink: 0;
+  box-shadow: 0 1px 20px rgba(0,0,0,0.60);
+}
+
+.header-hud-row {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--sp-4);
-  flex-shrink: 0;
-  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.60);
+  height: 48px;
+  flex: 1;
 }
 
 /* Logo */
@@ -55,15 +64,9 @@
   font-size: 17px;
   font-weight: 700;
   letter-spacing: .18em;
-  color: var(--c-gold-text);
-  text-shadow: 0 0 20px rgba(197, 160, 89, 0.30);
 }
-
-.header-logo em {
-  font-style: normal;
-  color: var(--c-crimson-hi);
-  text-shadow: 0 0 16px rgba(192, 48, 48, 0.35);
-}
+.logo-soul { color: var(--c-gold-text); text-shadow: 0 0 16px rgba(197,160,89,0.35); }
+.logo-rift { color: var(--c-crimson-hi); text-shadow: 0 0 14px rgba(192,48,48,0.45); }
 
 /* HUD (clickable area → profile) */
 .header-hud {
@@ -81,21 +84,29 @@
   border-color: var(--c-border-md);
   background: rgba(197, 160, 89, 0.05);
 }
+.header-hud:active { filter: brightness(.88); }
 
-.header-hud:active {
-  filter: brightness(.88);
+.hud-player {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
+.hud-tower-icon { font-size: 12px; line-height: 1; }
 
 .hud-name {
-  font-size: 11px;
+  font-size: 12px;
   font-family: var(--f-head);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
   color: var(--c-text-2);
-  letter-spacing: .06em;
   max-width: 80px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.hud-coin { font-size: 12px; line-height: 1; }
 
 .hud-gold {
   display: flex;
@@ -107,13 +118,6 @@
   font-family: var(--f-head);
 }
 
-.hud-gold::before {
-  content: '◈';
-  font-size: 11px;
-  color: var(--c-gold);
-  opacity: .85;
-}
-
 .hud-level {
   font-size: 10px;
   color: var(--c-gold-text);
@@ -123,8 +127,7 @@
   padding: 2px 6px;
   font-family: var(--f-head);
   letter-spacing: .06em;
-  text-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
-  /* ← เพิ่มบรรทัดนี้ */
+  text-shadow: 0 0 8px rgba(197,160,89,0.4);
 }
 
 /* Vertical separator between hud items */
@@ -133,6 +136,25 @@
   height: 14px;
   background: var(--c-border-md);
 }
+
+/* EXP strip — 2px at bottom of header */
+.hud-exp-strip {
+  height: 2px;
+  background: var(--c-inset);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.hud-exp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c-tower-dim), var(--c-tower-hi));
+  transition: width 0.4s ease;
+}
+
+/* Tower theme variables — driven by data-tower on #app */
+#app[data-tower="fire"]  { --c-tower-dim: #8a2000; --c-tower-hi: #ff5a10; }
+#app[data-tower="dark"]  { --c-tower-dim: #4a1890; --c-tower-hi: #b060ff; }
+#app[data-tower="ice"]   { --c-tower-dim: #104060; --c-tower-hi: #40c8e8; }
+#app[data-tower="light"] { --c-tower-dim: #806010; --c-tower-hi: #e8c830; }
 
 /* ── Main content area ───────────────────────────────────── */
 #screens {

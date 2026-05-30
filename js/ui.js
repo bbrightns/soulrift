@@ -94,16 +94,30 @@ function initNav() {
 /* ── Header sync ─────────────────────────────────────────── */
 function syncHeader() {
   const s = getState();
-  const goldEl  = document.getElementById('hud-gold');
+  const goldEl  = document.getElementById('hud-gold-val');
   const levelEl = document.getElementById('hud-level');
-  const nameEl  = document.getElementById('hud-name');
   if (goldEl)  goldEl.textContent  = s.gold.toLocaleString();
-  if (levelEl) levelEl.textContent = 'Lv ' + s.player.level;
-  if (nameEl)  nameEl.textContent  = s.playerName || 'Arcane Wanderer';
+  if (levelEl) levelEl.textContent = 'LV ' + s.player.level;
 
   /* tower color theme on root */
   const app = document.getElementById('app');
   if (app && s.tower) app.dataset.tower = s.tower;
+
+  /* tower icon */
+  const towerIcons = { fire: '🔥', dark: '🌑', ice: '❄️', light: '☀️' };
+  const iconEl = document.getElementById('hud-tower-icon');
+  if (iconEl) iconEl.textContent = towerIcons[s.tower] || '';
+
+  /* EXP bar */
+  const expEl = document.getElementById('hud-exp-fill');
+  const expPct = s.player.expNext > 0
+    ? Math.min(100, Math.round((s.player.exp / s.player.expNext) * 100))
+    : 0;
+  if (expEl) expEl.style.width = expPct + '%';
+
+  /* player name */
+  const nameEl = document.getElementById('hud-name');
+  if (nameEl) nameEl.textContent = (s.playerName || 'Wanderer').toUpperCase();
 }
 
 /* ── Profile panel ───────────────────────────────────────── */
