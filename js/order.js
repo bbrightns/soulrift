@@ -119,7 +119,7 @@ function renderSpellPicker() {
   wrap.innerHTML = '<div class="section-label" style="margin-top:var(--sp-4);">Assign Turn ' + (_selectedBlueprintSlot + 1) + '</div>'
     + '<div class="spell-picker__grid">'
     + options.map(option => {
-      const active = option.key === current ? ' is-selected' : '';
+      const active = (option.id + '|' + option.lvl) === current ? ' is-selected' : '';
       const lvlBadge = ' <span class="badge badge--lv">Lv ' + option.lvl + '</span>';
       return '<div class="spell-picker__option-row">'
         + '<button type="button" class="spell-picker__option' + active + '" onclick="assignSpellToSelectedSlot(\'' + option.id + '\',' + option.lvl + ')">'

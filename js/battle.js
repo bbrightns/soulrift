@@ -181,7 +181,7 @@ async function appendBattleLog(line, type = '') {
   entry.className = 'battle-log-line' + (type ? ' battle-log-line--' + type : '');
   entry.textContent = line;
   logWrap.appendChild(entry);
-  logWrap.scrollTop = logWrap.scrollHeight;
+  //logWrap.scrollTop = logWrap.scrollHeight;
   await sleep(randDelay(300, 500));
 }
 
