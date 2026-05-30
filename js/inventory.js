@@ -24,10 +24,10 @@ function renderInventory() {
     const tower = def ? def.tower : 'gold';
     return '<div class="card card--raised row row--between row--gap-3" style="margin-bottom:var(--sp-2);">'
       + '<div>'
-        + '<div class="spell-card__name">' + (def ? def.name : stone.id) + '</div>'
-        + '<div class="spell-card__meta">Lv ' + stone.lvl + ' · ' + (def ? def.role : 'Spell Stone') + '</div>'
+      + '<div class="spell-card__name">' + (def ? def.name : stone.id) + ' <span class="badge badge--lv">Lv ' + stone.lvl + '</span></div>'
+      + '<div class="spell-card__meta">' + (def ? def.role : 'Spell Stone') + '</div>'
       + '</div>'
-      + '<span class="badge badge--' + tower + '">x' + stone.qty + '</span>'
+      + '<span class="badge badge--' + tower + '" style="font-size:13px;width:40px;padding:3px 10px;"><span style="font-size:18px;opacity:0.7;position:relative;top:1.5px;margin-right:2px;">×</span>' + stone.qty + '</span>'
       + '</div>';
   }).join('');
 }
@@ -42,8 +42,8 @@ function renderCatalystItems() {
   if (!wrap) return;
 
   const CATALYST_NAMES = {
-    catalyst_shard:   '🟤 Catalyst Shard',
-    catalyst_core:    '🔵 Catalyst Core',
+    catalyst_shard: '🟤 Catalyst Shard',
+    catalyst_core: '🔵 Catalyst Core',
     catalyst_crystal: '🟡 Catalyst Crystal',
   };
 
@@ -57,8 +57,8 @@ function renderCatalystItems() {
   wrap.innerHTML = items.map(i =>
     '<div class="card card--raised row row--between row--gap-3" style="margin-bottom:var(--sp-2);">'
     + '<div>'
-      + '<div class="spell-card__name">' + CATALYST_NAMES[i.id] + '</div>'
-      + '<div class="spell-card__meta">Fusion catalyst · Increases success rate</div>'
+    + '<div class="spell-card__name">' + CATALYST_NAMES[i.id] + '</div>'
+    + '<div class="spell-card__meta">Fusion catalyst · Increases success rate</div>'
     + '</div>'
     + '<span class="badge badge--gold">×' + i.qty + '</span>'
     + '</div>'
