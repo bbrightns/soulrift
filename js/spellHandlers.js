@@ -1,5 +1,5 @@
 /* ============================================================
-   SOULRIFT — spellHandlers.js
+   SOULRIFT — /js/spellHandlers.js
    Per-spell cast logic with level scaling.
    Each handler receives a `ctx` object and returns nothing.
    battle.js calls window.getSpellHandler(id) to get the handler.
@@ -163,35 +163,12 @@ registerHandler('soul_drain', async (ctx) => {
 
 // fire_shot — basic damage (use default)
 
-// Burn Tick Processor
-async function processBurn(ctx) {
-
-  if (!ctx.battleStatus.burnStacks.length) {
-    return;
-  }
-
-  let totalBurnDamage = 0;
-
-  // process each stack
-  for (const burn of ctx.battleStatus.burnStacks) {
-
-    totalBurnDamage += burn.power;
-
-    burn.turnsLeft--;
-  }
-
-  // remove expired stacks
-  ctx.battleStatus.burnStacks =
-    ctx.battleStatus.burnStacks.filter(
-      burn => burn.turnsLeft > 0
-    );
-
-  // apply total burn damage
-  ctx.enemy.hp = Math.max(
-    0,
-    ctx.enemy.hp - totalBurnDamage
-  );
-
+// burn — apply burn stack, scales with level
+registerHandler('burn', async (ctx) => {
+  //console.log("Burn cast:", ctx);
+  const power = Math.round(ctx.def.basePower * 0.35 * lvlDmgMult(ctx.spellLvl));
+  ctx.battleStatus.burnStacks.push({ turnsLeft: 3, power });
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
   ctx.updateHud();
 
   // log

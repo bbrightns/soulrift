@@ -1,5 +1,5 @@
 /* ============================================================
-   SOULRIFT — order.js
+   SOULRIFT — /js/order.js
    10-turn battle blueprint setup from owned spell stones.
    Blueprint slots store spellId only. Inventory is never consumed.
    ============================================================ */
