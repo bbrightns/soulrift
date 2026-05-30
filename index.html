@@ -225,9 +225,14 @@
           <div id="battle-drops"></div>
         </div>
 
-        <button id="battle-start-btn" class="btn btn--primary btn--full arena-action" onclick="runAutoBattle()">
-          Start Auto Battle
-        </button>
+        <div class="arena-action-row arena-action">
+          <button id="battle-start-btn" class="btn btn--primary" onclick="runAutoBattle()">
+            Start Auto Battle
+          </button>
+          <button id="auto-loop-btn" class="arena-auto-btn" onclick="toggleAutoLoop()" title="Auto-refight the same dungeon on loop">
+            Auto
+          </button>
+        </div>
 
         <div class="section-label">Combat Log</div>
         <div id="battle-log" class="battle-log"></div>

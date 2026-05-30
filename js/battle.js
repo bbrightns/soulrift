@@ -8,6 +8,8 @@
 let _battleRunning = false;
 let _selectedDungeonId = 'booby_forest';
 let _preparedEnemyTemplate = null;
+let _autoLoopEnabled = false;
+let _autoLoopTimeout = null;
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -164,6 +166,11 @@ function leaveBattleArena() {
     toast('Battle is still running.', 'gold');
     return;
   }
+  if (_autoLoopTimeout) {
+    clearTimeout(_autoLoopTimeout);
+    _autoLoopTimeout = null;
+  }
+  _autoLoopEnabled = false;
   showDungeonView();
 }
 
@@ -188,6 +195,23 @@ function setBattleButton(disabled, readyText = 'Fight Again') {
   if (!btn) return;
   btn.disabled = disabled;
   btn.textContent = disabled ? 'Battle Running...' : readyText;
+}
+
+function updateAutoBtn() {
+  const btn = document.getElementById('auto-loop-btn');
+  if (!btn) return;
+  btn.textContent = _autoLoopEnabled ? 'Auto ON' : 'Auto';
+  btn.classList.toggle('is-active', _autoLoopEnabled);
+}
+
+function toggleAutoLoop() {
+  _autoLoopEnabled = !_autoLoopEnabled;
+  if (!_autoLoopEnabled && _autoLoopTimeout) {
+    clearTimeout(_autoLoopTimeout);
+    _autoLoopTimeout = null;
+    if (!_battleRunning) setBattleButton(false, 'Fight Again');
+  }
+  updateAutoBtn();
 }
 
 function clearBattleOutcome() {
@@ -580,8 +604,21 @@ async function runAutoBattle(dungeonId) {
   saveState();
   syncHeader();
   document.getElementById('combat-hud')?.classList.add('hud--post-battle');
-  setBattleButton(false, 'Fight Again');
   _battleRunning = false;
+
+  if (_autoLoopEnabled) {
+    setBattleButton(true, 'Auto — next fight…');
+    _autoLoopTimeout = setTimeout(() => {
+      _autoLoopTimeout = null;
+      if (_autoLoopEnabled) {
+        runAutoBattle(_selectedDungeonId);
+      } else {
+        setBattleButton(false, 'Fight Again');
+      }
+    }, 2500);
+  } else {
+    setBattleButton(false, 'Fight Again');
+  }
 }
 
 async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl) {
