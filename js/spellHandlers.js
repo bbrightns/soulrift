@@ -127,10 +127,11 @@ registerHandler('chorus_of_sanctuary', async (ctx) => {
 registerHandler('curse_fang', async (ctx) => {
   const duration = lvlFlat(3, 1, ctx.spellLvl);
   ctx.battleStatus.curseActive = { turnsLeft: duration, bonus: 0.20 };
-  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
+  const directDmg = Math.max(1, ctx.def.basePower - ctx.enemy.def);
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - directDmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Curse Fang (Lv ' + ctx.spellLvl + '). Cursed for ' + duration + ' turns (+20% dark dmg).', 'player'
+    ctx.playerName + ' casts Curse Fang (Lv ' + ctx.spellLvl + '). Direct ' + directDmg + ' dmg. Cursed for ' + duration + ' turns (+20% dark dmg).', 'player'
   );
 });
 
@@ -165,16 +166,15 @@ registerHandler('soul_drain', async (ctx) => {
 
 // burn — apply burn stack, scales with level
 registerHandler('burn', async (ctx) => {
-  //console.log("Burn cast:", ctx);
   const power = Math.round(ctx.def.basePower * 0.35 * lvlDmgMult(ctx.spellLvl));
   ctx.battleStatus.burnStacks.push({ turnsLeft: 3, power });
-  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
+  const directDmg = Math.max(1, ctx.def.basePower - ctx.enemy.def);
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - directDmg);
   ctx.updateHud();
 
   // log
   await ctx.log(
-    `Burn deals ${totalBurnDamage} damage.`,
-    'burn'
+    ctx.playerName + ' casts Burn (Lv ' + ctx.spellLvl + '). Direct ' + directDmg + ' dmg. Stack applied, ' + power + '/turn. (' + ctx.battleStatus.burnStacks.length + ' active).', 'player'
   );
 
 }
