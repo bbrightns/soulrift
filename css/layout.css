@@ -517,7 +517,7 @@
 .profile-sheet {
   width: 100%;
   max-width: 480px;
-  max-height: calc(100% - var(--sp-5));
+  max-height: 90%;
   overflow-y: auto;
   background:
     linear-gradient(170deg, rgba(197,160,89,0.04) 0%, transparent 40%),
