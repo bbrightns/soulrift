@@ -240,9 +240,7 @@
         <div class="section-label">Battle Blueprint</div>
         <div id="blueprint-summary" style="margin-bottom:var(--sp-1);"></div>
         <div id="blueprint-grid" class="blueprint-grid"></div>
-        <div id="spell-picker-header" class="spell-picker-header"></div>
-        <div id="spell-picker" class="spell-picker"></div>
-        <div style="margin-top:var(--sp-2);padding-bottom:var(--sp-2);">
+        <div style="margin-top:var(--sp-2);padding-bottom:var(--sp-3);">
           <button class="btn btn--ghost btn--full" onclick="clearBlueprintAndRender();">
             Clear All Slots
           </button>
@@ -502,6 +500,15 @@
           <button class="btn btn--ghost btn--full" onclick="closeShopConfirm()">Cancel</button>
           <button class="btn btn--primary btn--full" onclick="confirmShopBuy()">Confirm</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Spell Picker Bottomsheet -->
+    <div id="spell-picker-panel" onclick="if(event.target===this)closeSpellPicker()">
+      <div class="profile-sheet">
+        <div class="profile-handle"></div>
+        <div id="spell-picker-panel-header" class="spell-picker-header"></div>
+        <div id="spell-picker" class="spell-picker"></div>
       </div>
     </div>
 
