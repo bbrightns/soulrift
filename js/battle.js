@@ -174,6 +174,8 @@ function leaveBattleArena() {
   showDungeonView();
 }
 
+let _userScrolledLog = false;
+
 async function appendBattleLog(line, type = '') {
   const logWrap = document.getElementById('battle-log');
   if (!logWrap) return;
@@ -181,9 +183,20 @@ async function appendBattleLog(line, type = '') {
   entry.className = 'battle-log-line' + (type ? ' battle-log-line--' + type : '');
   entry.textContent = line;
   logWrap.appendChild(entry);
-  //logWrap.scrollTop = logWrap.scrollHeight;
+  if (!_userScrolledLog) {
+    logWrap.scrollTop = logWrap.scrollHeight;
+  }
   await sleep(randDelay(300, 500));
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const logWrap = document.getElementById('battle-log');
+  if (!logWrap) return;
+  logWrap.addEventListener('scroll', () => {
+    const atBottom = logWrap.scrollHeight - logWrap.scrollTop - logWrap.clientHeight < 10;
+    _userScrolledLog = !atBottom;
+  });
+});
 
 function setBattleResult(html) {
   const result = document.getElementById('battle-result');
@@ -382,6 +395,7 @@ async function runAutoBattle(dungeonId) {
 
   const logWrap = document.getElementById('battle-log');
   if (logWrap) logWrap.innerHTML = '';
+  _userScrolledLog = false;
   clearBattleOutcome();
   setBattleResult('<span class="c-gold">Battle running...</span>');
 
