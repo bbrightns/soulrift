@@ -81,6 +81,10 @@ function battlePlayerName() {
   return getPlayerName ? getPlayerName() : 'Riftwalker';
 }
 
+function logName() {
+  return '<span class="log-name">' + battlePlayerName() + '</span>';
+}
+
 function dungeonIcon(icon) {
   const icons = {
     leaf: '&#10087;',
@@ -181,7 +185,7 @@ async function appendBattleLog(line, type = '') {
   if (!logWrap) return;
   const entry = document.createElement('div');
   entry.className = 'battle-log-line' + (type ? ' battle-log-line--' + type : '');
-  entry.textContent = line;
+  entry.innerHTML = line;
   logWrap.appendChild(entry);
   if (!_userScrolledLog) {
     logWrap.scrollTop = logWrap.scrollHeight;
@@ -525,7 +529,7 @@ async function runAutoBattle(dungeonId) {
         if (battleStatus.angelWingActive > 0) {
           if (Math.random() < battleStatus.angelWingActive) {
             dodged = true;
-            await appendBattleLog(enemy.name + ' attacks but ' + battlePlayerName() + ' dodges with Angel Wing!', 'player');
+            await appendBattleLog(enemy.name + ' attacks but ' + logName() + ' dodges with Angel Wing!', 'player');
           }
           battleStatus.angelWingActive = 0;
         }
@@ -552,7 +556,7 @@ async function runAutoBattle(dungeonId) {
       const dmg = struggleDamage(player, enemy);
       enemy.hp = Math.max(0, enemy.hp - dmg);
       updateCombatHud(player, enemy, enemyTemplate);
-      await appendBattleLog(battlePlayerName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.', 'player');
+      await appendBattleLog(logName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.', 'player');
     } else if (player.sp >= def.spCost) {
       player.sp -= def.spCost;
       const inkBleed = getPerk('ink_bleed');
@@ -576,7 +580,7 @@ async function runAutoBattle(dungeonId) {
       enemy.hp = Math.max(0, enemy.hp - dmg);
       updateCombatHud(player, enemy, enemyTemplate);
       await appendBattleLog(
-        battlePlayerName() + ' tries to cast ' + def.name + ' but has only ' + player.sp + '/' + def.spCost + ' SP. The spell fails; Struggle deals ' + dmg + ' damage.',
+        logName() + ' tries to cast ' + def.name + ' but has only ' + player.sp + '/' + def.spCost + ' SP. The spell fails; Struggle deals ' + dmg + ' damage.',
         'warn'
       );
     }
@@ -607,7 +611,7 @@ async function runAutoBattle(dungeonId) {
     showBattleOutcome({ won: true, goldReward, expReward, drops });
     setBattleResult('<span class="c-ok">Victory recorded</span>');
   } else {
-    await appendBattleLog('Defeat. The tower recalls ' + battlePlayerName() + ' before the Rift closes.', 'warn');
+    await appendBattleLog('Defeat. The tower recalls ' + logName() + ' before the Rift closes.', 'warn');
     showBattleOutcome({ won: false, goldReward: 0, expReward: 0 });
     setBattleResult('<span class="c-bad">Battle failed</span>');
   }
@@ -656,7 +660,7 @@ async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus
   // Default: deal damage
   enemy.hp = Math.max(0, enemy.hp - baseDmg);
   await appendBattleLog(
-    battlePlayerName() + ' casts ' + def.name + ', spending ' + def.spCost + ' SP for ' + baseDmg + ' damage.',
+    logName() + ' casts ' + def.name + ', spending ' + def.spCost + ' SP for ' + baseDmg + ' damage.',
     'player'
   );
 }

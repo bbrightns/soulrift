@@ -8,6 +8,11 @@
 
 'use strict';
 
+/* ── Utility: format player name in logs ────────────────────── */
+function ctxGoldenName(ctx) {
+  return '<span class="log-name">' + ctx.playerName + '</span>';
+}
+
 /* ── Level scaling helpers ───────────────────────────────── */
 
 // Standard damage scaling: +18% per level above 1
@@ -65,7 +70,7 @@ registerHandler('light_charge', async (ctx) => {
   if (ctx.battleStatus.chargeStacks < max) {
     ctx.battleStatus.chargeStacks++;
   }
-  await ctx.log(ctx.playerName + ' casts Light Charge. Charge stacks: ' + ctx.battleStatus.chargeStacks + '/' + max + '.', 'player');
+  await ctx.log(ctxGoldenName(ctx) + ' casts Light Charge. Charge stacks: ' + ctx.battleStatus.chargeStacks + '/' + max + '.', 'player');
 });
 
 // holy_guard — ward + small heal, scales with level
@@ -73,7 +78,7 @@ registerHandler('holy_guard', async (ctx) => {
   const heal = lvlFlat(8, 4, ctx.spellLvl);
   ctx.player.hp = Math.min(ctx.player.hpMax, ctx.player.hp + heal);
   ctx.updateHud();
-  await ctx.log(ctx.playerName + ' casts Holy Guard (Lv ' + ctx.spellLvl + '), spending ' + ctx.def.spCost + ' SP. Ward restores ' + heal + ' HP.', 'player');
+  await ctx.log(ctxGoldenName(ctx) + ' casts Holy Guard (Lv ' + ctx.spellLvl + '), spending ' + ctx.def.spCost + ' SP. Ward restores ' + heal + ' HP.', 'player');
 });
 
 // shield_of_absorption — ward, scales with level
@@ -81,7 +86,7 @@ registerHandler('shield_of_absorption', async (ctx) => {
   const shield = lvlFlat(12, 6, ctx.spellLvl);
   ctx.player.hp = Math.min(ctx.player.hpMax, ctx.player.hp + shield);
   ctx.updateHud();
-  await ctx.log(ctx.playerName + ' casts Shield of Absorption (Lv ' + ctx.spellLvl + '). Absorbs ' + shield + ' HP.', 'player');
+  await ctx.log(ctxGoldenName(ctx) + ' casts Shield of Absorption (Lv ' + ctx.spellLvl + '). Absorbs ' + shield + ' HP.', 'player');
 });
 
 // charge_release_light_shot — consume charge stacks, bonus damage
@@ -93,7 +98,7 @@ registerHandler('charge_release_light_shot', async (ctx) => {
   ctx.battleStatus.chargeStacks = 0;
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' releases Charge (×' + stacks + ' stacks) for ' + total + ' damage.', 'player'
+    ctxGoldenName(ctx) + ' releases Charge (×' + stacks + ' stacks) for ' + total + ' damage.', 'player'
   );
 });
 
@@ -102,7 +107,7 @@ registerHandler('angel_wing', async (ctx) => {
   const dodgeChance = lvlChance(0.80, 0.02, 0.95, ctx.spellLvl);
   ctx.battleStatus.angelWingActive = dodgeChance;
   await ctx.log(
-    ctx.playerName + ' casts Angel Wing (Lv ' + ctx.spellLvl + '). ' + Math.round(dodgeChance * 100) + '% dodge next attack.', 'player'
+    ctxGoldenName(ctx) + ' casts Angel Wing (Lv ' + ctx.spellLvl + '). ' + Math.round(dodgeChance * 100) + '% dodge next attack.', 'player'
   );
 });
 
@@ -113,7 +118,7 @@ registerHandler('chorus_of_sanctuary', async (ctx) => {
   if (!ctx.battleStatus.regenStacks) ctx.battleStatus.regenStacks = [];
   ctx.battleStatus.regenStacks.push({ amount: perTurn, turnsLeft: 3 });
   await ctx.log(
-    ctx.playerName + ' casts Chorus of Sanctuary (Lv ' + ctx.spellLvl + '). Regenerating ' + perTurn + ' HP/turn for 3 turns.', 'player'
+    ctxGoldenName(ctx) + ' casts Chorus of Sanctuary (Lv ' + ctx.spellLvl + '). Regenerating ' + perTurn + ' HP/turn for 3 turns.', 'player'
   );
 });
 
@@ -131,7 +136,7 @@ registerHandler('curse_fang', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - directDmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Curse Fang (Lv ' + ctx.spellLvl + '). Direct ' + directDmg + ' dmg. Cursed for ' + duration + ' turns (+20% dark dmg).', 'player'
+    ctxGoldenName(ctx) + ' casts Curse Fang (Lv ' + ctx.spellLvl + '). Direct ' + directDmg + ' dmg. Cursed for ' + duration + ' turns (+20% dark dmg).', 'player'
   );
 });
 
@@ -141,7 +146,7 @@ registerHandler('fog', async (ctx) => {
   const duration = 2;
   ctx.battleStatus.fogActive = { turnsLeft: duration, missChance };
   await ctx.log(
-    ctx.playerName + ' casts Fog (Lv ' + ctx.spellLvl + '). Enemy has ' + Math.round(missChance * 100) + '% miss for ' + duration + ' turns.', 'player'
+    ctxGoldenName(ctx) + ' casts Fog (Lv ' + ctx.spellLvl + '). Enemy has ' + Math.round(missChance * 100) + '% miss for ' + duration + ' turns.', 'player'
   );
 });
 
@@ -154,7 +159,7 @@ registerHandler('soul_drain', async (ctx) => {
   ctx.player.hp = Math.min(ctx.player.hpMax, ctx.player.hp + heal);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Soul Drain (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' damage. Heals ' + heal + ' HP.', 'player'
+    ctxGoldenName(ctx) + ' casts Soul Drain (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' damage. Heals ' + heal + ' HP.', 'player'
   );
 });
 
@@ -174,7 +179,7 @@ registerHandler('burn', async (ctx) => {
 
   // log
   await ctx.log(
-    ctx.playerName + ' casts Burn (Lv ' + ctx.spellLvl + '). Direct ' + directDmg + ' dmg. Stack applied, ' + power + '/turn. (' + ctx.battleStatus.burnStacks.length + ' active).', 'player'
+    ctxGoldenName(ctx) + ' casts Burn (Lv ' + ctx.spellLvl + '). Direct ' + directDmg + ' dmg. Stack applied, ' + power + '/turn. (' + ctx.battleStatus.burnStacks.length + ' active).', 'player'
   );
 
 }
@@ -191,7 +196,7 @@ registerHandler('fire_thief', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Fire Thief (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Stole ' + stolen + ' Gold' + (burning ? ' (Burn bonus!)' : '') + '.', 'player'
+    ctxGoldenName(ctx) + ' casts Fire Thief (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Stole ' + stolen + ' Gold' + (burning ? ' (Burn bonus!)' : '') + '.', 'player'
   );
 });
 
@@ -201,7 +206,7 @@ registerHandler('ember_skin', async (ctx) => {
   ctx.player.hp = Math.min(ctx.player.hpMax, ctx.player.hp + reduction);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Ember Skin (Lv ' + ctx.spellLvl + '). Ward absorbs ' + reduction + ' HP.', 'player'
+    ctxGoldenName(ctx) + ' casts Ember Skin (Lv ' + ctx.spellLvl + '). Ward absorbs ' + reduction + ' HP.', 'player'
   );
 });
 
@@ -214,7 +219,7 @@ registerHandler('explosion_burn', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' detonates Explosion Burn (Lv ' + ctx.spellLvl + ', ×' + stacks + ' stacks) for ' + total + ' damage!', 'player'
+    ctxGoldenName(ctx) + ' detonates Explosion Burn (Lv ' + ctx.spellLvl + ', ×' + stacks + ' stacks) for ' + total + ' damage!', 'player'
   );
 });
 
@@ -233,11 +238,11 @@ registerHandler('freeze', async (ctx) => {
   if (success) {
     ctx.battleStatus.enemyFrozen = true;
     await ctx.log(
-      ctx.playerName + ' casts Freeze (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Enemy is FROZEN — skips next action!', 'player'
+      ctxGoldenName(ctx) + ' casts Freeze (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Enemy is FROZEN — skips next action!', 'player'
     );
   } else {
     await ctx.log(
-      ctx.playerName + ' casts Freeze (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Freeze failed (Chill applied).', 'player'
+      ctxGoldenName(ctx) + ' casts Freeze (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Freeze failed (Chill applied).', 'player'
     );
   }
 });
@@ -248,7 +253,7 @@ registerHandler('energy_refill', async (ctx) => {
   ctx.player.sp = Math.min(ctx.player.spMax, ctx.player.sp + refill);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Energy Refill (Lv ' + ctx.spellLvl + '). Restores ' + refill + ' SP.', 'player'
+    ctxGoldenName(ctx) + ' casts Energy Refill (Lv ' + ctx.spellLvl + '). Restores ' + refill + ' SP.', 'player'
   );
 });
 
@@ -258,7 +263,7 @@ registerHandler('frost_ward', async (ctx) => {
   ctx.player.hp = Math.min(ctx.player.hpMax, ctx.player.hp + ward);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Frost Ward (Lv ' + ctx.spellLvl + '). Absorbs ' + ward + ' HP.', 'player'
+    ctxGoldenName(ctx) + ' casts Frost Ward (Lv ' + ctx.spellLvl + '). Absorbs ' + ward + ' HP.', 'player'
   );
 });
 
@@ -269,7 +274,7 @@ registerHandler('mana_combo', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Mana Combo (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Combo: ' + ctx.battleStatus.manaCombo + '/5.', 'player'
+    ctxGoldenName(ctx) + ' casts Mana Combo (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Combo: ' + ctx.battleStatus.manaCombo + '/5.', 'player'
   );
 });
 
@@ -282,7 +287,7 @@ registerHandler('mana_burst', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' releases Mana Burst (Lv ' + ctx.spellLvl + ', ×' + stacks + ' combo) for ' + total + ' damage!', 'player'
+    ctxGoldenName(ctx) + ' releases Mana Burst (Lv ' + ctx.spellLvl + ', ×' + stacks + ' combo) for ' + total + ' damage!', 'player'
   );
 });
 

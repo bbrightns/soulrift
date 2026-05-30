@@ -965,6 +965,12 @@
   border-color: rgba(46,144,80,.32);
 }
 
+.log-name {
+  font-family: var(--f-head);
+  color: var(--c-gold-text);
+  letter-spacing: .04em;
+}
+
 .spell-picker {
   padding-bottom: var(--sp-4);
 }
