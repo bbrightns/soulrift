@@ -1975,7 +1975,7 @@
 .arena-auto-btn {
   flex: 0 0 auto;
   padding: 0 var(--sp-3);
-  min-width: 64px;
+  min-width: 84px;
   background: transparent;
   border: 1px solid var(--c-border-md);
   border-radius: var(--r-md);

@@ -323,7 +323,7 @@ function prepareArena(dungeonId) {
   updateCombatHud(player, hiddenEnemy, _preparedEnemyTemplate);
   setText('enemy-hp-text', 'HP ?? / ??');
   setBattleResult('Ready for a 10-turn auto battle.');
-  setBattleButton(false, 'Start Auto Battle');
+  setBattleButton(false, 'Start Battle');
 }
 
 function formatItemName(id) {
