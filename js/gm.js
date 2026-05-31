@@ -74,9 +74,19 @@
     var val = parseInt(document.getElementById('gm-level-input').value, 10);
     if (isNaN(val) || val < 1 || val > 99) return;
     var state = getState();
-    state.player.level = val;
+    var delta = val - state.player.level;
+    state.player.level  = val;
+    state.player.hpMax += delta * 6;
+    state.player.spMax += delta * 3;
+    state.player.atk   += delta;
+    state.player.def   += delta;
+    state.player.expNext = Math.floor(100 * Math.pow(1.25, val - 1));
+    state.player.hp = Math.min(state.player.hp, state.player.hpMax);
+    state.player.sp = Math.min(state.player.sp, state.player.spMax);
     saveState();
     syncHeader();
+    var profPanel = document.getElementById('profile-panel');
+    if (profPanel && profPanel.classList.contains('is-open')) renderProfilePanel();
   }
 
   function gmResetAll() {
