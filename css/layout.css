@@ -64,6 +64,7 @@
   font-size: 17px;
   font-weight: 700;
   letter-spacing: .18em;
+  user-select: none;
 }
 .logo-soul { color: var(--c-gold-text); text-shadow: 0 0 16px rgba(197,160,89,0.35); }
 .logo-rift { color: var(--c-crimson-hi); text-shadow: 0 0 14px rgba(192,48,48,0.45); }
