@@ -291,6 +291,7 @@ function _renderLibCards() {
         <span class="badge badge--${s.rarity}">${cap(s.rarity)}</span>
         <span class="badge badge--${s.tower}">${s.element}</span>
       </div>
+      <div class="lib-card-tagline">${s.desc}</div>
       <div class="lib-card-meta">
         <span class="lib-role">${s.role}</span>
         <span class="lib-sp">SP ${s.spCost}</span>

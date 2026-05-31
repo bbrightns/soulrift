@@ -2761,3 +2761,80 @@
   display: flex;
   flex-direction: column;
 }
+
+/* ── Inventory grouped spell list ───────────────────────── */
+.inv-spell-group {
+  padding: 10px 12px;
+}
+
+.inv-spell-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.inv-spell-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+
+.inv-spell-name {
+  font-family: var(--f-head);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-gold-text);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.inv-spell-sub {
+  font-size: 11px;
+  color: var(--c-text-3);
+  line-height: 1.4;
+}
+
+.inv-spell-levels {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.inv-spell-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.inv-lv-badge,
+.inv-qty-badge {
+  font-family: var(--f-head);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 0;
+  width: 44px;
+  text-align: center;
+  letter-spacing: .04em;
+  display: inline-block;
+}
+
+.inv-lv-badge {
+  background: rgba(197,160,89,0.18);
+  border: 1px solid var(--c-border-hi);
+  border-radius: var(--r-sm);
+  color: var(--c-gold-hi);
+  text-shadow: 0 0 8px rgba(197,160,89,0.4);
+}
+
+.empty-state--inline {
+  font-size: 12px;
+  color: var(--c-text-3);
+  text-align: center;
+  padding: var(--sp-2) 0;
+}

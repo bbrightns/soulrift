@@ -19,15 +19,42 @@ function renderInventory() {
     return;
   }
 
-  wrap.innerHTML = list.map(stone => {
-    const def = window.getSpellDef ? getSpellDef(stone.id) : null;
+  const grouped = {};
+  list.forEach(stone => {
+    if (!grouped[stone.id]) grouped[stone.id] = [];
+    grouped[stone.id].push({ lvl: stone.lvl, qty: stone.qty });
+  });
+
+  const sorted = Object.entries(grouped).sort(([aId], [bId]) => {
+    const aName = (getSpellDef(aId) || {}).name || aId;
+    const bName = (getSpellDef(bId) || {}).name || bId;
+    return aName.localeCompare(bName);
+  });
+
+  wrap.innerHTML = sorted.map(([id, levels]) => {
+    const def = getSpellDef(id);
     const tower = def ? def.tower : 'gold';
-    return '<div class="card card--raised row row--between row--gap-3" style="margin-bottom:var(--sp-2);">'
-      + '<div>'
-      + '<div class="spell-card__name">' + (def ? def.name : stone.id) + ' <span class="badge badge--lv">Lv ' + stone.lvl + '</span></div>'
-      + '<div class="spell-card__meta">' + (def ? def.role : 'Spell Stone') + '</div>'
+    const name  = def ? def.name  : id;
+    const role  = def ? def.role  : 'Spell Stone';
+    const desc  = def ? def.desc  : '';
+
+    levels.sort((a, b) => b.lvl - a.lvl);
+
+    const rows = levels.map(entry =>
+      '<div class="inv-spell-row">'
+      + '<span class="badge badge--lv inv-lv-badge">Lv ' + entry.lvl + '</span>'
+      + '<span class="badge badge--' + tower + ' inv-qty-badge">×' + entry.qty + '</span>'
       + '</div>'
-      + '<span class="badge badge--' + tower + '" style="font-size:13px;width:40px;padding:3px 10px;"><span style="font-size:18px;opacity:0.7;position:relative;top:1.5px;margin-right:2px;">×</span>' + stone.qty + '</span>'
+    ).join('');
+
+    return '<div class="card card--raised inv-spell-group" style="margin-bottom:var(--sp-2);">'
+      + '<div class="inv-spell-head">'
+      + '<div class="inv-spell-identity">'
+      + '<span class="inv-spell-name">' + name + '</span>'
+      + '<span class="inv-spell-sub">' + role + ' · ' + desc + '</span>'
+      + '</div>'
+      + '<div class="inv-spell-levels">' + rows + '</div>'
+      + '</div>'
       + '</div>';
   }).join('');
 }
@@ -42,25 +69,34 @@ function renderCatalystItems() {
   if (!wrap) return;
 
   const CATALYST_NAMES = {
-    catalyst_shard: '🟤 Catalyst Shard',
-    catalyst_core: '🔵 Catalyst Core',
+    catalyst_shard:   '🟤 Catalyst Shard',
+    catalyst_core:    '🔵 Catalyst Core',
     catalyst_crystal: '🟡 Catalyst Crystal',
+  };
+  const CATALYST_DESC = {
+    catalyst_shard:   '+15% fusion success rate',
+    catalyst_core:    '+30% fusion success rate',
+    catalyst_crystal: '+50% fusion success rate',
   };
 
   const items = (getState().items || []).filter(i => CATALYST_NAMES[i.id] && i.qty > 0);
 
   if (!items.length) {
-    wrap.innerHTML = '<div style="opacity:0.4;font-size:12px;padding:var(--sp-2) 0">No catalysts owned.</div>';
+    wrap.innerHTML = '<div class="empty-state--inline">No catalysts owned.</div>';
     return;
   }
 
   wrap.innerHTML = items.map(i =>
-    '<div class="card card--raised row row--between row--gap-3" style="margin-bottom:var(--sp-2);">'
-    + '<div>'
-    + '<div class="spell-card__name">' + CATALYST_NAMES[i.id] + '</div>'
-    + '<div class="spell-card__meta">Fusion catalyst · Increases success rate</div>'
+    '<div class="card card--raised inv-spell-group" style="margin-bottom:var(--sp-2);">'
+    + '<div class="inv-spell-head">'
+    + '<div class="inv-spell-identity">'
+    + '<span class="inv-spell-name">' + CATALYST_NAMES[i.id] + '</span>'
+    + '<span class="inv-spell-sub">' + CATALYST_DESC[i.id] + '</span>'
     + '</div>'
-    + '<span class="badge badge--gold">×' + i.qty + '</span>'
+    + '<div class="inv-spell-levels">'
+    + '<span class="badge badge--gold inv-qty-badge">×' + i.qty + '</span>'
+    + '</div>'
+    + '</div>'
     + '</div>'
   ).join('');
 }
