@@ -226,7 +226,7 @@ function bootApp() {
 }
 
 /* ── Library ─────────────────────────────────────────────── */
-let _libTower  = 'all';
+let _libTower  = null;
 let _libRarity = 'all';
 
 function renderLibrary() {
@@ -239,8 +239,8 @@ function _renderLibFilters() {
   const rarityEl = document.getElementById('library-rarity-filter');
   if (!towerEl || !rarityEl) return;
 
-  const towers  = ['all', 'light', 'dark', 'fire', 'ice'];
-  const tLabels = { all: 'All', light: 'Light', dark: 'Dark', fire: 'Fire', ice: 'Ice' };
+  const towers  = ['light', 'dark', 'fire', 'ice'];
+  const tLabels = { light: 'Light', dark: 'Dark', fire: 'Fire', ice: 'Ice' };
 
   towerEl.innerHTML = towers.map(t => {
     const on = t === _libTower;
@@ -291,7 +291,6 @@ function _renderLibCards() {
         <span class="badge badge--${s.rarity}">${cap(s.rarity)}</span>
         <span class="badge badge--${s.tower}">${s.element}</span>
       </div>
-      <div class="lib-card-tagline">${s.desc}</div>
       <div class="lib-card-meta">
         <span class="lib-role">${s.role}</span>
         <span class="lib-sp">SP ${s.spCost}</span>
@@ -302,4 +301,8 @@ function _renderLibCards() {
   `).join('');
 }
 
-onScreen('library', renderLibrary);
+onScreen('library', () => {
+  _libTower  = getTower() || 'light';
+  _libRarity = 'all';
+  renderLibrary();
+});
