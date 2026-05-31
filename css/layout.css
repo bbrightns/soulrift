@@ -1139,7 +1139,7 @@
   width: 100%;
   min-height: 46px;
   display: grid;
-  grid-template-columns: 26px 1fr auto;
+  grid-template-columns: 26px 32px 1fr auto;
   gap: 0 8px;
   text-align: left;
   cursor: pointer;
@@ -1193,6 +1193,22 @@
   color: var(--c-text-2);
   min-width: 26px;
   text-align: center;
+}
+
+.blueprint-slot__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  align-self: center;
+}
+
+.blueprint-slot__icon--empty {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  background: transparent;
+  border: none;
 }
 
 .badge.badge--lv {
@@ -1339,6 +1355,16 @@
   font-size: 12px;
   line-height: 1.55;
   color: var(--c-text-2);
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.battle-log-line--turn,
+.battle-log-line--system,
+.battle-log-line--reward,
+.battle-log-line--warn {
+  display: block; /* non-spell lines stay as block, no icon slot */
 }
 
 .battle-log-line--turn {
@@ -1454,6 +1480,9 @@
   color: var(--c-text);
   padding: 9px 11px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
 }
 
 .spell-picker__option.is-selected {
@@ -2769,7 +2798,16 @@
   align-items: stretch;
   padding: 10px 12px;
   gap: var(--sp-3);
-  min-height: 80px;
+  min-height: 64px;
+}
+
+.inv-spell-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  object-fit: cover;
+  flex-shrink: 0;
+  align-self: center;
 }
 
 .inv-spell-left {
@@ -2865,4 +2903,79 @@
   color: var(--c-text-3);
   text-align: center;
   padding: var(--sp-2) 0;
+}
+
+/* ── Shop spell card ─────────────────────────────────────── */
+.shop-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+
+.shop-spell-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.shop-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.shop-card-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+  flex-shrink: 0;
+}
+
+/* ── Spell picker icon ───────────────────────────────────── */
+.picker-spell-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ── Battle log spell icon ───────────────────────────────── */
+.log-spell-icon {
+  width: 36px;
+  flex-shrink: 0;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  align-self: stretch;
+  min-height: 36px;
+}
+
+.log-line-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Fusion crucible spell icon ──────────────────────────── */
+.fusion-crucible-icon-img {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-md);
+  object-fit: cover;
+  margin-bottom: var(--sp-1);
+}
+
+/* ── Fusion result modal icon ────────────────────────────── */
+.fusion-result-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--r-lg);
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
 }

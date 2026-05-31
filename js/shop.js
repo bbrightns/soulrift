@@ -22,21 +22,22 @@ function renderMarket() {
 
   wrap.innerHTML = spells.map(spell => (
     '<div class="card card--raised spell-shop-card" style="margin-bottom:var(--sp-2);">'
-      + '<div class="row row--between row--gap-3">'
-        + '<div>'
-          + '<div class="spell-card__name">' + spell.name + '</div>'
-          + '<div class="spell-card__meta">' + spell.role + ' · SP ' + spell.spCost + '</div>'
-        + '</div>'
-        + '<div style="display:flex;align-items:center;gap:var(--sp-2);flex-shrink:0">'
-          + '<span class="shop-price-badge">' + spell.price + ' Gold</span>'
-          + '<span class="badge badge--' + spell.tower + '">' + spell.tower + '</span>'
-        + '</div>'
-      + '</div>'
-      + '<div class="spell-card__desc">' + spell.desc + '</div>'
-      + '<div class="shop-buy-row">'
-        + '<button class="shop-buy-btn" onclick="buyShopSpell(\'' + spell.id + '\',1)">Buy ×1</button>'
-        + '<button class="shop-buy-btn shop-buy-btn--right" onclick="buyShopSpell(\'' + spell.id + '\',10)">Buy ×10</button>'
-      + '</div>'
+    + '<div class="shop-card-top">'
+    + '<img src="/asset/spell_icons/' + spell.id + '.png" class="shop-spell-icon" alt="">'
+    + '<div class="shop-card-info">'
+    + '<div class="spell-card__name">' + spell.name + '</div>'
+    + '<div class="spell-card__meta">' + spell.role + ' · SP ' + spell.spCost + '</div>'
+    + '<div class="spell-card__desc">' + spell.desc + '</div>'
+    + '</div>'
+    + '<div class="shop-card-badges">'
+    + '<span class="shop-price-badge">' + spell.price + ' Gold</span>'
+    + '<span class="badge badge--' + spell.tower + '">' + spell.tower + '</span>'
+    + '</div>'
+    + '</div>'
+    + '<div class="shop-buy-row">'
+    + '<button class="shop-buy-btn" onclick="buyShopSpell(\'' + spell.id + '\',1)">Buy ×1</button>'
+    + '<button class="shop-buy-btn shop-buy-btn--right" onclick="buyShopSpell(\'' + spell.id + '\',10)">Buy ×10</button>'
+    + '</div>'
     + '</div>'
   )).join('');
 }
@@ -47,12 +48,12 @@ function buyShopSpell(spellId, qty = 1) {
   const def = window.getSpellDef ? getSpellDef(spellId) : null;
   if (!def) return;
 
-  const total      = def.price * qty;
+  const total = def.price * qty;
   const playerGold = getState().gold;
-  const canAfford  = playerGold >= total;
+  const canAfford = playerGold >= total;
 
   const modal = document.getElementById('shop-confirm-modal');
-  const body  = document.getElementById('shop-confirm-body');
+  const body = document.getElementById('shop-confirm-body');
   if (!modal || !body) return;
 
   body.innerHTML =
@@ -102,7 +103,7 @@ function closeShopConfirm() {
   _shopPending = null;
 }
 
-window.confirmShopBuy  = confirmShopBuy;
+window.confirmShopBuy = confirmShopBuy;
 window.closeShopConfirm = closeShopConfirm;
 
 onScreen('market', renderMarket);

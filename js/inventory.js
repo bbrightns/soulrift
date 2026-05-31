@@ -53,6 +53,7 @@ function renderInventory() {
     ).join('');
 
     return '<div class="card card--raised inv-spell-group" style="margin-bottom:var(--sp-2);">'
+      + '<img src="/asset/spell_icons/' + id + '.png" class="inv-spell-icon" alt="">'
       + '<div class="inv-spell-left">'
       + '<span class="inv-spell-name">' + name + '</span>'
       + '<span class="inv-spell-desc">' + desc + '</span>'

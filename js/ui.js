@@ -287,9 +287,15 @@ function _renderLibCards() {
   list.innerHTML = spells.map(s => `
     <div class="card card--raised lib-spell-card">
       <div class="lib-card-head">
-        <span class="lib-spell-name">${s.name}</span>
-        <span class="badge badge--${s.rarity}">${cap(s.rarity)}</span>
-        <span class="badge badge--${s.tower}">${s.element}</span>
+        <img src="/asset/spell_icons/${s.id}.png" class="lib-spell-icon" alt="">
+        <div class="lib-card-head-text">
+          <span class="lib-spell-name">${s.name}</span>
+          <div class="lib-card-tagline">${s.desc}</div>
+        </div>
+        <div class="lib-card-head-badges">
+          <span class="badge badge--${s.rarity}">${cap(s.rarity)}</span>
+          <span class="badge badge--${s.tower}">${s.element}</span>
+        </div>
       </div>
       <div class="lib-card-meta">
         <span class="lib-role">${s.role}</span>

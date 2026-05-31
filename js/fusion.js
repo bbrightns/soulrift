@@ -3,13 +3,13 @@
 
 /* ── Constants ───────────────────────────────────────── */
 const FUSION_RATES = [0, 0.90, 0.80, 0.70, 0.60, 0.50, 0.40, 0.30, 0.20, 0.10];
-const FUSION_GOLD  = [0,   50,  50,  50, 150, 150, 150, 400, 400, 800];
+const FUSION_GOLD = [0, 50, 50, 50, 150, 150, 150, 400, 400, 800];
 const CATALYST_BONUS = { catalyst_shard: 0.15, catalyst_core: 0.30, catalyst_crystal: 0.50 };
 const MAX_SPELL_LEVEL = 10;
 
-let _fusionSpellId   = null;
-let _fusionSpellLvl  = null;
-let _fusionCatalyst  = null;
+let _fusionSpellId = null;
+let _fusionSpellLvl = null;
+let _fusionCatalyst = null;
 
 /* ── Tower helpers ───────────────────────────────────── */
 function _towerColor(tower) {
@@ -19,7 +19,7 @@ function _towerColor(tower) {
 
 /* ── Render ──────────────────────────────────────────── */
 function renderFusion() {
-  _fusionSpellId  = null;
+  _fusionSpellId = null;
   _fusionSpellLvl = null;
   _fusionCatalyst = null;
   renderFusionSpellList();
@@ -33,7 +33,7 @@ function renderFusionSpellList() {
   const wrap = document.getElementById('fusion-spell-list');
   if (!wrap) return;
 
-  const tower  = getTower();
+  const tower = getTower();
   const spells = getSpells().filter(s => {
     const def = getSpellDef(s.id);
     return def && def.tower === tower && s.qty >= 2 && s.lvl < MAX_SPELL_LEVEL;
@@ -45,12 +45,13 @@ function renderFusionSpellList() {
   }
 
   wrap.innerHTML = spells.map(s => {
-    const def    = getSpellDef(s.id);
+    const def = getSpellDef(s.id);
     const active = _fusionSpellId === s.id && _fusionSpellLvl === s.lvl;
-    const color  = _towerColor(def.tower);
+    const color = _towerColor(def.tower);
     return '<div class="fusion-stone-card' + (active ? ' is-active' : '') + '" '
       + 'onclick="selectFusionSpell(\'' + s.id + '\',' + s.lvl + ')">'
       + (active ? '<div class="fusion-stone-card__sel">SEL</div>' : '')
+      + '<img src="/asset/spell_icons/' + s.id + '.png" class="fusion-stone-icon" alt="">'
       + '<div class="fusion-stone-card__name">' + def.name + '</div>'
       + '<div class="fusion-stone-card__lv">LV.' + s.lvl + '</div>'
       + '<div class="fusion-stone-card__qty">×' + s.qty + '</div>'
@@ -71,7 +72,7 @@ function renderFusionCatalystList() {
 
   wrap.innerHTML = items.map(i => {
     const active = _fusionCatalyst === i.id;
-    const bonus  = '+' + Math.round(CATALYST_BONUS[i.id] * 100) + '%';
+    const bonus = '+' + Math.round(CATALYST_BONUS[i.id] * 100) + '%';
     return '<button class="fusion-cat-btn' + (active ? ' is-active' : '') + '" '
       + 'onclick="selectFusionCatalyst(\'' + i.id + '\')">'
       + formatCatalystName(i.id)
@@ -106,12 +107,11 @@ function _updateCrucibleSlots() {
   }
 
   const def      = getSpellDef(_fusionSpellId);
-  const color    = _towerColor(def ? def.tower : '');
   const baseRate = FUSION_RATES[_fusionSpellLvl] || 0;
   const catBonus = _fusionCatalyst ? (CATALYST_BONUS[_fusionCatalyst] || 0) : 0;
   const pct      = Math.round(Math.min(0.95, baseRate + catBonus) * 100);
 
-  const slotHTML = '<div class="fusion-slot__gem" style="color:' + color + '">◆</div>'
+  const slotHTML = '<img src="/asset/spell_icons/' + _fusionSpellId + '.png" class="fusion-crucible-icon-img" alt="">'
     + '<div class="fusion-slot__lv">LV.' + _fusionSpellLvl + '</div>'
     + '<div class="fusion-slot__name">' + (def ? def.name : '') + '</div>';
 
@@ -129,7 +129,7 @@ function _updateCrucibleSlots() {
 
 function _updateCatalystDisplay() {
   const slot = document.getElementById('fusion-cat-display');
-  const txt  = document.getElementById('fusion-cat-display-text');
+  const txt = document.getElementById('fusion-cat-display-text');
   if (!txt) return;
   if (!_fusionCatalyst) {
     txt.textContent = 'None';
@@ -152,11 +152,11 @@ function renderFusionPanel() {
     return;
   }
 
-  const fromLvl    = _fusionSpellLvl;
-  const goldCost   = FUSION_GOLD[fromLvl] || 0;
+  const fromLvl = _fusionSpellLvl;
+  const goldCost = FUSION_GOLD[fromLvl] || 0;
   const playerGold = getState().gold;
-  const canAfford  = playerGold >= goldCost;
-  const catLine    = _fusionCatalyst ? ' + 1 ' + formatCatalystName(_fusionCatalyst) : '';
+  const canAfford = playerGold >= goldCost;
+  const catLine = _fusionCatalyst ? ' + 1 ' + formatCatalystName(_fusionCatalyst) : '';
 
   wrap.innerHTML =
     '<button class="btn btn--primary btn--full fusion-invoke-btn" '
@@ -181,7 +181,7 @@ function toggleFusionCatalystPicker() {
 
 /* ── Selection ───────────────────────────────────────── */
 function selectFusionSpell(id, lvl) {
-  _fusionSpellId  = id;
+  _fusionSpellId = id;
   _fusionSpellLvl = lvl;
   renderFusionSpellList();
   _updateCrucibleSlots();
@@ -202,14 +202,14 @@ function selectFusionCatalyst(id) {
 function executeFusion() {
   if (!_fusionSpellId || _fusionSpellLvl === null) return;
 
-  const s        = getState();
-  const fromLvl  = _fusionSpellLvl;
-  const toLvl    = fromLvl + 1;
+  const s = getState();
+  const fromLvl = _fusionSpellLvl;
+  const toLvl = fromLvl + 1;
   const goldCost = FUSION_GOLD[fromLvl] || 0;
 
   const owned = (s.spells || []).find(sp => sp.id === _fusionSpellId && sp.lvl === fromLvl);
   if (!owned || owned.qty < 2) { toast('Need 2 copies to fuse.', 'bad'); return; }
-  if (s.gold < goldCost)       { toast('Not enough Gold.', 'bad'); return; }
+  if (s.gold < goldCost) { toast('Not enough Gold.', 'bad'); return; }
 
   if (_fusionCatalyst) {
     const cat = (s.items || []).find(i => i.id === _fusionCatalyst && i.qty > 0);
@@ -227,51 +227,52 @@ function executeFusion() {
 
   const baseRate = FUSION_RATES[fromLvl] || 0;
   const catBonus = _fusionCatalyst ? (CATALYST_BONUS[_fusionCatalyst] || 0) : 0;
-  const rate     = Math.min(0.95, baseRate + catBonus);
-  const success  = Math.random() < rate;
-  const def      = getSpellDef(_fusionSpellId);
+  const rate = Math.min(0.95, baseRate + catBonus);
+  const success = Math.random() < rate;
+  const def = getSpellDef(_fusionSpellId);
 
   if (success) {
     giveSpell(_fusionSpellId, toLvl);
     saveState();
-    showFusionResult(true, def.name, toLvl, null);
+    showFusionResult(true, def.name, _fusionSpellId, toLvl, null);
   } else {
     if (fromLvl <= 5) {
       const downgradeLvl = Math.max(1, fromLvl - 1);
       giveSpell(_fusionSpellId, downgradeLvl);
       saveState();
-      showFusionResult(false, def.name, toLvl, 'downgrade', downgradeLvl);
+      showFusionResult(false, def.name, _fusionSpellId, toLvl, 'downgrade', downgradeLvl);
     } else {
       saveState();
-      showFusionResult(false, def.name, toLvl, 'break', null);
+      showFusionResult(false, def.name, _fusionSpellId, toLvl, 'break', null);
     }
   }
 
-  _fusionSpellId  = null;
+  _fusionSpellId = null;
   _fusionSpellLvl = null;
   _fusionCatalyst = null;
 }
 
 /* ── Result Modal ────────────────────────────────────── */
-function showFusionResult(success, spellName, toLvl, failType, downgradeLvl) {
+function showFusionResult(success, spellName, spellId, toLvl, failType, downgradeLvl) {
   const modal = document.getElementById('fusion-result-modal');
   const body  = document.getElementById('fusion-result-body');
   if (!modal || !body) return;
 
+  const iconHTML = spellId
+    ? '<img src="/asset/spell_icons/' + spellId + '.png" class="fusion-result-icon" alt="">'
+    : '';
+
   if (success) {
-    body.innerHTML = ''
-      + '<div style="font-size:32px;margin-bottom:var(--sp-3)">✨</div>'
-      + '<div class="c-gold" style="font-size:18px;font-weight:700">Fusion Success!</div>'
+    body.innerHTML = iconHTML
+      + '<div class="c-gold" style="font-size:18px;font-weight:700;margin-top:var(--sp-3)">Fusion Success!</div>'
       + '<div style="margin-top:var(--sp-2)">' + spellName + ' upgraded to <strong>Lv ' + toLvl + '</strong></div>';
   } else if (failType === 'downgrade') {
-    body.innerHTML = ''
-      + '<div style="font-size:32px;margin-bottom:var(--sp-3)">💔</div>'
-      + '<div style="color:var(--c-bad,#e05050);font-size:18px;font-weight:700">Fusion Failed</div>'
+    body.innerHTML = iconHTML
+      + '<div style="color:var(--c-bad,#e05050);font-size:18px;font-weight:700;margin-top:var(--sp-3)">Fusion Failed</div>'
       + '<div style="margin-top:var(--sp-2)">' + spellName + ' downgraded to <strong>Lv ' + downgradeLvl + '</strong>.<br><small style="opacity:0.6">1 copy returned.</small></div>';
   } else {
-    body.innerHTML = ''
-      + '<div style="font-size:32px;margin-bottom:var(--sp-3)">💥</div>'
-      + '<div style="color:var(--c-bad,#e05050);font-size:18px;font-weight:700">Fusion Shattered</div>'
+    body.innerHTML = iconHTML
+      + '<div style="color:var(--c-bad,#e05050);font-size:18px;font-weight:700;margin-top:var(--sp-3)">Fusion Shattered</div>'
       + '<div style="margin-top:var(--sp-2)">Both copies of ' + spellName + ' were destroyed.<br><small style="opacity:0.6">The rift consumed them.</small></div>';
   }
 
@@ -288,9 +289,9 @@ function closeFusionResult() {
 /* ── Screen hook ─────────────────────────────────────── */
 onScreen('fusion', renderFusion);
 
-window.selectFusionSpell          = selectFusionSpell;
-window.selectFusionCatalyst       = selectFusionCatalyst;
-window.executeFusion              = executeFusion;
-window.closeFusionResult          = closeFusionResult;
-window.renderFusion               = renderFusion;
+window.selectFusionSpell = selectFusionSpell;
+window.selectFusionCatalyst = selectFusionCatalyst;
+window.executeFusion = executeFusion;
+window.closeFusionResult = closeFusionResult;
+window.renderFusion = renderFusion;
 window.toggleFusionCatalystPicker = toggleFusionCatalystPicker;

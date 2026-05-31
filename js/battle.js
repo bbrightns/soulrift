@@ -668,28 +668,34 @@ async function runAutoBattle(dungeonId) {
   }
 }
 
+function spellIconHTML(id) {
+  return '<img src="/asset/spell_icons/' + id + '.png" class="log-spell-icon" alt="">';
+}
+
+function wrapLogText(html) {
+  return '<span class="log-line-text">' + html + '</span>';
+}
+
 async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl) {
   const baseDmg = Math.max(1, spellPower(def, player, spellLvl) - enemy.def);
-
   const handler = window.getSpellHandler ? getSpellHandler(def.id) : null;
-
   if (handler) {
     const ctx = {
       def, player, enemy, enemyTemplate, battleStatus,
       spellLvl: spellLvl || 1,
       playerName: battlePlayerName(),
       baseDmg,
+      spellIconHTML: spellIconHTML(def.id),
       log: appendBattleLog,
       updateHud: () => updateCombatHud(player, enemy, enemyTemplate),
     };
     await handler(ctx);
     return;
   }
-
   // Default: deal damage
   enemy.hp = Math.max(0, enemy.hp - baseDmg);
   await appendBattleLog(
-    logName() + ' casts ' + def.name + ', spending ' + def.spCost + ' SP for ' + baseDmg + ' damage.',
+    spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ', spending ' + def.spCost + ' SP for ' + baseDmg + ' damage.'),
     'player'
   );
 }

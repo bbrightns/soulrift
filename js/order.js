@@ -7,7 +7,7 @@
 'use strict';
 
 let _selectedBlueprintSlot = 0;
-const ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
 function getOwnedSpellOptions() {
   const options = [];
@@ -64,7 +64,12 @@ function renderBlueprint() {
       ? '<span class="blueprint-slot__spell blueprint-slot__spell--empty">Empty</span>'
       : '<span class="blueprint-slot__spell">' + def.name + lvlBadge + '</span>';
 
+    const iconHTML = def
+      ? '<img src="/asset/spell_icons/' + baseId + '.png" class="blueprint-slot__icon" alt="">'
+      : '<div class="blueprint-slot__icon blueprint-slot__icon--empty"></div>';
+
     slot.innerHTML = '<span class="blueprint-slot__turn">' + ROMAN[i] + '</span>'
+      + iconHTML
       + spellSpan
       + '<span class="blueprint-slot__cost">' + (def ? 'SP ' + def.spCost : '') + '</span>'
       + '<span class="blueprint-slot__clear" onclick="event.stopPropagation(); clearBlueprintSlot(' + i + ')" title="Clear slot">✕</span>';
@@ -136,6 +141,7 @@ function renderSpellPicker() {
       const lvlBadge = ' <span class="badge--lv">Lv ' + option.lvl + '</span>';
       return '<div class="spell-picker__option-row">'
         + '<button type="button" class="spell-picker__option' + active + '" onclick="assignSpellToSelectedSlot(\'' + option.id + '\',' + option.lvl + ')">'
+        + '<img src="/asset/spell_icons/' + option.id + '.png" class="picker-spell-icon" alt="">'
         + '<span class="spell-picker__name">' + option.name + lvlBadge + '<span class="spell-picker__meta">SP ' + option.spCost + '</span></span>'
         + '</button>'
         + '<div class="spell-picker__fills">'
