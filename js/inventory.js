@@ -31,30 +31,34 @@ function renderInventory() {
     return aName.localeCompare(bName);
   });
 
+  const cap = str => str.charAt(0).toUpperCase() + str.slice(1);
+
   wrap.innerHTML = sorted.map(([id, levels]) => {
     const def = getSpellDef(id);
     const tower = def ? def.tower : 'gold';
-    const name  = def ? def.name  : id;
-    const role  = def ? def.role  : 'Spell Stone';
-    const desc  = def ? def.desc  : '';
+    const name = def ? def.name : id;
+    const desc = def ? def.desc : '';
+    const rarity = def ? def.rarity : 'common';
 
     levels.sort((a, b) => b.lvl - a.lvl);
 
     const rows = levels.map(entry =>
       '<div class="inv-spell-row">'
       + '<span class="badge badge--lv inv-lv-badge">Lv ' + entry.lvl + '</span>'
-      + '<span class="badge badge--' + tower + ' inv-qty-badge">×' + entry.qty + '</span>'
+      + '<span class="badge badge--' + tower + ' inv-qty-badge">'
+      + '<span class="inv-qty-x">×</span>'
+      + '<span class="inv-qty-num">' + entry.qty + '</span>'
+      + '</span>'
       + '</div>'
     ).join('');
 
     return '<div class="card card--raised inv-spell-group" style="margin-bottom:var(--sp-2);">'
-      + '<div class="inv-spell-head">'
-      + '<div class="inv-spell-identity">'
+      + '<div class="inv-spell-left">'
       + '<span class="inv-spell-name">' + name + '</span>'
-      + '<span class="inv-spell-sub">' + role + ' · ' + desc + '</span>'
+      + '<span class="inv-spell-desc">' + desc + '</span>'
+      + '<span class="badge badge--' + rarity + ' inv-rarity-badge">' + cap(rarity) + '</span>'
       + '</div>'
-      + '<div class="inv-spell-levels">' + rows + '</div>'
-      + '</div>'
+      + '<div class="inv-spell-right">' + rows + '</div>'
       + '</div>';
   }).join('');
 }
@@ -69,13 +73,13 @@ function renderCatalystItems() {
   if (!wrap) return;
 
   const CATALYST_NAMES = {
-    catalyst_shard:   '🟤 Catalyst Shard',
-    catalyst_core:    '🔵 Catalyst Core',
+    catalyst_shard: '🟤 Catalyst Shard',
+    catalyst_core: '🔵 Catalyst Core',
     catalyst_crystal: '🟡 Catalyst Crystal',
   };
   const CATALYST_DESC = {
-    catalyst_shard:   '+15% fusion success rate',
-    catalyst_core:    '+30% fusion success rate',
+    catalyst_shard: '+15% fusion success rate',
+    catalyst_core: '+30% fusion success rate',
     catalyst_crystal: '+50% fusion success rate',
   };
 

@@ -2764,22 +2764,25 @@
 
 /* ── Inventory grouped spell list ───────────────────────── */
 .inv-spell-group {
-  padding: 10px 12px;
-}
-
-.inv-spell-head {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: stretch;
+  padding: 10px 12px;
   gap: var(--sp-3);
+  min-height: 80px;
 }
 
-.inv-spell-identity {
+.inv-spell-left {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  min-width: 0;
   flex: 1;
+  min-width: 0;
+}
+
+.inv-spell-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
 }
 
 .inv-spell-name {
@@ -2790,20 +2793,21 @@
   letter-spacing: .06em;
   text-transform: uppercase;
   line-height: 1.2;
+  margin-bottom: 3px;
 }
 
-.inv-spell-sub {
+.inv-spell-desc {
   font-size: 11px;
   color: var(--c-text-3);
   line-height: 1.4;
+  /* stays within left column, wraps before reaching right column */
+  padding-right: var(--sp-2);
+  margin-bottom: 8px;
 }
 
-.inv-spell-levels {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  flex-shrink: 0;
+.inv-rarity-badge {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
 .inv-spell-row {
@@ -2812,24 +2816,47 @@
   gap: var(--sp-2);
 }
 
+.inv-spell-row + .inv-spell-row {
+  margin-top: 4px;
+}
+
+/* pushes level rows to the top, rarity badge to the bottom-left */
+.inv-spell-right {
+  justify-content: flex-start;
+}
+
 .inv-lv-badge,
 .inv-qty-badge {
   font-family: var(--f-head);
-  font-size: 11px;
   font-weight: 700;
-  padding: 3px 0;
-  width: 44px;
+  padding: 3px 6px;
+  min-width: 44px;
   text-align: center;
   letter-spacing: .04em;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
 }
 
 .inv-lv-badge {
+  font-size: 11px;
   background: rgba(197,160,89,0.18);
   border: 1px solid var(--c-border-hi);
-  border-radius: var(--r-sm);
   color: var(--c-gold-hi);
   text-shadow: 0 0 8px rgba(197,160,89,0.4);
+}
+
+.inv-qty-x {
+  font-size: 14px;
+  margin-right: 3px;
+  margin-top: 2px;
+  line-height: 1;
+}
+
+.inv-qty-num {
+  font-size: 12px;
+  line-height: 1;
 }
 
 .empty-state--inline {
