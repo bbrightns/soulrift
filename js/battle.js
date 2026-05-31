@@ -46,21 +46,37 @@ function setText(id, text) {
 function spellPower(def, player, spellLvl) {
   const lvl = spellLvl || 1;
   if (!def) return Math.max(4, Math.floor(player.atk * 0.45));
-  const base = Math.max(5, Math.floor((player.atk + player.int) * 0.75));
-  const towerBonus = def.tower === getTower() ? 4 : 0;
+
+  const tower = getTower();
+  let statBase;
+  if (tower === 'light')     statBase = Math.floor(player.int * 1.1 + player.def * 0.4);
+  else if (tower === 'dark') statBase = Math.floor(player.atk * 0.9 + player.agi * 0.4);
+  else if (tower === 'fire') statBase = Math.floor(player.atk * 0.8 + player.str * 0.5);
+  else if (tower === 'ice')  statBase = Math.floor(player.int * 0.9 + player.sp * 0.15);
+  else                       statBase = Math.floor((player.atk + player.int) * 0.75);
+
+  const base = Math.max(5, statBase);
+  const towerBonus = def.tower === tower ? 4 : 0;
   const roleBonus = def.role.toLowerCase().includes('basic') ? 0 : 3;
   const levelBonus = Math.floor((lvl - 1) * 0.18 * (base + towerBonus + roleBonus));
   return base + towerBonus + roleBonus + levelBonus;
 }
 
 function struggleDamage(player, enemy) {
-  return Math.max(2, Math.floor(player.atk * 0.35) - enemy.def);
+  return Math.max(2, Math.floor(player.str * 0.4) - Math.floor(enemy.def * 0.5));
 }
 
 function enemyStrike(enemy, player, turn) {
   const raw = enemy.atk + Math.floor(turn * 0.8);
   return Math.max(2, raw - Math.floor(player.def * 0.45));
 }
+
+const TOWER_GROWTH = {
+  light: { hpMax: 8,  spMax: 4, atk: 1, def: 2, str: 0, int: 2, agi: 0 },
+  dark:  { hpMax: 4,  spMax: 3, atk: 2, def: 0, str: 0, int: 1, agi: 2 },
+  fire:  { hpMax: 10, spMax: 2, atk: 2, def: 1, str: 2, int: 0, agi: 1 },
+  ice:   { hpMax: 3,  spMax: 6, atk: 1, def: 1, str: 1, int: 2, agi: 1 },
+};
 
 function gainExp(amount) {
   const s = getState();
@@ -69,10 +85,26 @@ function gainExp(amount) {
     s.player.exp -= s.player.expNext;
     s.player.level += 1;
     s.player.expNext = Math.floor(s.player.expNext * 1.25);
-    s.player.hpMax += 6;
-    s.player.spMax += 3;
-    s.player.atk += 1;
-    s.player.def += 1;
+
+    const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
+    s.player.hpMax += g.hpMax;
+    s.player.spMax += g.spMax;
+    s.player.atk   += g.atk;
+    s.player.def   += g.def;
+    s.player.str   += g.str;
+    s.player.int   += g.int;
+    s.player.agi   += g.agi;
+
+    if (s.player.level % 5 === 0) {
+      s.player.hpMax += 10;
+      s.player.spMax += 5;
+      s.player.atk   += 2;
+      s.player.def   += 2;
+      s.player.str   += 2;
+      s.player.int   += 2;
+      s.player.agi   += 2;
+      if (typeof toast === 'function') toast('Power Surge! Level ' + s.player.level + ' milestone reached!', 'gold');
+    }
   }
   saveState();
 }

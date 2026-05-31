@@ -361,25 +361,17 @@ registerHandler('siege', async (ctx) => {
   );
 });
 
-// dark_combo — damage + build combo counter → crit multiplier
+// dark_combo — damage scales +15% per combo stack (additive, deterministic)
 registerHandler('dark_combo', async (ctx) => {
   if (!ctx.battleStatus.darkCombo) ctx.battleStatus.darkCombo = 0;
   if (ctx.battleStatus.darkCombo < 5) ctx.battleStatus.darkCombo++;
   const combo = ctx.battleStatus.darkCombo;
-  let dmg = ctx.baseDmg;
-  let critMsg = '';
-  if (combo >= 3) {
-    const critChance = 0.40 + (combo - 3) * 0.10;
-    if (Math.random() < critChance) {
-      const critMult = combo >= 5 ? 2.5 : 2.0;
-      dmg = Math.floor(dmg * critMult);
-      critMsg = ' CRITICAL ×' + critMult + '!';
-    }
-  }
+  const comboPct = combo * 0.15;
+  const dmg = Math.floor(ctx.baseDmg * (1 + comboPct));
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - dmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Dark Combo (Lv ' + ctx.spellLvl + ') for ' + dmg + ' dmg. Combo: ' + combo + '/5.' + critMsg, 'player'
+    ctx.playerName + ' casts Dark Combo (Lv ' + ctx.spellLvl + ') for ' + dmg + ' dmg (+' + Math.round(comboPct * 100) + '%). Combo: ' + combo + '/5.', 'player'
   );
 });
 

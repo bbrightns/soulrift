@@ -28,8 +28,6 @@ const DEFAULTS = {
     int:          8,
     agi:          6,
     str:          8,
-    critRate:     0.05,
-    critMult:     1.5,
   },
 
   /* Resources */
@@ -200,19 +198,19 @@ window.removeSpell = removeSpell;
 const TOWER_STARTERS = {
   light: {
     spellId: 'light_shot',
-    player: { hp: 92, hpMax: 92, sp: 56, spMax: 56, atk: 7, def: 8, int: 10, agi: 6, str: 7 },
+    player: { hp: 92,  hpMax: 92,  sp: 56, spMax: 56, atk: 7,  def: 8, int: 10, agi: 6,  str: 6  },
   },
   dark: {
     spellId: 'dark_shot',
-    player: { hp: 64, hpMax: 64, sp: 44, spMax: 44, atk: 14, def: 4, int: 9, agi: 9, str: 7 },
+    player: { hp: 60,  hpMax: 60,  sp: 44, spMax: 44, atk: 13, def: 3, int: 8,  agi: 11, str: 6  },
   },
   fire: {
     spellId: 'fire_shot',
-    player: { hp: 104, hpMax: 104, sp: 34, spMax: 34, atk: 12, def: 7, int: 7, agi: 6, str: 10 },
+    player: { hp: 104, hpMax: 104, sp: 32, spMax: 32, atk: 12, def: 7, int: 6,  agi: 6,  str: 11 },
   },
   ice: {
     spellId: 'ice_shot',
-    player: { hp: 58, hpMax: 58, sp: 66, spMax: 66, atk: 9, def: 4, int: 12, agi: 7, str: 5 },
+    player: { hp: 56,  hpMax: 56,  sp: 68, spMax: 68, atk: 8,  def: 4, int: 13, agi: 7,  str: 5  },
   },
 };
 
