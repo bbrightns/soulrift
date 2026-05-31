@@ -171,22 +171,28 @@ registerHandler('soul_drain', async (ctx) => {
 
 // burn — apply burn stack, scales with level
 registerHandler('burn', async (ctx) => {
+  if (!ctx.battleStatus.burnStacks) ctx.battleStatus.burnStacks = [];
+  if (!('burnStackCount' in ctx.battleStatus)) ctx.battleStatus.burnStackCount = 0;
+
   const power = Math.round(ctx.def.basePower * 0.35 * lvlDmgMult(ctx.spellLvl));
-  ctx.battleStatus.burnStacks.push({ turnsLeft: 3, power });
+  const duration = ctx.spellLvl;
+  ctx.battleStatus.burnStacks.push({ turnsLeft: duration, power });
+  ctx.battleStatus.burnStackCount++;
+
   const directDmg = Math.max(1, ctx.def.basePower - ctx.enemy.def);
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - directDmg);
   ctx.updateHud();
 
-  // log
   await ctx.log(
-    ctxGoldenName(ctx) + ' casts Burn (Lv ' + ctx.spellLvl + '). Direct ' + directDmg + ' dmg. Stack applied, ' + power + '/turn. (' + ctx.battleStatus.burnStacks.length + ' active).', 'player'
+    ctxGoldenName(ctx) + ' casts Burn (Lv ' + ctx.spellLvl + ') making ' + directDmg + ' damage.'
+    + ' Total ' + ctx.battleStatus.burnStackCount + ' stack' + (ctx.battleStatus.burnStackCount > 1 ? "s" : "") + '.', 'player'
   );
-
 });
 
 // fire_thief — damage + gold steal, scales with level
 registerHandler('fire_thief', async (ctx) => {
-  const burning = ctx.battleStatus.burnStacks.length > 0;
+  // burning = any active DoT entry still ticking
+  const burning = (ctx.battleStatus.burnStacks || []).some(s => s.turnsLeft > 0);
   const baseSteal = lvlFlat(12, 3, ctx.spellLvl);
   const stolen = baseSteal + Math.floor(Math.random() * 10) + (burning ? baseSteal : 0);
   getState().gold += stolen;
@@ -196,26 +202,34 @@ registerHandler('fire_thief', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
   ctx.updateHud();
   await ctx.log(
-    ctxGoldenName(ctx) + ' casts Fire Thief (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg. Stole ' + stolen + ' Gold' + (burning ? ' (Burn bonus!)' : '') + '.', 'player'
+    ctxGoldenName(ctx) + ' casts Fire Thief (Lv ' + ctx.spellLvl + ') for ' + ctx.baseDmg + ' dmg.'
+    + ' Stole ' + stolen + ' Gold (base ' + baseSteal + '–' + (baseSteal + 9) + ')' + (burning ? ' · Burn bonus!' : '') + '.', 'player'
   );
 });
 
 // ember_skin — damage reduction buff
 registerHandler('ember_skin', async (ctx) => {
-  const reduction = lvlFlat(8, 4, ctx.spellLvl);
-  ctx.player.hp = Math.min(ctx.player.hpMax, ctx.player.hp + reduction);
-  ctx.updateHud();
+  const reduction = 0.25;
+  const turns = lvlFlat(2, 1, ctx.spellLvl); // Lv1=2t, Lv2=3t, Lv3=4t...
+  ctx.battleStatus.emberSkinTurns = turns;
+  ctx.battleStatus.emberSkinReduction = reduction;
   await ctx.log(
-    ctxGoldenName(ctx) + ' casts Ember Skin (Lv ' + ctx.spellLvl + '). Ward absorbs ' + reduction + ' HP.', 'player'
+    ctxGoldenName(ctx) + ' casts Ember Skin (Lv ' + ctx.spellLvl + ').'
+    + ' Reduces incoming damage by 25% for ' + turns + ' turns.', 'player'
   );
 });
 
 // explosion_burn — consume all burn stacks for burst
 registerHandler('explosion_burn', async (ctx) => {
-  const stacks = ctx.battleStatus.burnStacks.length;
+  if (!('burnStackCount' in ctx.battleStatus)) ctx.battleStatus.burnStackCount = 0;
+  const stacks = ctx.battleStatus.burnStackCount;
   const stackBonus = Math.floor(stacks * ctx.baseDmg * 0.50);
   const total = ctx.baseDmg + stackBonus;
+
+  // consume all stacks
   ctx.battleStatus.burnStacks = [];
+  ctx.battleStatus.burnStackCount = 0;
+
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
   ctx.updateHud();
   await ctx.log(
@@ -442,7 +456,7 @@ registerHandler('fire_storm', async (ctx) => {
   if (!ctx.battleStatus.fireStormStacks) ctx.battleStatus.fireStormStacks = [];
   ctx.battleStatus.fireStormStacks.push({ turnsLeft: 2, power: stormPower });
   await ctx.log(
-    ctx.playerName + ' unleashes Fire Storm (Lv ' + ctx.spellLvl + '). ' + stormPower + ' fire dmg/turn for 2 turns.', 'player'
+    ctx.playerName + ' unleashes Fire Storm (Lv ' + ctx.spellLvl + ').', 'player'
   );
 });
 
@@ -470,17 +484,21 @@ registerHandler('wyvern_kamikaze', async (ctx) => {
 
 // ragnarok_ignition — consume burn stacks + fire storm for ultimate burst
 registerHandler('ragnarok_ignition', async (ctx) => {
-  const burnStacks = ctx.battleStatus.burnStacks.length;
+  if (!('burnStackCount' in ctx.battleStatus)) ctx.battleStatus.burnStackCount = 0;
+  const burnStacks = ctx.battleStatus.burnStackCount;
   const stormStacks = (ctx.battleStatus.fireStormStacks || []).length;
   const burnBonus = Math.floor(burnStacks * 0.30 * ctx.baseDmg);
   const stormBonus = Math.floor(stormStacks * 0.20 * ctx.baseDmg);
   const total = ctx.baseDmg + burnBonus + stormBonus;
+
   ctx.battleStatus.burnStacks = [];
+  ctx.battleStatus.burnStackCount = 0;
   ctx.battleStatus.fireStormStacks = [];
+
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' ignites Ragnarok (Lv ' + ctx.spellLvl + ', ×' + burnStacks + ' burn, ×' + stormStacks + ' storm) for ' + total + ' damage!', 'player'
+    ctxGoldenName(ctx) + ' ignites Ragnarok (Lv ' + ctx.spellLvl + ', ×' + burnStacks + ' burn, ×' + stormStacks + ' storm) for ' + total + ' damage!', 'player'
   );
 });
 

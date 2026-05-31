@@ -115,11 +115,11 @@ function renderDungeonList() {
       expLabel = '—';
       goldLabel = '—';
     } else {
-      const expMin  = Math.min(...enemies.map(e => e.exp));
-      const expMax  = Math.max(...enemies.map(e => e.exp));
+      const expMin = Math.min(...enemies.map(e => e.exp));
+      const expMax = Math.max(...enemies.map(e => e.exp));
       const goldMin = Math.min(...enemies.map(e => e.gold));
       const goldMax = Math.max(...enemies.map(e => e.gold));
-      expLabel  = '+' + expMin  + '~' + expMax;
+      expLabel = '+' + expMin + '~' + expMax;
       goldLabel = '+' + goldMin + '~' + goldMax;
     }
 
@@ -433,6 +433,7 @@ async function runAutoBattle(dungeonId) {
   const enemy = { ...enemyTemplate };
   const battleStatus = {
     burnStacks: [],
+    burnStackCount: 0,
     chargeStacks: 0,
     manaCombo: 0,
     totalGoldStolen: 0,
@@ -444,6 +445,8 @@ async function runAutoBattle(dungeonId) {
     demonStacks: [],
     golemStacks: [],
     fireStormStacks: [],
+    emberSkinTurns: 0,
+    emberSkinReduction: 0,
   };
 
   updateCombatHud(player, enemy, enemyTemplate);
@@ -508,7 +511,7 @@ async function runAutoBattle(dungeonId) {
       battleStatus.burnStacks.forEach(s => s.turnsLeft--);
       updateCombatHud(player, enemy, enemyTemplate);
       await appendBattleLog(
-        'Burn deals ' + burnDmg + ' damage (' + battleStatus.burnStacks.length + ' stack).', 'player'
+        'Burn deals ' + burnDmg + ' damage.', 'player'
       );
       if (enemy.hp <= 0) break;
     }
@@ -554,7 +557,13 @@ async function runAutoBattle(dungeonId) {
           battleStatus.angelWingActive = 0;
         }
         if (!dodged) {
-          const hit = Math.floor(enemyStrike(enemy, player, turn) * timePressureBonus);
+          let hit = Math.floor(enemyStrike(enemy, player, turn) * timePressureBonus);
+          if (battleStatus.emberSkinTurns > 0) {
+            const reduced = Math.floor(hit * battleStatus.emberSkinReduction);
+            hit = Math.max(1, hit - reduced);
+            battleStatus.emberSkinTurns--;
+            await appendBattleLog('Ember Skin absorbs ' + reduced + ' damage. (' + battleStatus.emberSkinTurns + ' turns left)', 'player');
+          }
           player.hp = Math.max(0, player.hp - hit);
           updateCombatHud(player, enemy, enemyTemplate);
           await appendBattleLog(enemy.name + ' strikes for ' + hit + ' damage.', 'enemy');
