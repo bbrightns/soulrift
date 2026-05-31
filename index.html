@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/atmosphere.css?v=phase1-1">
   <link rel="stylesheet" href="css/library.css?v=phase1-1">
   <link rel="stylesheet" href="css/battle.css">
+  <link rel="stylesheet" href="css/gm.css">
 </head>
 
 <body>
@@ -27,7 +28,7 @@
   <!-- ── Header ─────────────────────────────────────────── -->
   <header id="app-header">
     <div class="header-hud-row">
-      <div class="header-logo">
+      <div class="header-logo" id="logo-title">
         <span class="logo-soul">SOUL</span><span class="logo-rift">RIFT</span>
       </div>
       <div class="header-hud" onclick="openProfilePanel()" title="View Profile">
@@ -513,6 +514,67 @@
       </div>
     </div>
 
+  <!-- ── GM Dev Panel ──────────────────────────────────────── -->
+  <div id="gm-panel" onclick="if(event.target===this)closeGMPanel()">
+    <div class="gm-sheet">
+
+      <div class="gm-sheet__header">
+        <span class="gm-sheet__title">GM MODE</span>
+        <span class="gm-dev-badge">DEV</span>
+        <button class="gm-close-btn" onclick="closeGMPanel()" aria-label="Close GM panel">✕</button>
+      </div>
+
+      <!-- 1. Gold Adjust -->
+      <div class="gm-section">
+        <div class="section-label">Set Gold</div>
+        <div class="gm-row">
+          <input type="number" id="gm-gold-input" class="gm-input" min="0" placeholder="Gold amount">
+          <button class="btn btn--primary gm-btn" onclick="gmSetGold()">Set</button>
+        </div>
+      </div>
+
+      <!-- 2. Spell Stone -->
+      <div class="gm-section">
+        <div class="section-label">Add Spell Stone</div>
+        <div class="gm-col">
+          <select id="gm-spell-select" class="gm-select"></select>
+          <select id="gm-spell-level" class="gm-select">
+            <option value="1">Level 1</option>
+            <option value="2">Level 2</option>
+            <option value="3">Level 3</option>
+            <option value="4">Level 4</option>
+            <option value="5">Level 5</option>
+            <option value="6">Level 6</option>
+            <option value="7">Level 7</option>
+            <option value="8">Level 8</option>
+            <option value="9">Level 9</option>
+            <option value="10">Level 10</option>
+            <option value="11">Level 11</option>
+          </select>
+          <input type="number" id="gm-spell-qty" class="gm-input" min="1" value="1" placeholder="Quantity">
+          <button class="btn btn--primary btn--full" onclick="gmAddSpellStone()">Add Stone</button>
+        </div>
+      </div>
+
+      <!-- 3. Player Level -->
+      <div class="gm-section">
+        <div class="section-label">Set Player Level</div>
+        <div class="gm-row">
+          <input type="number" id="gm-level-input" class="gm-input" min="1" max="99" placeholder="Level 1–99">
+          <button class="btn btn--primary gm-btn" onclick="gmSetLevel()">Set Level</button>
+        </div>
+      </div>
+
+      <!-- 4. Reset -->
+      <div class="gm-section">
+        <button class="btn btn--danger btn--full" onclick="gmResetAll()">Reset All Data</button>
+      </div>
+
+      <div class="gm-footer">SOULRIFT · GM MODE</div>
+
+    </div>
+  </div><!-- /gm-panel -->
+
   </div><!-- /app -->
 
 
@@ -530,6 +592,7 @@
   <script src="js/battle.js?v=phase1-1"></script>
   <script src="js/fusion.js?v=phase1-1"></script>
   <script src="js/app.js?v=phase1-1"></script>
+  <script src="js/gm.js"></script>
   <script> lucide.createIcons(); </script>
 
 </body>
