@@ -59,7 +59,7 @@ function renderBlueprint() {
       + (isEmpty ? ' blueprint-slot--empty' : '');
     slot.onclick = () => selectBlueprintSlot(i);
 
-    const lvlBadge = slotLvl > 1 ? ' <span class="badge--lv">Lv' + slotLvl + '</span>' : '';
+    const lvlBadge = ' <span class="badge--lv">Lv' + slotLvl + '</span>';
     const spellSpan = isEmpty
       ? '<span class="blueprint-slot__spell blueprint-slot__spell--empty">Empty</span>'
       : '<span class="blueprint-slot__spell">' + def.name + lvlBadge + '</span>';
