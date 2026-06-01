@@ -73,17 +73,14 @@ function renderCatalystItems() {
   const wrap = document.getElementById('catalyst-list');
   if (!wrap) return;
 
-  function catIconHTML(id) {
-    return '<img src="/asset/catalyst_icons/' + id + '.png" style="width:32px;height:32px;border-radius:var(--r-sm);object-fit:cover;flex-shrink:0;" alt="">';
-  }
   const CATALYST_NAMES = {
-    catalyst_shard: 'Catalyst Shard',
-    catalyst_core: 'Catalyst Core',
+    catalyst_shard:   'Catalyst Shard',
+    catalyst_core:    'Catalyst Core',
     catalyst_crystal: 'Catalyst Crystal',
   };
   const CATALYST_DESC = {
-    catalyst_shard: '+15% fusion success rate',
-    catalyst_core: '+30% fusion success rate',
+    catalyst_shard:   '+15% fusion success rate',
+    catalyst_core:    '+30% fusion success rate',
     catalyst_crystal: '+50% fusion success rate',
   };
 
@@ -99,15 +96,22 @@ function renderCatalystItems() {
     return;
   }
 
-  // AFTER
   wrap.innerHTML = items.map(i =>
     '<div class="card card--raised inv-spell-group" style="margin-bottom:var(--sp-2);">'
-    + catIconHTML(i.id)
-    + '<div class="inv-spell-left">'
-    + '<span class="inv-spell-name">' + CATALYST_NAMES[i.id] + '</span>'
-    + '<span class="inv-spell-desc">' + CATALYST_DESC[i.id] + '</span>'
+    + '<img src="/asset/catalyst_icons/' + i.id + '.png" class="inv-spell-icon" alt="">'
+    + '<div class="inv-spell-left" style="justify-content:center;">'
+    +   '<span class="inv-spell-name">' + CATALYST_NAMES[i.id] + '</span>'
+    +   '<span class="inv-spell-desc">' + CATALYST_DESC[i.id] + '</span>'
     + '</div>'
-    + '<div class="inv-spell-right"><span class="badge badge--gold inv-qty-badge">×' + i.qty + '</span></div>'
+    + '<div class="inv-spell-right" style="justify-content:center;">'
+    +   '<div class="inv-spell-row">'
+    +     '<span class="badge badge--gold inv-qty-badge">'
+    +       '<span class="inv-qty-x">×</span>'
+    +       '<span class="inv-qty-num">' + i.qty + '</span>'
+    +     '</span>'
+    +   '</div>'
+    + '</div>'
+    + '</div>'
   ).join('');
 }
 
