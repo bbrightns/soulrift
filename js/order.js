@@ -39,8 +39,10 @@ function renderBlueprint() {
   // Stale slot validation: clear slots whose spell is no longer owned
   bp.forEach((spellId, i) => {
     if (!spellId) return;
-    const baseId = spellId.split('|')[0];
-    const owned = getSpells().find(s => s.id === baseId && s.qty >= 1);
+    const parts = spellId.split('|');
+    const baseId = parts[0];
+    const lvl = parseInt(parts[1]) || 1;
+    const owned = getSpells().find(s => s.id === baseId && s.lvl === lvl && s.qty >= 1);
     if (!owned) setBlueprintSlot(i, null);
   });
 
