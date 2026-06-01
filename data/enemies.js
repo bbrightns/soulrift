@@ -31,7 +31,7 @@ const ENEMIES_DATA = [
     id: 'booby',
     isBoss: true,
     dungeonId: 'booby_forest',
-    weight: 200,
+    weight: 2,
     name: 'Booby',
     area: 'Booby Forest',
     hp: 75, atk: 16, def: 6, exp: 40, gold: 80,

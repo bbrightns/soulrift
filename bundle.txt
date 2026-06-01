@@ -1254,7 +1254,7 @@ body {
   align-items: stretch;
   padding: 0;
   flex-shrink: 0;
-  box-shadow: 0 1px 20px rgba(0,0,0,0.60);
+  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.60);
 }
 
 .header-hud-row {
@@ -1274,8 +1274,16 @@ body {
   letter-spacing: .18em;
   user-select: none;
 }
-.logo-soul { color: var(--c-gold-text); text-shadow: 0 0 16px rgba(197,160,89,0.35); }
-.logo-rift { color: var(--c-crimson-hi); text-shadow: 0 0 14px rgba(192,48,48,0.45); }
+
+.logo-soul {
+  color: var(--c-gold-text);
+  text-shadow: 0 0 16px rgba(197, 160, 89, 0.35);
+}
+
+.logo-rift {
+  color: var(--c-crimson-hi);
+  text-shadow: 0 0 14px rgba(192, 48, 48, 0.45);
+}
 
 /* HUD (clickable area → profile) */
 .header-hud {
@@ -1293,14 +1301,21 @@ body {
   border-color: var(--c-border-md);
   background: rgba(197, 160, 89, 0.05);
 }
-.header-hud:active { filter: brightness(.88); }
+
+.header-hud:active {
+  filter: brightness(.88);
+}
 
 .hud-player {
   display: flex;
   align-items: center;
   gap: 5px;
 }
-.hud-tower-icon { font-size: 12px; line-height: 1; }
+
+.hud-tower-icon {
+  font-size: 12px;
+  line-height: 1;
+}
 
 .hud-name {
   font-size: 12px;
@@ -1315,7 +1330,10 @@ body {
   white-space: nowrap;
 }
 
-.hud-coin { font-size: 12px; line-height: 1; }
+.hud-coin {
+  font-size: 12px;
+  line-height: 1;
+}
 
 .hud-gold {
   display: flex;
@@ -1336,7 +1354,7 @@ body {
   padding: 2px 6px;
   font-family: var(--f-head);
   letter-spacing: .06em;
-  text-shadow: 0 0 8px rgba(197,160,89,0.4);
+  text-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
 }
 
 /* Vertical separator between hud items */
@@ -1353,6 +1371,7 @@ body {
   overflow: hidden;
   flex-shrink: 0;
 }
+
 .hud-exp-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--c-tower-dim), var(--c-tower-hi));
@@ -1360,10 +1379,25 @@ body {
 }
 
 /* Tower theme variables — driven by data-tower on #app */
-#app[data-tower="fire"]  { --c-tower-dim: #8a2000; --c-tower-hi: #ff5a10; }
-#app[data-tower="dark"]  { --c-tower-dim: #4a1890; --c-tower-hi: #b060ff; }
-#app[data-tower="ice"]   { --c-tower-dim: #104060; --c-tower-hi: #40c8e8; }
-#app[data-tower="light"] { --c-tower-dim: #806010; --c-tower-hi: #e8c830; }
+#app[data-tower="fire"] {
+  --c-tower-dim: #8a2000;
+  --c-tower-hi: #ff5a10;
+}
+
+#app[data-tower="dark"] {
+  --c-tower-dim: #4a1890;
+  --c-tower-hi: #b060ff;
+}
+
+#app[data-tower="ice"] {
+  --c-tower-dim: #104060;
+  --c-tower-hi: #40c8e8;
+}
+
+#app[data-tower="light"] {
+  --c-tower-dim: #806010;
+  --c-tower-hi: #e8c830;
+}
 
 /* ── Main content area ───────────────────────────────────── */
 #screens {
@@ -1398,6 +1432,7 @@ body {
   min-height: 100%;
   overflow: hidden;
 }
+
 #screen-order.is-active,
 #screen-market.is-active,
 #screen-items.is-active,
@@ -1944,8 +1979,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255,255,255,0.04);
-  border: 0.5px solid rgba(255,255,255,0.09);
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--r-md);
   padding: 7px 10px;
 }
@@ -1968,9 +2003,17 @@ body {
   color: var(--c-text-hi);
 }
 
-.prof-chip__val--gold { color: var(--c-gold-text); }
-.prof-chip__val--red  { color: #e05a5a; }
-.prof-chip__val--blue { color: #5a9ae0; }
+.prof-chip__val--gold {
+  color: var(--c-gold-text);
+}
+
+.prof-chip__val--red {
+  color: #e05a5a;
+}
+
+.prof-chip__val--blue {
+  color: #5a9ae0;
+}
 
 .prof-chip-vitals {
   display: grid;
@@ -2391,8 +2434,8 @@ body {
 
 .blueprint-slot__clear:hover {
   color: var(--c-bad);
-  border-color: rgba(184,48,48,.38);
-  background: rgba(184,48,48,.08);
+  border-color: rgba(184, 48, 48, .38);
+  background: rgba(184, 48, 48, .08);
 }
 
 .blueprint-slot.is-selected {
@@ -2429,12 +2472,12 @@ body {
   font-size: 11px;
   font-weight: 700;
   padding: 2px 7px;
-  background: rgba(197,160,89,0.18);
+  background: rgba(197, 160, 89, 0.18);
   border: 1px solid var(--c-border-hi);
   border-radius: var(--r-sm);
   color: var(--c-gold-hi);
   letter-spacing: .06em;
-  text-shadow: 0 0 8px rgba(197,160,89,0.4);
+  text-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
 }
 
 .blueprint-slot__spell {
@@ -2456,12 +2499,12 @@ body {
   font-size: 12px;
   font-weight: 700;
   padding: 1px 5px;
-  background: rgba(197,160,89,0.18);
+  background: rgba(197, 160, 89, 0.18);
   border: 1px solid var(--c-border-hi);
   border-radius: var(--r-sm);
   color: var(--c-gold-hi);
   letter-spacing: .06em;
-  text-shadow: 0 0 8px rgba(197,160,89,0.4);
+  text-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
 }
 
 .blueprint-slot__cost {
@@ -2577,7 +2620,8 @@ body {
 .battle-log-line--system,
 .battle-log-line--reward,
 .battle-log-line--warn {
-  display: block; /* non-spell lines stay as block, no icon slot */
+  display: block;
+  /* non-spell lines stay as block, no icon slot */
 }
 
 .battle-log-line--turn {
@@ -2749,12 +2793,12 @@ body {
   font-size: 11px;
   font-weight: 700;
   padding: 2px 7px;
-  background: rgba(197,160,89,0.18);
+  background: rgba(197, 160, 89, 0.18);
   border: 1px solid var(--c-border-hi);
   border-radius: var(--r-sm);
   color: var(--c-gold-hi);
   letter-spacing: .06em;
-  text-shadow: 0 0 8px rgba(197,160,89,0.4);
+  text-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
 }
 
 .color-light {
@@ -2787,7 +2831,7 @@ body {
   border: 1px solid var(--c-border-md);
   border-radius: var(--r-md);
   overflow: hidden;
-  background: rgba(10,10,15,.92);
+  background: rgba(10, 10, 15, .92);
   position: relative;
   cursor: pointer;
   transition: border-color var(--ease-base), box-shadow var(--ease-base);
@@ -2830,8 +2874,8 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at center, transparent 30%, rgba(10,10,11,0.5) 100%),
-    linear-gradient(to bottom, rgba(10,10,11,0.2) 0%, transparent 30%, transparent 50%, rgba(10,10,11,0.85) 100%);
+    radial-gradient(ellipse at center, transparent 30%, rgba(10, 10, 11, 0.5) 100%),
+    linear-gradient(to bottom, rgba(10, 10, 11, 0.2) 0%, transparent 30%, transparent 50%, rgba(10, 10, 11, 0.85) 100%);
   z-index: 1;
 }
 
@@ -2841,10 +2885,10 @@ body {
   inset: 0;
   z-index: 2;
   background:
-    linear-gradient(to right, rgba(197,160,89,0.30) 1px, transparent 1px) 0 0 / 12px 12px no-repeat,
-    linear-gradient(to bottom, rgba(197,160,89,0.30) 1px, transparent 1px) 0 0 / 12px 12px no-repeat,
-    linear-gradient(to left, rgba(197,160,89,0.30) 1px, transparent 1px) 100% 100% / 12px 12px no-repeat,
-    linear-gradient(to top, rgba(197,160,89,0.30) 1px, transparent 1px) 100% 100% / 12px 12px no-repeat;
+    linear-gradient(to right, rgba(197, 160, 89, 0.30) 1px, transparent 1px) 0 0 / 12px 12px no-repeat,
+    linear-gradient(to bottom, rgba(197, 160, 89, 0.30) 1px, transparent 1px) 0 0 / 12px 12px no-repeat,
+    linear-gradient(to left, rgba(197, 160, 89, 0.30) 1px, transparent 1px) 100% 100% / 12px 12px no-repeat,
+    linear-gradient(to top, rgba(197, 160, 89, 0.30) 1px, transparent 1px) 100% 100% / 12px 12px no-repeat;
   pointer-events: none;
 }
 
@@ -2857,8 +2901,8 @@ body {
   font-size: 9px;
   letter-spacing: 0.18em;
   color: var(--c-gold-text);
-  border: 1px solid rgba(197,160,89,0.30);
-  background: rgba(10,10,11,0.75);
+  border: 1px solid rgba(197, 160, 89, 0.30);
+  background: rgba(10, 10, 11, 0.75);
   padding: 4px 9px;
   border-radius: 2px;
   backdrop-filter: blur(6px);
@@ -2889,7 +2933,7 @@ body {
   color: var(--c-text-hi);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
 }
 
 .dungeon-lock {
@@ -2905,7 +2949,7 @@ body {
 
 .dungeon-gold-accent {
   height: 2px;
-  background: linear-gradient(90deg, rgba(197,160,89,0.30), var(--c-gold-text) 40%, rgba(197,160,89,0.30));
+  background: linear-gradient(90deg, rgba(197, 160, 89, 0.30), var(--c-gold-text) 40%, rgba(197, 160, 89, 0.30));
 }
 
 .dungeon-body {
@@ -2931,7 +2975,7 @@ body {
   align-items: center;
   gap: 2px;
   border: 1px solid var(--c-border-md);
-  background: rgba(197,160,89,0.05);
+  background: rgba(197, 160, 89, 0.05);
   padding: 7px 10px;
   border-radius: 2px;
 }
@@ -2952,23 +2996,43 @@ body {
   letter-spacing: 0.04em;
 }
 
-.dungeon-pill-val.diff-easy      { color: #6cc96c; }
-.dungeon-pill-val.diff-normal    { color: #d4b030; }
-.dungeon-pill-val.diff-hard      { color: #e06060; }
-.dungeon-pill-val.diff-nightmare { color: #b07aef; }
+.dungeon-pill-val.diff-easy {
+  color: #6cc96c;
+}
+
+.dungeon-pill-val.diff-normal {
+  color: #d4b030;
+}
+
+.dungeon-pill-val.diff-hard {
+  color: #e06060;
+}
+
+.dungeon-pill-val.diff-nightmare {
+  color: #b07aef;
+}
 
 .divider-rune {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(197,160,89,0.45);
+  color: rgba(197, 160, 89, 0.45);
   font-size: 10px;
   padding: 4px 0;
 }
 
 @keyframes flicker {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.4); }
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
 }
 
 .firefly {
@@ -2982,13 +3046,34 @@ body {
   animation: flicker 2s ease-in-out infinite;
 }
 
-.firefly.f1 { top: 55%; left: 20%; animation-delay: 0s; }
-.firefly.f2 { top: 70%; left: 50%; animation-delay: 0.7s; }
-.firefly.f3 { top: 45%; right: 25%; animation-delay: 1.3s; }
+.firefly.f1 {
+  top: 55%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.firefly.f2 {
+  top: 70%;
+  left: 50%;
+  animation-delay: 0.7s;
+}
+
+.firefly.f3 {
+  top: 45%;
+  right: 25%;
+  animation-delay: 1.3s;
+}
 
 @keyframes dungeon-card-pulse {
-  0%, 100% { box-shadow: 0 0 0 rgba(197,160,89,0); }
-  50% { box-shadow: 0 0 12px rgba(197,160,89,0.2); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(197, 160, 89, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 12px rgba(197, 160, 89, 0.2);
+  }
 }
 
 .dungeon-enter,
@@ -3966,33 +4051,36 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.75);
   opacity: 0;
   pointer-events: none;
   transition: opacity .22s;
   backdrop-filter: blur(2px);
 }
+
 #spell-picker-panel.is-open {
   opacity: 1;
   pointer-events: auto;
 }
+
 #spell-picker-panel:not(.is-open) .spell-picker__fills {
   pointer-events: none;
   visibility: hidden;
 }
+
 #spell-picker-panel .profile-sheet {
+  display: flex;
+  flex-direction: column;
   max-height: 85%;
+  min-height: 60%;
 }
+
 #spell-picker-panel .spell-picker {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   flex: 1 1 auto;
   min-height: 0;
   padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
-}
-#spell-picker-panel .profile-sheet {
-  display: flex;
-  flex-direction: column;
 }
 
 /* ── Inventory grouped spell list ───────────────────────── */
@@ -4058,7 +4146,7 @@ body {
   gap: var(--sp-2);
 }
 
-.inv-spell-row + .inv-spell-row {
+.inv-spell-row+.inv-spell-row {
   margin-top: 4px;
 }
 
@@ -4083,10 +4171,10 @@ body {
 
 .inv-lv-badge {
   font-size: 11px;
-  background: rgba(197,160,89,0.18);
+  background: rgba(197, 160, 89, 0.18);
   border: 1px solid var(--c-border-hi);
   color: var(--c-gold-hi);
-  text-shadow: 0 0 8px rgba(197,160,89,0.4);
+  text-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
 }
 
 .inv-qty-x {
@@ -4200,7 +4288,7 @@ body {
   color: var(--c-text-2);
 }
 
-.fusion-all-row + .fusion-all-row {
+.fusion-all-row+.fusion-all-row {
   border-top: 1px solid var(--c-border);
 }
 
@@ -5179,10 +5267,10 @@ const ENEMIES_DATA = [
     id: 'booby',
     isBoss: true,
     dungeonId: 'booby_forest',
-    weight: 2,
+    weight: 200,
     name: 'Booby',
     area: 'Booby Forest',
-    hp: 48, atk: 8, def: 3, exp: 24, gold: 45,
+    hp: 75, atk: 16, def: 6, exp: 40, gold: 80,
     opener: 'A heavy forest beast lowers its head and charges first.',
     dropTable: [
       { id: 'catalyst_shard', type: 'catalyst', chance: 0.2 },
@@ -5237,7 +5325,9 @@ const ENEMIES_DATA = [
     area: 'Cursed Clocktower',
     hp: 130, atk: 30, def: 10, exp: 55, gold: 115,
     opener: 'A small clockwork imp skitters across the gears, eyes ticking like a watch.',
-    dropTable: [],
+    dropTable: [
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
+    ],
   },
   { // Clockwork Soldier
     id: 'clockwork_soldier',
@@ -5247,7 +5337,9 @@ const ENEMIES_DATA = [
     area: 'Cursed Clocktower',
     hp: 150, atk: 34, def: 14, exp: 60, gold: 125,
     opener: 'A soldier of brass and springs snaps to attention, blade raised.',
-    dropTable: [],
+    dropTable: [
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
+    ],
   },
   { // Time-Worn Mage
     id: 'time_worn_mage',
@@ -5260,6 +5352,7 @@ const ENEMIES_DATA = [
     opener: 'A mage frozen mid-cast for centuries finally completes the spell — aimed at you.',
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'weak', chance: 0.2 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
     ],
   },
   { // Rusted Warden
@@ -5273,6 +5366,7 @@ const ENEMIES_DATA = [
     opener: 'Ancient mechanisms grind as the warden lurches forward, unstoppable.',
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'mid', chance: 0.2 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
     ],
   },
   { // Chronolith
@@ -5287,6 +5381,7 @@ const ENEMIES_DATA = [
     opener: "The tower's core awakens. Time stutters. The Chronolith has no patience for the living.",
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'strong', chance: 0.2 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
     ],
   },
 
@@ -6498,11 +6593,11 @@ function spellPower(def, player, spellLvl) {
 
   const tower = getTower();
   let statBase;
-  if (tower === 'light')     statBase = Math.floor(player.int * 1.1 + player.def * 0.4);
+  if (tower === 'light') statBase = Math.floor(player.int * 1.1 + player.def * 0.4);
   else if (tower === 'dark') statBase = Math.floor(player.atk * 0.9 + player.agi * 0.4);
   else if (tower === 'fire') statBase = Math.floor(player.atk * 0.8 + player.str * 0.5);
-  else if (tower === 'ice')  statBase = Math.floor(player.int * 0.9 + player.sp * 0.15);
-  else                       statBase = Math.floor((player.atk + player.int) * 0.75);
+  else if (tower === 'ice') statBase = Math.floor(player.int * 0.9 + player.sp * 0.15);
+  else statBase = Math.floor((player.atk + player.int) * 0.75);
 
   const base = Math.max(5, statBase);
   const towerBonus = def.tower === tower ? 4 : 0;
@@ -6521,10 +6616,10 @@ function enemyStrike(enemy, player, turn) {
 }
 
 const TOWER_GROWTH = {
-  light: { hpMax: 8,  spMax: 4, atk: 1, def: 2, str: 0, int: 2, agi: 0 },
-  dark:  { hpMax: 4,  spMax: 3, atk: 2, def: 0, str: 0, int: 1, agi: 2 },
-  fire:  { hpMax: 10, spMax: 2, atk: 2, def: 1, str: 2, int: 0, agi: 1 },
-  ice:   { hpMax: 3,  spMax: 6, atk: 1, def: 1, str: 1, int: 2, agi: 1 },
+  light: { hpMax: 8, spMax: 4, atk: 1, def: 2, str: 0, int: 2, agi: 0 },
+  dark: { hpMax: 4, spMax: 3, atk: 2, def: 0, str: 0, int: 1, agi: 2 },
+  fire: { hpMax: 10, spMax: 2, atk: 2, def: 1, str: 2, int: 0, agi: 1 },
+  ice: { hpMax: 3, spMax: 6, atk: 1, def: 1, str: 1, int: 2, agi: 1 },
 };
 
 function gainExp(amount) {
@@ -6538,20 +6633,20 @@ function gainExp(amount) {
     const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
     s.player.hpMax += g.hpMax;
     s.player.spMax += g.spMax;
-    s.player.atk   += g.atk;
-    s.player.def   += g.def;
-    s.player.str   += g.str;
-    s.player.int   += g.int;
-    s.player.agi   += g.agi;
+    s.player.atk += g.atk;
+    s.player.def += g.def;
+    s.player.str += g.str;
+    s.player.int += g.int;
+    s.player.agi += g.agi;
 
     if (s.player.level % 5 === 0) {
       s.player.hpMax += 10;
       s.player.spMax += 5;
-      s.player.atk   += 2;
-      s.player.def   += 2;
-      s.player.str   += 2;
-      s.player.int   += 2;
-      s.player.agi   += 2;
+      s.player.atk += 2;
+      s.player.def += 2;
+      s.player.str += 2;
+      s.player.int += 2;
+      s.player.agi += 2;
       if (typeof toast === 'function') toast('Power Surge! Level ' + s.player.level + ' milestone reached!', 'gold');
     }
   }
@@ -6652,7 +6747,7 @@ function showArenaView(dungeonId) {
 }
 
 function _hasEmptyFillableSlot() {
-  const bp     = getState().blueprint;
+  const bp = getState().blueprint;
   const spells = getSpells();
   if (!spells.length) return false;
 
@@ -6680,12 +6775,12 @@ let _pendingDungeonId = null;
 
 function _showEmptySlotConfirm() {
   const modal = document.getElementById('shop-confirm-modal');
-  const body  = document.getElementById('shop-confirm-body');
+  const body = document.getElementById('shop-confirm-body');
   if (!modal || !body) return;
 
-  const bp      = getState().blueprint;
-  const empty   = bp.filter(s => !s).length;
-  const filled  = bp.filter(s => !!s).length;
+  const bp = getState().blueprint;
+  const empty = bp.filter(s => !s).length;
+  const filled = bp.filter(s => !!s).length;
 
   body.innerHTML =
     '<div style="font-size:32px;margin-bottom:var(--sp-3)">⚔️</div>'
@@ -6986,6 +7081,14 @@ async function runAutoBattle(dungeonId) {
 
   const s = getState();
   const blueprint = s.blueprint.slice(0, 10);
+  const validatedBlueprint = blueprint.map(slot => {
+    if (!slot) return null;
+    const parts = slot.split('|');
+    const baseId = parts[0];
+    const lvl = parseInt(parts[1]) || 1;
+    const owned = s.spells.find(sp => sp.id === baseId && sp.lvl === lvl && sp.qty >= 1);
+    return owned ? slot : null;
+  });
   const player = { ...s.player, hp: s.player.hpMax, sp: s.player.spMax };
   const enemyTemplate = _preparedEnemyTemplate || (window.getRandomEnemy
     ? getRandomEnemy(activeDungeonId)
@@ -7081,6 +7184,15 @@ async function runAutoBattle(dungeonId) {
     const timePressureBonus = (timePressure && turn >= timePressure.startTurn)
       ? 1 + (turn - timePressure.startTurn + 1) * timePressure.atkBonusPerTurn
       : 1;
+    // Curse tick-down
+    if (battleStatus.curseActive && battleStatus.curseActive.turnsLeft > 0) {
+      battleStatus.curseActive.turnsLeft--;
+      if (battleStatus.curseActive.turnsLeft <= 0) {
+        battleStatus.curseActive = null;
+        await appendBattleLog(enemy.name + '\'s curse fades.', 'system');
+      }
+    }
+
     // Regen tick (Chorus of Sanctuary)
     if (battleStatus.regenStacks && battleStatus.regenStacks.length > 0) {
       battleStatus.regenStacks = battleStatus.regenStacks.filter(r => r.turnsLeft > 0);
@@ -7125,6 +7237,13 @@ async function runAutoBattle(dungeonId) {
             battleStatus.emberSkinTurns--;
             await appendBattleLog('Ember Skin absorbs ' + reduced + ' damage. (' + battleStatus.emberSkinTurns + ' turns left)', 'player');
           }
+          if (battleStatus.divineReflect && battleStatus.divineReflect > 0) {
+            const reflected = Math.floor(hit * battleStatus.divineReflect);
+            enemy.hp = Math.max(0, enemy.hp - reflected);
+            battleStatus.divineReflect = 0;
+            updateCombatHud(player, enemy, enemyTemplate);
+            await appendBattleLog('Divine Reflection mirrors ' + reflected + ' damage back at ' + enemy.name + '!', 'player');
+          }
           player.hp = Math.max(0, player.hp - hit);
           updateCombatHud(player, enemy, enemyTemplate);
           await appendBattleLog(enemy.name + ' strikes for ' + hit + ' damage.', 'enemy');
@@ -7136,7 +7255,7 @@ async function runAutoBattle(dungeonId) {
       }
     }
 
-    const raw = blueprint[turn - 1] || null;
+    const raw = validatedBlueprint[turn - 1] || null;
     const parts = raw ? raw.split('|') : [];
     const spellId = parts[0] || null;
     const spellLvl = parseInt(parts[1]) || 1;
@@ -7146,7 +7265,7 @@ async function runAutoBattle(dungeonId) {
       const dmg = struggleDamage(player, enemy);
       enemy.hp = Math.max(0, enemy.hp - dmg);
       updateCombatHud(player, enemy, enemyTemplate);
-      await appendBattleLog(logName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.', 'player');
+      await appendBattleLog(wrapLogText(logName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.'), 'player');
     } else if (player.sp >= def.spCost) {
       player.sp -= def.spCost;
       const inkBleed = getPerk('ink_bleed');
@@ -7170,7 +7289,7 @@ async function runAutoBattle(dungeonId) {
       enemy.hp = Math.max(0, enemy.hp - dmg);
       updateCombatHud(player, enemy, enemyTemplate);
       await appendBattleLog(
-        logName() + ' tries to cast ' + def.name + ' but has only ' + player.sp + '/' + def.spCost + ' SP. The spell fails; Struggle deals ' + dmg + ' damage.',
+        wrapLogText(logName() + ' tries to cast ' + def.name + ' but has only ' + player.sp + '/' + def.spCost + ' SP. The spell fails; Struggle deals ' + dmg + ' damage.'),
         'warn'
       );
     }
@@ -9001,7 +9120,7 @@ function applyTowerStart(tower, playerName) {
     else s.spells.push({ id: config.spellId, lvl: 1, qty: 1 });
   }
 
-  s.blueprint = Array(10).fill(config.spellId + '|1');
+  s.blueprint = Array(10).fill(null);
   saveState();
   return true;
 }
@@ -9338,11 +9457,13 @@ function _renderLibFilters() {
 
   const towers  = ['light', 'dark', 'fire', 'ice'];
   const tLabels = { light: 'Light', dark: 'Dark', fire: 'Fire', ice: 'Ice' };
+  const allTowers = ['all', ...towers];
+  const tAllLabels = { all: 'All', ...tLabels };
 
-  towerEl.innerHTML = towers.map(t => {
+  towerEl.innerHTML = allTowers.map(t => {
     const on = t === _libTower;
     return `<button class="btn btn--ghost" style="opacity:${on ? '1' : '0.45'};padding:0 var(--sp-3);min-height:32px;font-size:12px;"
-      onclick="_libTower='${t}';renderLibrary();">${tLabels[t]}</button>`;
+      onclick="_libTower='${t}';renderLibrary();">${tAllLabels[t]}</button>`;
   }).join('');
 
   const rarities = ['all', 'common', 'uncommon', 'rare', 'ultimate'];
@@ -9360,7 +9481,7 @@ function _renderLibCards() {
   if (!list) return;
 
   let spells = getAllSpells();
-  if (_libTower  !== 'all') spells = spells.filter(s => s.tower  === _libTower);
+  if (_libTower !== 'all') spells = spells.filter(s => s.tower === _libTower);
   if (_libRarity !== 'all') spells = spells.filter(s => s.rarity === _libRarity);
 
   if (!spells.length) {
@@ -9405,7 +9526,7 @@ function _renderLibCards() {
 }
 
 onScreen('library', () => {
-  _libTower  = getTower() || 'light';
+  _libTower  = 'all';
   _libRarity = 'all';
   renderLibrary();
 }); 
