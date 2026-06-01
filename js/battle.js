@@ -640,6 +640,15 @@ async function runAutoBattle(dungeonId) {
     const timePressureBonus = (timePressure && turn >= timePressure.startTurn)
       ? 1 + (turn - timePressure.startTurn + 1) * timePressure.atkBonusPerTurn
       : 1;
+    // Curse tick-down
+    if (battleStatus.curseActive && battleStatus.curseActive.turnsLeft > 0) {
+      battleStatus.curseActive.turnsLeft--;
+      if (battleStatus.curseActive.turnsLeft <= 0) {
+        battleStatus.curseActive = null;
+        await appendBattleLog(enemy.name + '\'s curse fades.', 'system');
+      }
+    }
+
     // Regen tick (Chorus of Sanctuary)
     if (battleStatus.regenStacks && battleStatus.regenStacks.length > 0) {
       battleStatus.regenStacks = battleStatus.regenStacks.filter(r => r.turnsLeft > 0);
