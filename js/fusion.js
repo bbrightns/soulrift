@@ -83,42 +83,44 @@ function renderFusionCatalystList() {
 }
 
 function formatCatalystName(id) {
-  return { catalyst_shard: '🟤 Shard', catalyst_core: '🔵 Core', catalyst_crystal: '🟡 Crystal' }[id] || id;
+  const labels = { catalyst_shard: 'Shard', catalyst_core: 'Core', catalyst_crystal: 'Crystal' };
+  const label = labels[id] || id;
+  return '<img src="/asset/catalyst_icons/' + id + '.png" style="width:18px;height:18px;border-radius:3px;vertical-align:middle;margin-right:5px;" alt="">' + label;
 }
 
 function _updateCrucibleSlots() {
-  const leftInner  = document.getElementById('fusion-slot-left-inner');
+  const leftInner = document.getElementById('fusion-slot-left-inner');
   const rightInner = document.getElementById('fusion-slot-right-inner');
-  const badge      = document.getElementById('fusion-rate-badge');
-  const badgePct   = document.getElementById('fusion-rate-badge-pct');
-  const leftSlot   = document.getElementById('fusion-slot-left');
-  const rightSlot  = document.getElementById('fusion-slot-right');
+  const badge = document.getElementById('fusion-rate-badge');
+  const badgePct = document.getElementById('fusion-rate-badge-pct');
+  const leftSlot = document.getElementById('fusion-slot-left');
+  const rightSlot = document.getElementById('fusion-slot-right');
 
   const emptyHTML = '<span class="fusion-slot__empty-icon">+</span>'
     + '<span class="fusion-slot__empty-text">Select</span>';
 
   if (!_fusionSpellId) {
-    if (leftInner)  leftInner.innerHTML  = emptyHTML;
+    if (leftInner) leftInner.innerHTML = emptyHTML;
     if (rightInner) rightInner.innerHTML = emptyHTML;
-    if (leftSlot)   leftSlot.classList.remove('is-filled');
-    if (rightSlot)  rightSlot.classList.remove('is-filled');
-    if (badge)      badge.classList.add('is-hidden');
+    if (leftSlot) leftSlot.classList.remove('is-filled');
+    if (rightSlot) rightSlot.classList.remove('is-filled');
+    if (badge) badge.classList.add('is-hidden');
     return;
   }
 
-  const def      = getSpellDef(_fusionSpellId);
+  const def = getSpellDef(_fusionSpellId);
   const baseRate = FUSION_RATES[_fusionSpellLvl] || 0;
   const catBonus = _fusionCatalyst ? (CATALYST_BONUS[_fusionCatalyst] || 0) : 0;
-  const pct      = Math.round(Math.min(0.95, baseRate + catBonus) * 100);
+  const pct = Math.round(Math.min(0.95, baseRate + catBonus) * 100);
 
   const slotHTML = '<img src="/asset/spell_icons/' + _fusionSpellId + '.png" class="fusion-crucible-icon-img" alt="">'
     + '<div class="fusion-slot__lv">LV.' + _fusionSpellLvl + '</div>'
     + '<div class="fusion-slot__name">' + (def ? def.name : '') + '</div>';
 
-  if (leftInner)  leftInner.innerHTML  = slotHTML;
+  if (leftInner) leftInner.innerHTML = slotHTML;
   if (rightInner) rightInner.innerHTML = slotHTML;
-  if (leftSlot)   leftSlot.classList.add('is-filled');
-  if (rightSlot)  rightSlot.classList.add('is-filled');
+  if (leftSlot) leftSlot.classList.add('is-filled');
+  if (rightSlot) rightSlot.classList.add('is-filled');
 
   if (badge) badge.classList.remove('is-hidden');
   if (badgePct) {
@@ -132,11 +134,11 @@ function _updateCatalystDisplay() {
   const txt = document.getElementById('fusion-cat-display-text');
   if (!txt) return;
   if (!_fusionCatalyst) {
-    txt.textContent = 'None';
+    txt.innerHTML = 'None';
     if (slot) slot.classList.remove('is-active');
   } else {
     const bonus = '+' + Math.round(CATALYST_BONUS[_fusionCatalyst] * 100) + '%';
-    txt.textContent = formatCatalystName(_fusionCatalyst) + ' ' + bonus;
+    txt.innerHTML = formatCatalystName(_fusionCatalyst) + ' ' + bonus;
     if (slot) slot.classList.add('is-active');
   }
 }
@@ -152,17 +154,17 @@ function renderFusionPanel() {
     return;
   }
 
-  const fromLvl    = _fusionSpellLvl;
-  const goldCost   = FUSION_GOLD[fromLvl] || 0;
+  const fromLvl = _fusionSpellLvl;
+  const goldCost = FUSION_GOLD[fromLvl] || 0;
   const playerGold = getState().gold;
-  const canAfford  = playerGold >= goldCost;
-  const catLine    = _fusionCatalyst ? ' + 1 ' + formatCatalystName(_fusionCatalyst) : '';
+  const canAfford = playerGold >= goldCost;
+  const catLine = _fusionCatalyst ? ' + 1 ' + formatCatalystName(_fusionCatalyst) : '';
 
   // count how many pairs are available
-  const owned    = (getState().spells || []).find(s => s.id === _fusionSpellId && s.lvl === fromLvl);
-  const qty      = owned ? owned.qty : 0;
-  const pairs    = Math.floor(qty / 2);
-  const canBulk  = canAfford && pairs >= 2;
+  const owned = (getState().spells || []).find(s => s.id === _fusionSpellId && s.lvl === fromLvl);
+  const qty = owned ? owned.qty : 0;
+  const pairs = Math.floor(qty / 2);
+  const canBulk = canAfford && pairs >= 2;
 
   wrap.innerHTML =
     '<button class="btn btn--primary btn--full fusion-invoke-btn" '
@@ -272,13 +274,13 @@ function executeFusionAll() {
 
   // keep fusing while we have pairs and gold
   while (true) {
-    const s        = getState();
-    const fromLvl  = _fusionSpellLvl;
+    const s = getState();
+    const fromLvl = _fusionSpellLvl;
     const goldCost = FUSION_GOLD[fromLvl] || 0;
-    const owned    = (s.spells || []).find(sp => sp.id === _fusionSpellId && sp.lvl === fromLvl);
+    const owned = (s.spells || []).find(sp => sp.id === _fusionSpellId && sp.lvl === fromLvl);
 
-    if (!owned || owned.qty < 2)  break;
-    if (s.gold < goldCost)        break;
+    if (!owned || owned.qty < 2) break;
+    if (s.gold < goldCost) break;
 
     s.gold -= goldCost;
 
@@ -292,8 +294,8 @@ function executeFusionAll() {
 
     const baseRate = FUSION_RATES[fromLvl] || 0;
     const catBonus = _fusionCatalyst ? (CATALYST_BONUS[_fusionCatalyst] || 0) : 0;
-    const rate     = Math.min(0.95, baseRate + catBonus);
-    const success  = Math.random() < rate;
+    const rate = Math.min(0.95, baseRate + catBonus);
+    const success = Math.random() < rate;
 
     if (success) {
       const toLvl = fromLvl + 1;
@@ -314,7 +316,7 @@ function executeFusionAll() {
 
   // show summary modal
   const modal = document.getElementById('fusion-result-modal');
-  const body  = document.getElementById('fusion-result-body');
+  const body = document.getElementById('fusion-result-body');
   if (!modal || !body) return;
 
   const iconHTML = lastSpellId
@@ -335,7 +337,7 @@ function executeFusionAll() {
 
   modal.classList.remove('is-hidden');
 
-  _fusionSpellId  = null;
+  _fusionSpellId = null;
   _fusionSpellLvl = null;
   _fusionCatalyst = null;
 
@@ -347,7 +349,7 @@ window.executeFusionAll = executeFusionAll;
 /* ── Result Modal ────────────────────────────────────── */
 function showFusionResult(success, spellName, spellId, toLvl, failType, downgradeLvl) {
   const modal = document.getElementById('fusion-result-modal');
-  const body  = document.getElementById('fusion-result-body');
+  const body = document.getElementById('fusion-result-body');
   if (!modal || !body) return;
 
   const iconHTML = spellId

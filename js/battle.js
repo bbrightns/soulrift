@@ -392,9 +392,12 @@ function showBattleOutcome(outcome) {
   const dropEl = document.getElementById('battle-drops');
   if (dropEl) {
     if (outcome.drops && outcome.drops.length > 0) {
-      dropEl.innerHTML = outcome.drops.map(d =>
-        '<div class="c-gold" style="font-size:15px;letter-spacing:.04em;margin-top:6px;">✦ You got <strong>' + d.name + '</strong>!</div>'
-      ).join('');
+      dropEl.innerHTML = outcome.drops.map(d => {
+        const iconSrc = d.type === 'catalyst' ? '/asset/catalyst_icons/' + d.catalystId + '.png' : null;
+        const iconHTML = iconSrc ? '<img src="' + iconSrc + '" style="width:22px;height:22px;border-radius:4px;vertical-align:middle;margin-right:6px;" alt="">' : '✦ ';
+        return '<div class="c-gold" style="font-size:15px;letter-spacing:.04em;margin-top:6px;display:flex;align-items:center;">'
+          + iconHTML + 'You got <strong style="margin-left:4px;">' + d.name + '</strong>!</div>';
+      }).join('');
     } else {
       dropEl.innerHTML = '';
     }
@@ -404,6 +407,14 @@ function showBattleOutcome(outcome) {
 function updateCombatHud(player, enemy, enemyTemplate) {
   setText('player-combat-name', battlePlayerName());
   setText('enemy-combat-name', enemy.name);
+
+  // enemy avatar
+  const avatarEl = document.getElementById('enemy-combat-avatar');
+  if (avatarEl && enemyTemplate) {
+    const id = enemy.name === '???' ? null : enemyTemplate.id;
+    avatarEl.src = id ? '/asset/enemy_avatars/' + id + '.png' : '';
+    avatarEl.style.display = id ? 'block' : 'none';
+  }
 
   setFill('player-hp-fill', clampPct(player.hp, player.hpMax));
   setFill('player-sp-fill', clampPct(player.sp, player.spMax));
@@ -490,7 +501,7 @@ function rollDrops(enemyTemplate) {
 
     if (entry.type === 'catalyst') {
       giveCatalyst(entry.id);
-      drops.push({ type: 'catalyst', name: formatItemName(entry.id) });
+      drops.push({ type: 'catalyst', catalystId: entry.id, name: formatItemName(entry.id) });
 
     } else if (entry.type === 'uncommon_spell_tiered') {
       const tower = getTower();

@@ -73,10 +73,13 @@ function renderCatalystItems() {
   const wrap = document.getElementById('catalyst-list');
   if (!wrap) return;
 
+  function catIconHTML(id) {
+    return '<img src="/asset/catalyst_icons/' + id + '.png" style="width:32px;height:32px;border-radius:var(--r-sm);object-fit:cover;flex-shrink:0;" alt="">';
+  }
   const CATALYST_NAMES = {
-    catalyst_shard: '🟤 Catalyst Shard',
-    catalyst_core: '🔵 Catalyst Core',
-    catalyst_crystal: '🟡 Catalyst Crystal',
+    catalyst_shard: 'Catalyst Shard',
+    catalyst_core: 'Catalyst Core',
+    catalyst_crystal: 'Catalyst Crystal',
   };
   const CATALYST_DESC = {
     catalyst_shard: '+15% fusion success rate',
@@ -91,18 +94,15 @@ function renderCatalystItems() {
     return;
   }
 
+  // AFTER
   wrap.innerHTML = items.map(i =>
     '<div class="card card--raised inv-spell-group" style="margin-bottom:var(--sp-2);">'
-    + '<div class="inv-spell-head">'
-    + '<div class="inv-spell-identity">'
+    + catIconHTML(i.id)
+    + '<div class="inv-spell-left">'
     + '<span class="inv-spell-name">' + CATALYST_NAMES[i.id] + '</span>'
-    + '<span class="inv-spell-sub">' + CATALYST_DESC[i.id] + '</span>'
+    + '<span class="inv-spell-desc">' + CATALYST_DESC[i.id] + '</span>'
     + '</div>'
-    + '<div class="inv-spell-levels">'
-    + '<span class="badge badge--gold inv-qty-badge">×' + i.qty + '</span>'
-    + '</div>'
-    + '</div>'
-    + '</div>'
+    + '<div class="inv-spell-right"><span class="badge badge--gold inv-qty-badge">×' + i.qty + '</span></div>'
   ).join('');
 }
 
