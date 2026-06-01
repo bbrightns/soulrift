@@ -31,10 +31,10 @@ const ENEMIES_DATA = [
     id: 'booby',
     isBoss: true,
     dungeonId: 'booby_forest',
-    weight: 2,
+    weight: 200,
     name: 'Booby',
     area: 'Booby Forest',
-    hp: 48, atk: 8, def: 3, exp: 24, gold: 45,
+    hp: 75, atk: 16, def: 6, exp: 40, gold: 80,
     opener: 'A heavy forest beast lowers its head and charges first.',
     dropTable: [
       { id: 'catalyst_shard', type: 'catalyst', chance: 0.2 },
@@ -89,7 +89,9 @@ const ENEMIES_DATA = [
     area: 'Cursed Clocktower',
     hp: 130, atk: 30, def: 10, exp: 55, gold: 115,
     opener: 'A small clockwork imp skitters across the gears, eyes ticking like a watch.',
-    dropTable: [],
+    dropTable: [
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
+    ],
   },
   { // Clockwork Soldier
     id: 'clockwork_soldier',
@@ -99,7 +101,9 @@ const ENEMIES_DATA = [
     area: 'Cursed Clocktower',
     hp: 150, atk: 34, def: 14, exp: 60, gold: 125,
     opener: 'A soldier of brass and springs snaps to attention, blade raised.',
-    dropTable: [],
+    dropTable: [
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
+    ],
   },
   { // Time-Worn Mage
     id: 'time_worn_mage',
@@ -112,6 +116,7 @@ const ENEMIES_DATA = [
     opener: 'A mage frozen mid-cast for centuries finally completes the spell — aimed at you.',
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'weak', chance: 0.2 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
     ],
   },
   { // Rusted Warden
@@ -125,6 +130,7 @@ const ENEMIES_DATA = [
     opener: 'Ancient mechanisms grind as the warden lurches forward, unstoppable.',
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'mid', chance: 0.2 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
     ],
   },
   { // Chronolith
@@ -139,6 +145,7 @@ const ENEMIES_DATA = [
     opener: "The tower's core awakens. Time stutters. The Chronolith has no patience for the living.",
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'strong', chance: 0.2 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
     ],
   },
 

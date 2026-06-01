@@ -230,7 +230,7 @@ function applyTowerStart(tower, playerName) {
     else s.spells.push({ id: config.spellId, lvl: 1, qty: 1 });
   }
 
-  s.blueprint = Array(10).fill(config.spellId + '|1');
+  s.blueprint = Array(10).fill(null);
   saveState();
   return true;
 }

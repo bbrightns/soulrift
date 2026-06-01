@@ -49,11 +49,11 @@ function spellPower(def, player, spellLvl) {
 
   const tower = getTower();
   let statBase;
-  if (tower === 'light')     statBase = Math.floor(player.int * 1.1 + player.def * 0.4);
+  if (tower === 'light') statBase = Math.floor(player.int * 1.1 + player.def * 0.4);
   else if (tower === 'dark') statBase = Math.floor(player.atk * 0.9 + player.agi * 0.4);
   else if (tower === 'fire') statBase = Math.floor(player.atk * 0.8 + player.str * 0.5);
-  else if (tower === 'ice')  statBase = Math.floor(player.int * 0.9 + player.sp * 0.15);
-  else                       statBase = Math.floor((player.atk + player.int) * 0.75);
+  else if (tower === 'ice') statBase = Math.floor(player.int * 0.9 + player.sp * 0.15);
+  else statBase = Math.floor((player.atk + player.int) * 0.75);
 
   const base = Math.max(5, statBase);
   const towerBonus = def.tower === tower ? 4 : 0;
@@ -72,10 +72,10 @@ function enemyStrike(enemy, player, turn) {
 }
 
 const TOWER_GROWTH = {
-  light: { hpMax: 8,  spMax: 4, atk: 1, def: 2, str: 0, int: 2, agi: 0 },
-  dark:  { hpMax: 4,  spMax: 3, atk: 2, def: 0, str: 0, int: 1, agi: 2 },
-  fire:  { hpMax: 10, spMax: 2, atk: 2, def: 1, str: 2, int: 0, agi: 1 },
-  ice:   { hpMax: 3,  spMax: 6, atk: 1, def: 1, str: 1, int: 2, agi: 1 },
+  light: { hpMax: 8, spMax: 4, atk: 1, def: 2, str: 0, int: 2, agi: 0 },
+  dark: { hpMax: 4, spMax: 3, atk: 2, def: 0, str: 0, int: 1, agi: 2 },
+  fire: { hpMax: 10, spMax: 2, atk: 2, def: 1, str: 2, int: 0, agi: 1 },
+  ice: { hpMax: 3, spMax: 6, atk: 1, def: 1, str: 1, int: 2, agi: 1 },
 };
 
 function gainExp(amount) {
@@ -89,20 +89,20 @@ function gainExp(amount) {
     const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
     s.player.hpMax += g.hpMax;
     s.player.spMax += g.spMax;
-    s.player.atk   += g.atk;
-    s.player.def   += g.def;
-    s.player.str   += g.str;
-    s.player.int   += g.int;
-    s.player.agi   += g.agi;
+    s.player.atk += g.atk;
+    s.player.def += g.def;
+    s.player.str += g.str;
+    s.player.int += g.int;
+    s.player.agi += g.agi;
 
     if (s.player.level % 5 === 0) {
       s.player.hpMax += 10;
       s.player.spMax += 5;
-      s.player.atk   += 2;
-      s.player.def   += 2;
-      s.player.str   += 2;
-      s.player.int   += 2;
-      s.player.agi   += 2;
+      s.player.atk += 2;
+      s.player.def += 2;
+      s.player.str += 2;
+      s.player.int += 2;
+      s.player.agi += 2;
       if (typeof toast === 'function') toast('Power Surge! Level ' + s.player.level + ' milestone reached!', 'gold');
     }
   }
@@ -203,7 +203,7 @@ function showArenaView(dungeonId) {
 }
 
 function _hasEmptyFillableSlot() {
-  const bp     = getState().blueprint;
+  const bp = getState().blueprint;
   const spells = getSpells();
   if (!spells.length) return false;
 
@@ -231,12 +231,12 @@ let _pendingDungeonId = null;
 
 function _showEmptySlotConfirm() {
   const modal = document.getElementById('shop-confirm-modal');
-  const body  = document.getElementById('shop-confirm-body');
+  const body = document.getElementById('shop-confirm-body');
   if (!modal || !body) return;
 
-  const bp      = getState().blueprint;
-  const empty   = bp.filter(s => !s).length;
-  const filled  = bp.filter(s => !!s).length;
+  const bp = getState().blueprint;
+  const empty = bp.filter(s => !s).length;
+  const filled = bp.filter(s => !!s).length;
 
   body.innerHTML =
     '<div style="font-size:32px;margin-bottom:var(--sp-3)">⚔️</div>'
@@ -697,7 +697,7 @@ async function runAutoBattle(dungeonId) {
       const dmg = struggleDamage(player, enemy);
       enemy.hp = Math.max(0, enemy.hp - dmg);
       updateCombatHud(player, enemy, enemyTemplate);
-      await appendBattleLog(logName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.', 'player');
+      await appendBattleLog(wrapLogText(logName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.'), 'player');
     } else if (player.sp >= def.spCost) {
       player.sp -= def.spCost;
       const inkBleed = getPerk('ink_bleed');
@@ -721,7 +721,7 @@ async function runAutoBattle(dungeonId) {
       enemy.hp = Math.max(0, enemy.hp - dmg);
       updateCombatHud(player, enemy, enemyTemplate);
       await appendBattleLog(
-        logName() + ' tries to cast ' + def.name + ' but has only ' + player.sp + '/' + def.spCost + ' SP. The spell fails; Struggle deals ' + dmg + ' damage.',
+        wrapLogText(logName() + ' tries to cast ' + def.name + ' but has only ' + player.sp + '/' + def.spCost + ' SP. The spell fails; Struggle deals ' + dmg + ' damage.'),
         'warn'
       );
     }
