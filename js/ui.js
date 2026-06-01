@@ -241,11 +241,13 @@ function _renderLibFilters() {
 
   const towers  = ['light', 'dark', 'fire', 'ice'];
   const tLabels = { light: 'Light', dark: 'Dark', fire: 'Fire', ice: 'Ice' };
+  const allTowers = ['all', ...towers];
+  const tAllLabels = { all: 'All', ...tLabels };
 
-  towerEl.innerHTML = towers.map(t => {
+  towerEl.innerHTML = allTowers.map(t => {
     const on = t === _libTower;
     return `<button class="btn btn--ghost" style="opacity:${on ? '1' : '0.45'};padding:0 var(--sp-3);min-height:32px;font-size:12px;"
-      onclick="_libTower='${t}';renderLibrary();">${tLabels[t]}</button>`;
+      onclick="_libTower='${t}';renderLibrary();">${tAllLabels[t]}</button>`;
   }).join('');
 
   const rarities = ['all', 'common', 'uncommon', 'rare', 'ultimate'];
@@ -263,7 +265,7 @@ function _renderLibCards() {
   if (!list) return;
 
   let spells = getAllSpells();
-  if (_libTower  !== 'all') spells = spells.filter(s => s.tower  === _libTower);
+  if (_libTower !== 'all') spells = spells.filter(s => s.tower === _libTower);
   if (_libRarity !== 'all') spells = spells.filter(s => s.rarity === _libRarity);
 
   if (!spells.length) {
@@ -308,7 +310,7 @@ function _renderLibCards() {
 }
 
 onScreen('library', () => {
-  _libTower  = getTower() || 'light';
+  _libTower  = 'all';
   _libRarity = 'all';
   renderLibrary();
 });
