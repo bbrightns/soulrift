@@ -537,6 +537,14 @@ async function runAutoBattle(dungeonId) {
 
   const s = getState();
   const blueprint = s.blueprint.slice(0, 10);
+  const validatedBlueprint = blueprint.map(slot => {
+    if (!slot) return null;
+    const parts = slot.split('|');
+    const baseId = parts[0];
+    const lvl = parseInt(parts[1]) || 1;
+    const owned = s.spells.find(sp => sp.id === baseId && sp.lvl === lvl && sp.qty >= 1);
+    return owned ? slot : null;
+  });
   const player = { ...s.player, hp: s.player.hpMax, sp: s.player.spMax };
   const enemyTemplate = _preparedEnemyTemplate || (window.getRandomEnemy
     ? getRandomEnemy(activeDungeonId)
@@ -687,7 +695,7 @@ async function runAutoBattle(dungeonId) {
       }
     }
 
-    const raw = blueprint[turn - 1] || null;
+    const raw = validatedBlueprint[turn - 1] || null;
     const parts = raw ? raw.split('|') : [];
     const spellId = parts[0] || null;
     const spellLvl = parseInt(parts[1]) || 1;
