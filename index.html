@@ -25,29 +25,29 @@
   <!-- App root -->
   <div id="app">
 
-  <!-- ── Header ─────────────────────────────────────────── -->
-  <header id="app-header">
-    <div class="header-hud-row">
-      <div class="header-logo" id="logo-title">
-        <span class="logo-soul">SOUL</span><span class="logo-rift">RIFT</span>
-      </div>
-      <div class="header-hud" onclick="openProfilePanel()" title="View Profile">
-        <div class="hud-player">
-          <span class="hud-tower-icon" id="hud-tower-icon">🔥</span>
-          <span class="hud-name" id="hud-name">BRIGHT</span>
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <header id="app-header">
+      <div class="header-hud-row">
+        <div class="header-logo" id="logo-title">
+          <span class="logo-soul">SOUL</span><span class="logo-rift">RIFT</span>
         </div>
-        <div class="hud-sep"></div>
-        <div class="hud-gold" id="hud-gold">
-          <span class="hud-coin">🪙</span>
-          <span id="hud-gold-val">3,608</span>
+        <div class="header-hud" onclick="openProfilePanel()" title="View Profile">
+          <div class="hud-player">
+            <span class="hud-tower-icon" id="hud-tower-icon">🔥</span>
+            <span class="hud-name" id="hud-name">BRIGHT</span>
+          </div>
+          <div class="hud-sep"></div>
+          <div class="hud-gold" id="hud-gold">
+            <span class="hud-coin">🪙</span>
+            <span id="hud-gold-val">3,608</span>
+          </div>
+          <div class="hud-level" id="hud-level">LV 7</div>
         </div>
-        <div class="hud-level" id="hud-level">LV 7</div>
       </div>
-    </div>
-    <div class="hud-exp-strip">
-      <div class="hud-exp-fill" id="hud-exp-fill" style="width: 72%"></div>
-    </div>
-  </header>
+      <div class="hud-exp-strip">
+        <div class="hud-exp-fill" id="hud-exp-fill" style="width: 72%"></div>
+      </div>
+    </header>
 
     <!-- ── Tower Select Intro (first run only) ────────────── -->
     <div id="screen-intro">
@@ -249,117 +249,136 @@
 
       <!-- ORDER -->
       <div class="screen" id="screen-order">
-        <div class="screen-title">Order</div>
-        <div class="screen-sub">Assign your 10-turn spell sequence</div>
-        <div class="section-label">Battle Blueprint</div>
-        <div id="blueprint-summary" style="margin-bottom:var(--sp-1);"></div>
-        <div id="blueprint-grid" class="blueprint-grid"></div>
-        <div style="margin-top:var(--sp-2);padding-bottom:var(--sp-3);">
-          <button class="btn btn--ghost btn--full" onclick="clearBlueprintAndRender();">
-            Clear All Slots
-          </button>
+        <div class="screen-header">
+          <div class="screen-title">Order</div>
+          <div class="screen-sub">Assign your 10-turn spell sequence</div>
+        </div>
+        <div class="screen-scroll">
+          <div class="section-label">Battle Blueprint</div>
+          <div id="blueprint-summary" style="margin-bottom:var(--sp-1);"></div>
+          <div id="blueprint-grid" class="blueprint-grid"></div>
+          <div style="margin-top:var(--sp-2);padding-bottom:var(--sp-3);">
+            <button class="btn btn--ghost btn--full" onclick="clearBlueprintAndRender();">
+              Clear All Slots
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- MARKET -->
       <div class="screen" id="screen-market">
-        <div class="screen-title">Market</div>
-        <div class="screen-sub">Buy spell stones for your tower</div>
-        <div class="section-label">Tower Shop</div>
-        <div id="market-list"></div>
+        <div class="screen-header">
+          <div class="screen-title">Market</div>
+          <div class="screen-sub">Buy spell stones for your tower</div>
+        </div>
+        <div class="screen-scroll">
+          <div class="section-label">Tower Shop</div>
+          <div id="market-list"></div>
+        </div>
       </div>
 
       <!-- ITEMS -->
       <div class="screen" id="screen-items">
-        <div class="screen-title">Items</div>
-        <div class="screen-sub">Spell stones, equipment and relics</div>
-        <div class="section-label">Spell Inventory</div>
-        <div id="inventory-list"></div>
-        <div class="section-label" style="margin-top:var(--sp-4)">Catalysts</div>
-        <div id="catalyst-list"></div>
+        <div class="screen-header">
+          <div class="screen-title">Items</div>
+          <div class="screen-sub">Spell stones, equipment and relics</div>
+        </div>
+        <div class="screen-scroll">
+          <div class="section-label">Spell Inventory</div>
+          <div id="inventory-list"></div>
+          <div class="section-label" style="margin-top:var(--sp-4)">Catalysts</div>
+          <div id="catalyst-list"></div>
+        </div>
       </div>
 
       <!-- FUSION -->
       <div class="screen" id="screen-fusion">
+        <div class="screen-header">
+          <div class="screen-title">Fusion</div>
+          <div class="screen-sub">Combine spell stones to raise their level</div>
+        </div>
+        <div class="screen-scroll">
 
-        <div class="screen-title">Fusion</div>
-        <div class="screen-sub">Combine spell stones to raise their level</div>
+          <!-- Crucible slots -->
+          <div class="fusion-crucible-row">
+            <div class="fusion-slot" id="fusion-slot-left">
+              <div class="fusion-slot__inner" id="fusion-slot-left-inner">
+                <span class="fusion-slot__empty-icon">+</span>
+                <span class="fusion-slot__empty-text">Select</span>
+              </div>
+            </div>
 
-        <!-- Crucible slots -->
-        <div class="fusion-crucible-row">
-          <div class="fusion-slot" id="fusion-slot-left">
-            <div class="fusion-slot__inner" id="fusion-slot-left-inner">
-              <span class="fusion-slot__empty-icon">+</span>
-              <span class="fusion-slot__empty-text">Select</span>
+            <div class="fusion-crucible-mid">
+              <div class="fusion-rate-badge is-hidden" id="fusion-rate-badge">
+                <div class="fusion-rate-badge__label">SUCCESS</div>
+                <div class="fusion-rate-badge__pct" id="fusion-rate-badge-pct">--</div>
+              </div>
+              <div class="fusion-crucible-icon">⚗</div>
+            </div>
+
+            <div class="fusion-slot" id="fusion-slot-right">
+              <div class="fusion-slot__inner" id="fusion-slot-right-inner">
+                <span class="fusion-slot__empty-icon">+</span>
+                <span class="fusion-slot__empty-text">Select</span>
+              </div>
             </div>
           </div>
 
-          <div class="fusion-crucible-mid">
-            <div class="fusion-rate-badge is-hidden" id="fusion-rate-badge">
-              <div class="fusion-rate-badge__label">SUCCESS</div>
-              <div class="fusion-rate-badge__pct" id="fusion-rate-badge-pct">--</div>
+          <div class="fusion-slot-labels">
+            <span>CORE I</span>
+            <span></span>
+            <span>CORE II</span>
+          </div>
+
+          <!-- Catalyst -->
+          <div class="fusion-catalyst-section">
+            <div class="fusion-cat-label">CATALYST SLOT</div>
+            <div class="fusion-cat-slot" id="fusion-cat-display" onclick="toggleFusionCatalystPicker()">
+              <span id="fusion-cat-display-text">None</span>
             </div>
-            <div class="fusion-crucible-icon">⚗</div>
+            <div id="fusion-catalyst-list" class="fusion-cat-picker is-hidden"></div>
           </div>
 
-          <div class="fusion-slot" id="fusion-slot-right">
-            <div class="fusion-slot__inner" id="fusion-slot-right-inner">
-              <span class="fusion-slot__empty-icon">+</span>
-              <span class="fusion-slot__empty-text">Select</span>
+          <!-- Cost + Invoke -->
+          <div id="fusion-panel"></div>
+
+          <!-- Divider -->
+          <div class="fusion-divider">◆</div>
+
+          <!-- Inventory -->
+          <div class="fusion-inventory-head">
+            <span class="section-label" style="margin:0">INVENTORY: STONES</span>
+          </div>
+          <div id="fusion-spell-list" class="fusion-stone-grid"></div>
+
+          <!-- Result Modal -->
+          <div id="fusion-result-modal" class="modal-overlay is-hidden" onclick="closeFusionResult()">
+            <div class="modal-card" onclick="event.stopPropagation()">
+              <div id="fusion-result-body"></div>
+              <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4)"
+                onclick="closeFusionResult()">Continue</button>
             </div>
-          </div>
-        </div>
-
-        <div class="fusion-slot-labels">
-          <span>CORE I</span>
-          <span></span>
-          <span>CORE II</span>
-        </div>
-
-        <!-- Catalyst -->
-        <div class="fusion-catalyst-section">
-          <div class="fusion-cat-label">CATALYST SLOT</div>
-          <div class="fusion-cat-slot" id="fusion-cat-display" onclick="toggleFusionCatalystPicker()">
-            <span id="fusion-cat-display-text">None</span>
-          </div>
-          <div id="fusion-catalyst-list" class="fusion-cat-picker is-hidden"></div>
-        </div>
-
-        <!-- Cost + Invoke -->
-        <div id="fusion-panel"></div>
-
-        <!-- Divider -->
-        <div class="fusion-divider">◆</div>
-
-        <!-- Inventory -->
-        <div class="fusion-inventory-head">
-          <span class="section-label" style="margin:0">INVENTORY: STONES</span>
-        </div>
-        <div id="fusion-spell-list" class="fusion-stone-grid"></div>
-
-        <!-- Result Modal -->
-        <div id="fusion-result-modal" class="modal-overlay is-hidden" onclick="closeFusionResult()">
-          <div class="modal-card" onclick="event.stopPropagation()">
-            <div id="fusion-result-body"></div>
-            <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4)"
-              onclick="closeFusionResult()">Continue</button>
           </div>
         </div>
       </div>
 
       <!-- LIBRARY -->
       <div class="screen" id="screen-library">
-        <div class="screen-title">Library</div>
-        <div class="screen-sub">Your collected spell stones</div>
-        <div class="section-label" style="margin-top:var(--sp-4)">Tower</div>
-        <div id="library-tower-filter" class="filter-row"></div>
-        <div class="section-label" style="margin-top:var(--sp-3)">Rarity</div>
-        <div id="library-rarity-filter" class="filter-row"></div>
-        <div id="library-list">
-          <div class="empty-state">
-            <div class="empty-state__icon">▤</div>
-            <div class="empty-state__title">No Spells Yet</div>
-            <div class="empty-state__body">Visit the Market to acquire your first spell stones.</div>
+        <div class="screen-header">
+          <div class="screen-title">Library</div>
+          <div class="screen-sub">Your collected spell stones</div>
+        </div>
+        <div class="screen-scroll">
+          <div class="section-label" style="margin-top:var(--sp-4)">Tower</div>
+          <div id="library-tower-filter" class="filter-row"></div>
+          <div class="section-label" style="margin-top:var(--sp-3)">Rarity</div>
+          <div id="library-rarity-filter" class="filter-row"></div>
+          <div id="library-list">
+            <div class="empty-state">
+              <div class="empty-state__icon">▤</div>
+              <div class="empty-state__title">No Spells Yet</div>
+              <div class="empty-state__body">Visit the Market to acquire your first spell stones.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -396,14 +415,14 @@
     </nav>
 
 
-  <!-- ── Profile Panel (slide-up overlay) ──────────────── -->
-  <div id="profile-panel" onclick="if(event.target===this)closeProfilePanel()">
-    <div class="profile-sheet">
-      <div class="profile-sheet-topbar">
-        <div class="profile-handle"></div>
-        <button class="arena-close-btn" style="position:absolute;right:0;top:-4px;"
-                onclick="closeProfilePanel()" aria-label="Close profile"></button>
-      </div>
+    <!-- ── Profile Panel (slide-up overlay) ──────────────── -->
+    <div id="profile-panel" onclick="if(event.target===this)closeProfilePanel()">
+      <div class="profile-sheet">
+        <div class="profile-sheet-topbar">
+          <div class="profile-handle"></div>
+          <button class="arena-close-btn" style="position:absolute;right:0;top:-4px;" onclick="closeProfilePanel()"
+            aria-label="Close profile"></button>
+        </div>
 
         <!-- Hero -->
         <div class="profile-hero">
@@ -444,52 +463,52 @@
           </div>
         </div>
 
-      <!-- Stats (includes vitals) -->
-      <div class="prof-section-head">
-        <span class="prof-section-head__icon">◆</span>
-        <span class="prof-section-head__title">STATS</span>
-      </div>
-      <div class="prof-stats-grid" style="margin-bottom:var(--sp-5);">
+        <!-- Stats (includes vitals) -->
+        <div class="prof-section-head">
+          <span class="prof-section-head__icon">◆</span>
+          <span class="prof-section-head__title">STATS</span>
+        </div>
+        <div class="prof-stats-grid" style="margin-bottom:var(--sp-5);">
 
-        <div class="prof-chip-vitals">
-          <div class="prof-chip-hp">
-            <span class="prof-chip__key">❤ HP</span>
-            <span class="prof-chip__val prof-chip__val--red" id="prof-hp">80</span>
+          <div class="prof-chip-vitals">
+            <div class="prof-chip-hp">
+              <span class="prof-chip__key">❤ HP</span>
+              <span class="prof-chip__val prof-chip__val--red" id="prof-hp">80</span>
+            </div>
+            <div class="prof-chip-sp">
+              <span class="prof-chip__key">💧 SP</span>
+              <span class="prof-chip__val prof-chip__val--blue" id="prof-sp">40</span>
+            </div>
           </div>
-          <div class="prof-chip-sp">
-            <span class="prof-chip__key">💧 SP</span>
-            <span class="prof-chip__val prof-chip__val--blue" id="prof-sp">40</span>
+          <div class="prof-chip">
+            <span class="prof-chip__key">💪 Strength</span>
+            <span class="prof-chip__val" id="prof-str">8</span>
           </div>
-        </div>
-        <div class="prof-chip">
-          <span class="prof-chip__key">💪 Strength</span>
-          <span class="prof-chip__val" id="prof-str">8</span>
+
+          <div class="prof-chip">
+            <span class="prof-chip__key">🧠 Intel</span>
+            <span class="prof-chip__val" id="prof-int">8</span>
+          </div>
+          <div class="prof-chip">
+            <span class="prof-chip__key">⚔ Attack</span>
+            <span class="prof-chip__val" id="prof-atk">10</span>
+          </div>
+
+          <div class="prof-chip">
+            <span class="prof-chip__key">⚡ Agility</span>
+            <span class="prof-chip__val" id="prof-agi">6</span>
+          </div>
+          <div class="prof-chip">
+            <span class="prof-chip__key">🛡 Defense</span>
+            <span class="prof-chip__val" id="prof-def">5</span>
+          </div>
+
         </div>
 
-        <div class="prof-chip">
-          <span class="prof-chip__key">🧠 Intel</span>
-          <span class="prof-chip__val" id="prof-int">8</span>
-        </div>
-        <div class="prof-chip">
-          <span class="prof-chip__key">⚔ Attack</span>
-          <span class="prof-chip__val" id="prof-atk">10</span>
-        </div>
-
-        <div class="prof-chip">
-          <span class="prof-chip__key">⚡ Agility</span>
-          <span class="prof-chip__val" id="prof-agi">6</span>
-        </div>
-        <div class="prof-chip">
-          <span class="prof-chip__key">🛡 Defense</span>
-          <span class="prof-chip__val" id="prof-def">5</span>
-        </div>
-
-      </div>
-
-      <!-- Actions -->
-      <button class="btn btn--danger btn--full" onclick="resetGame()">
-        Reset Tower
-      </button>
+        <!-- Actions -->
+        <button class="btn btn--danger btn--full" onclick="resetGame()">
+          Reset Tower
+        </button>
 
       </div>
     </div><!-- /profile-panel -->
@@ -514,66 +533,66 @@
       </div>
     </div>
 
-  <!-- ── GM Dev Panel ──────────────────────────────────────── -->
-  <div id="gm-panel" onclick="if(event.target===this)closeGMPanel()">
-    <div class="gm-sheet">
+    <!-- ── GM Dev Panel ──────────────────────────────────────── -->
+    <div id="gm-panel" onclick="if(event.target===this)closeGMPanel()">
+      <div class="gm-sheet">
 
-      <div class="gm-sheet__header">
-        <span class="gm-sheet__title">GM MODE</span>
-        <span class="gm-dev-badge">DEV</span>
-        <button class="gm-close-btn" onclick="closeGMPanel()" aria-label="Close GM panel">✕</button>
-      </div>
-
-      <!-- 1. Gold Adjust -->
-      <div class="gm-section">
-        <div class="section-label">Set Gold</div>
-        <div class="gm-row">
-          <input type="number" id="gm-gold-input" class="gm-input" min="0" placeholder="Gold amount">
-          <button class="btn btn--primary gm-btn" onclick="gmSetGold()">Set</button>
+        <div class="gm-sheet__header">
+          <span class="gm-sheet__title">GM MODE</span>
+          <span class="gm-dev-badge">DEV</span>
+          <button class="gm-close-btn" onclick="closeGMPanel()" aria-label="Close GM panel">✕</button>
         </div>
-      </div>
 
-      <!-- 2. Spell Stone -->
-      <div class="gm-section">
-        <div class="section-label">Add Spell Stone</div>
-        <div class="gm-col">
-          <select id="gm-spell-select" class="gm-select"></select>
-          <select id="gm-spell-level" class="gm-select">
-            <option value="1">Level 1</option>
-            <option value="2">Level 2</option>
-            <option value="3">Level 3</option>
-            <option value="4">Level 4</option>
-            <option value="5">Level 5</option>
-            <option value="6">Level 6</option>
-            <option value="7">Level 7</option>
-            <option value="8">Level 8</option>
-            <option value="9">Level 9</option>
-            <option value="10">Level 10</option>
-            <option value="11">Level 11</option>
-          </select>
-          <input type="number" id="gm-spell-qty" class="gm-input" min="1" value="1" placeholder="Quantity">
-          <button class="btn btn--primary btn--full" onclick="gmAddSpellStone()">Add Stone</button>
+        <!-- 1. Gold Adjust -->
+        <div class="gm-section">
+          <div class="section-label">Set Gold</div>
+          <div class="gm-row">
+            <input type="number" id="gm-gold-input" class="gm-input" min="0" placeholder="Gold amount">
+            <button class="btn btn--primary gm-btn" onclick="gmSetGold()">Set</button>
+          </div>
         </div>
-      </div>
 
-      <!-- 3. Player Level -->
-      <div class="gm-section">
-        <div class="section-label">Set Player Level</div>
-        <div class="gm-row">
-          <input type="number" id="gm-level-input" class="gm-input" min="1" max="99" placeholder="Level 1–99">
-          <button class="btn btn--primary gm-btn" onclick="gmSetLevel()">Set Level</button>
+        <!-- 2. Spell Stone -->
+        <div class="gm-section">
+          <div class="section-label">Add Spell Stone</div>
+          <div class="gm-col">
+            <select id="gm-spell-select" class="gm-select"></select>
+            <select id="gm-spell-level" class="gm-select">
+              <option value="1">Level 1</option>
+              <option value="2">Level 2</option>
+              <option value="3">Level 3</option>
+              <option value="4">Level 4</option>
+              <option value="5">Level 5</option>
+              <option value="6">Level 6</option>
+              <option value="7">Level 7</option>
+              <option value="8">Level 8</option>
+              <option value="9">Level 9</option>
+              <option value="10">Level 10</option>
+              <option value="11">Level 11</option>
+            </select>
+            <input type="number" id="gm-spell-qty" class="gm-input" min="1" value="1" placeholder="Quantity">
+            <button class="btn btn--primary btn--full" onclick="gmAddSpellStone()">Add Stone</button>
+          </div>
         </div>
+
+        <!-- 3. Player Level -->
+        <div class="gm-section">
+          <div class="section-label">Set Player Level</div>
+          <div class="gm-row">
+            <input type="number" id="gm-level-input" class="gm-input" min="1" max="99" placeholder="Level 1–99">
+            <button class="btn btn--primary gm-btn" onclick="gmSetLevel()">Set Level</button>
+          </div>
+        </div>
+
+        <!-- 4. Reset -->
+        <div class="gm-section">
+          <button class="btn btn--danger btn--full" onclick="gmResetAll()">Reset All Data</button>
+        </div>
+
+        <div class="gm-footer">SOULRIFT · GM MODE</div>
+
       </div>
-
-      <!-- 4. Reset -->
-      <div class="gm-section">
-        <button class="btn btn--danger btn--full" onclick="gmResetAll()">Reset All Data</button>
-      </div>
-
-      <div class="gm-footer">SOULRIFT · GM MODE</div>
-
-    </div>
-  </div><!-- /gm-panel -->
+    </div><!-- /gm-panel -->
 
   </div><!-- /app -->
 

@@ -190,6 +190,17 @@
   min-height: 100%;
   overflow: hidden;
 }
+#screen-order.is-active,
+#screen-market.is-active,
+#screen-items.is-active,
+#screen-fusion.is-active,
+#screen-library.is-active {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+}
 
 #screen-battle>.screen-title,
 #screen-battle>.screen-sub,
@@ -236,13 +247,6 @@
   font-size: 11px;
   color: var(--c-text-3);
   letter-spacing: .04em;
-  margin-bottom: var(--sp-4);
-}
-
-/* Screen title divider — thin gold rule under the title */
-.screen-title+.screen-sub {
-  padding-bottom: var(--sp-3);
-  border-bottom: 1px solid var(--c-border);
   margin-bottom: var(--sp-4);
 }
 
@@ -2746,35 +2750,7 @@
   text-shadow: 0 0 10px rgba(102, 199, 232, 0.23);
 }
 
-/* ── Order screen fixed layout ───────────────────────────── */
-#screen-order.is-active {
-  display: block;
-  height: 100%;
-  min-height: 100%;
-  overflow-y: auto;
-  padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
-}
-
-#screen-order .screen-title,
-#screen-order .screen-sub,
-#screen-order #blueprint-summary,
-#screen-order .section-label:first-of-type {
-  flex: 0 0 auto;
-}
-
-#screen-order #blueprint-grid {
-  overflow: hidden;
-}
-
-#screen-order #spell-picker-header,
-#screen-order #spell-picker {
-  display: none;
-}
-
-#screen-order>div:last-of-type {
-  flex: 0 0 auto;
-}
-
+/* ── Spell Picker Panel ───────────────────────────── */
 #spell-picker-panel {
   position: absolute;
   inset: 0;
@@ -3028,4 +3004,28 @@
   object-fit: cover;
   display: block;
   margin: 0 auto;
+}
+
+/* ── Screen frozen header + scroll body ──────────────────── */
+.screen-header {
+  flex-shrink: 0;
+  padding: var(--sp-3) var(--sp-3) 0;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.screen-header .screen-title {
+  margin-bottom: 2px;
+}
+
+.screen-header .screen-sub {
+  padding-bottom: var(--sp-3);
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.screen-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--sp-3) var(--sp-3) calc(var(--sp-4) + env(safe-area-inset-bottom));
 }
