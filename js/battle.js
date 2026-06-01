@@ -684,6 +684,13 @@ async function runAutoBattle(dungeonId) {
             battleStatus.emberSkinTurns--;
             await appendBattleLog('Ember Skin absorbs ' + reduced + ' damage. (' + battleStatus.emberSkinTurns + ' turns left)', 'player');
           }
+          if (battleStatus.divineReflect && battleStatus.divineReflect > 0) {
+            const reflected = Math.floor(hit * battleStatus.divineReflect);
+            enemy.hp = Math.max(0, enemy.hp - reflected);
+            battleStatus.divineReflect = 0;
+            updateCombatHud(player, enemy, enemyTemplate);
+            await appendBattleLog('Divine Reflection mirrors ' + reflected + ' damage back at ' + enemy.name + '!', 'player');
+          }
           player.hp = Math.max(0, player.hp - hit);
           updateCombatHud(player, enemy, enemyTemplate);
           await appendBattleLog(enemy.name + ' strikes for ' + hit + ' damage.', 'enemy');
