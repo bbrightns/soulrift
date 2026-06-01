@@ -22,22 +22,23 @@ function renderMarket() {
 
   wrap.innerHTML = spells.map(spell => (
     '<div class="card card--raised spell-shop-card" style="margin-bottom:var(--sp-2);">'
-    + '<div class="shop-card-top">'
-    + '<img src="/asset/spell_icons/' + spell.id + '.png" class="shop-spell-icon" alt="">'
-    + '<div class="shop-card-info">'
-    + '<div class="spell-card__name">' + spell.name + '</div>'
-    + '<div class="spell-card__meta">' + spell.role + ' · SP ' + spell.spCost + '</div>'
-    + '<div class="spell-card__desc">' + spell.desc + '</div>'
-    + '</div>'
-    + '<div class="shop-card-badges">'
-    + '<span class="shop-price-badge">' + spell.price + ' Gold</span>'
-    + '<span class="badge badge--' + spell.tower + '">' + spell.tower + '</span>'
-    + '</div>'
-    + '</div>'
-    + '<div class="shop-buy-row">'
-    + '<button class="shop-buy-btn" onclick="buyShopSpell(\'' + spell.id + '\',1)">Buy ×1</button>'
-    + '<button class="shop-buy-btn shop-buy-btn--right" onclick="buyShopSpell(\'' + spell.id + '\',10)">Buy ×10</button>'
-    + '</div>'
+      + '<div class="shop-card-top">'
+        + '<img src="/asset/spell_icons/' + spell.id + '.png" class="shop-spell-icon" alt="">'
+        + '<div class="shop-card-info">'
+          + '<div class="spell-card__name">' + spell.name + '</div>'
+          + '<div class="spell-card__meta">' + spell.role + ' · SP ' + spell.spCost + '</div>'
+          + '<div class="spell-card__desc">' + spell.desc + '</div>'
+        + '</div>'
+        + '<div class="shop-card-badges">'
+          + '<span class="shop-price-badge">' + spell.price + ' Gold</span>'
+          + '<span class="badge badge--' + spell.tower + '">' + spell.tower + '</span>'
+        + '</div>'
+      + '</div>'
+      + '<div class="shop-buy-row">'
+        + '<button class="shop-buy-btn" onclick="buyShopSpell(\'' + spell.id + '\',1)">Buy ×1</button>'
+        + '<button class="shop-buy-btn shop-buy-btn--right" onclick="buyShopSpell(\'' + spell.id + '\',10)">Buy ×10</button>'
+        + '<button class="shop-buy-btn shop-buy-btn--right" onclick="buyShopSpell(\'' + spell.id + '\',100)">Buy ×100</button>'
+      + '</div>'
     + '</div>'
   )).join('');
 }
@@ -57,8 +58,8 @@ function buyShopSpell(spellId, qty = 1) {
   if (!modal || !body) return;
 
   body.innerHTML =
-    '<div style="font-size:22px;margin-bottom:var(--sp-3)">🛒</div>'
-    + '<div style="font-size:15px;font-weight:700;color:var(--c-text-hi);margin-bottom:var(--sp-2)">'
+    '<img src="/asset/spell_icons/' + def.id + '.png" class="shop-confirm-icon" alt="">'
+    + '<div style="font-size:15px;font-weight:700;color:var(--c-text-hi);margin:var(--sp-3) 0 var(--sp-2)">'
     + def.name + ' ×' + qty
     + '</div>'
     + '<div style="font-size:13px;color:var(--c-text-2);margin-bottom:var(--sp-1)">Cost: <span style="color:var(--c-gold-text);font-weight:600">' + total + ' Gold</span></div>'

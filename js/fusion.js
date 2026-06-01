@@ -152,16 +152,25 @@ function renderFusionPanel() {
     return;
   }
 
-  const fromLvl = _fusionSpellLvl;
-  const goldCost = FUSION_GOLD[fromLvl] || 0;
+  const fromLvl    = _fusionSpellLvl;
+  const goldCost   = FUSION_GOLD[fromLvl] || 0;
   const playerGold = getState().gold;
-  const canAfford = playerGold >= goldCost;
-  const catLine = _fusionCatalyst ? ' + 1 ' + formatCatalystName(_fusionCatalyst) : '';
+  const canAfford  = playerGold >= goldCost;
+  const catLine    = _fusionCatalyst ? ' + 1 ' + formatCatalystName(_fusionCatalyst) : '';
+
+  // count how many pairs are available
+  const owned    = (getState().spells || []).find(s => s.id === _fusionSpellId && s.lvl === fromLvl);
+  const qty      = owned ? owned.qty : 0;
+  const pairs    = Math.floor(qty / 2);
+  const canBulk  = canAfford && pairs >= 2;
 
   wrap.innerHTML =
     '<button class="btn btn--primary btn--full fusion-invoke-btn" '
     + (canAfford ? '' : 'disabled ')
     + 'onclick="executeFusion()">INVOKE FUSION</button>'
+    + '<button class="btn btn--ghost btn--full fusion-invoke-btn" style="margin-top:var(--sp-2)" '
+    + (canBulk ? '' : 'disabled ')
+    + 'onclick="executeFusionAll()">FUSE ALL LV.' + fromLvl + ' (' + pairs + ' pairs)</button>'
     + '<div class="fusion-cost-hint">Requires ' + goldCost + ' Gold' + catLine + '.'
     + (!canAfford ? ' <span style="color:var(--c-bad)">Not enough gold.</span>' : '')
     + '</div>';
@@ -251,6 +260,89 @@ function executeFusion() {
   _fusionSpellLvl = null;
   _fusionCatalyst = null;
 }
+
+function executeFusionAll() {
+  if (!_fusionSpellId || _fusionSpellLvl === null) return;
+
+  const results = { success: 0, downgrade: 0, shatter: 0 };
+  let lastSpellId = _fusionSpellId;
+  let lastSpellName = '';
+  const def = getSpellDef(_fusionSpellId);
+  if (def) lastSpellName = def.name;
+
+  // keep fusing while we have pairs and gold
+  while (true) {
+    const s        = getState();
+    const fromLvl  = _fusionSpellLvl;
+    const goldCost = FUSION_GOLD[fromLvl] || 0;
+    const owned    = (s.spells || []).find(sp => sp.id === _fusionSpellId && sp.lvl === fromLvl);
+
+    if (!owned || owned.qty < 2)  break;
+    if (s.gold < goldCost)        break;
+
+    s.gold -= goldCost;
+
+    if (_fusionCatalyst) {
+      const cat = (s.items || []).find(i => i.id === _fusionCatalyst && i.qty > 0);
+      if (!cat) { _fusionCatalyst = null; }
+      else { cat.qty--; if (cat.qty <= 0) s.items = s.items.filter(i => i.id !== _fusionCatalyst); }
+    }
+
+    removeSpell(_fusionSpellId, fromLvl, 2);
+
+    const baseRate = FUSION_RATES[fromLvl] || 0;
+    const catBonus = _fusionCatalyst ? (CATALYST_BONUS[_fusionCatalyst] || 0) : 0;
+    const rate     = Math.min(0.95, baseRate + catBonus);
+    const success  = Math.random() < rate;
+
+    if (success) {
+      const toLvl = fromLvl + 1;
+      giveSpell(_fusionSpellId, toLvl);
+      results.success++;
+    } else {
+      if (fromLvl <= 5) {
+        const downgradeLvl = Math.max(1, fromLvl - 1);
+        giveSpell(_fusionSpellId, downgradeLvl);
+        results.downgrade++;
+      } else {
+        results.shatter++;
+      }
+    }
+
+    saveState();
+  }
+
+  // show summary modal
+  const modal = document.getElementById('fusion-result-modal');
+  const body  = document.getElementById('fusion-result-body');
+  if (!modal || !body) return;
+
+  const iconHTML = lastSpellId
+    ? '<img src="/asset/spell_icons/' + lastSpellId + '.png" class="fusion-result-icon" alt="">'
+    : '';
+
+  const total = results.success + results.downgrade + results.shatter;
+  body.innerHTML = iconHTML
+    + '<div class="c-gold" style="font-size:16px;font-weight:700;margin-top:var(--sp-3)">Fusion Complete</div>'
+    + '<div style="margin-top:var(--sp-2);font-size:13px;color:var(--c-text-2)">'
+    + total + ' fusions performed'
+    + '</div>'
+    + '<div class="fusion-all-results">'
+    + '<div class="fusion-all-row"><span>Success</span><span class="c-ok">' + results.success + '</span></div>'
+    + '<div class="fusion-all-row"><span>Downgrade</span><span class="c-warn">' + results.downgrade + '</span></div>'
+    + '<div class="fusion-all-row"><span>Shattered</span><span class="c-bad">' + results.shatter + '</span></div>'
+    + '</div>';
+
+  modal.classList.remove('is-hidden');
+
+  _fusionSpellId  = null;
+  _fusionSpellLvl = null;
+  _fusionCatalyst = null;
+
+  syncHeader();
+}
+
+window.executeFusionAll = executeFusionAll;
 
 /* ── Result Modal ────────────────────────────────────── */
 function showFusionResult(success, spellName, spellId, toLvl, failType, downgradeLvl) {

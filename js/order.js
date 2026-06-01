@@ -142,7 +142,7 @@ function renderSpellPicker() {
       return '<div class="spell-picker__option-row">'
         + '<button type="button" class="spell-picker__option' + active + '" onclick="assignSpellToSelectedSlot(\'' + option.id + '\',' + option.lvl + ')">'
         + '<img src="/asset/spell_icons/' + option.id + '.png" class="picker-spell-icon" alt="">'
-        + '<span class="spell-picker__name">' + option.name + lvlBadge + '<span class="spell-picker__meta">SP ' + option.spCost + '</span></span>'
+        + '<span class="spell-picker__name"><span class="spell-picker__name-text">' + option.name + '</span>' + lvlBadge + '<span class="spell-picker__meta">SP ' + option.spCost + '</span></span>'
         + '</button>'
         + '<div class="spell-picker__fills">'
         + '<button type="button" class="spell-picker__fill-btn" onclick="fillBlueprintAll(\'' + option.id + '\',' + option.lvl + ')" title="Fill all 10 turns">Fill All</button>'
