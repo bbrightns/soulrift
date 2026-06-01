@@ -170,6 +170,80 @@ function showArenaView(dungeonId) {
   document.querySelector('#screen-battle .screen-sub').style.display = 'none';
 }
 
+function _hasEmptyFillableSlot() {
+  const bp     = getState().blueprint;
+  const spells = getSpells();
+  if (!spells.length) return false;
+
+  const hasEmpty = bp.some(slot => !slot);
+  if (!hasEmpty) return false;
+
+  const usedSP = bp.reduce((sum, slot) => {
+    if (!slot) return sum;
+    const def = getSpellDef(slot.split('|')[0]);
+    return sum + (def ? def.spCost : 0);
+  }, 0);
+
+  const remainingSP = getState().player.spMax - usedSP;
+  if (remainingSP <= 0) return false;
+
+  const minCost = Math.min(...spells.map(s => {
+    const def = getSpellDef(s.id);
+    return def ? def.spCost : Infinity;
+  }));
+
+  return remainingSP >= minCost;
+}
+
+let _pendingDungeonId = null;
+
+function _showEmptySlotConfirm() {
+  const modal = document.getElementById('shop-confirm-modal');
+  const body  = document.getElementById('shop-confirm-body');
+  if (!modal || !body) return;
+
+  const bp      = getState().blueprint;
+  const empty   = bp.filter(s => !s).length;
+  const filled  = bp.filter(s => !!s).length;
+
+  body.innerHTML =
+    '<div style="font-size:32px;margin-bottom:var(--sp-3)">⚔️</div>'
+    + '<div style="font-size:15px;font-weight:700;color:var(--c-text-hi);margin-bottom:var(--sp-2)">Empty Slots Detected</div>'
+    + '<div style="font-size:13px;color:var(--c-text-2);margin-bottom:var(--sp-1)">'
+    + filled + ' / 10 slots filled · <span style="color:var(--c-bad)">' + empty + ' empty</span>'
+    + '</div>'
+    + '<div style="font-size:12px;color:var(--c-text-3)">Empty turns will use Struggle (weak fallback attack). Continue anyway?</div>';
+
+  const confirmBtn = modal.querySelector('.btn--primary');
+  if (confirmBtn) {
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Enter Battle';
+    confirmBtn.onclick = _confirmEmptySlotBattle;
+  }
+
+  const cancelBtn = modal.querySelector('.btn--ghost');
+  if (cancelBtn) cancelBtn.textContent = 'Go Back';
+
+  modal.classList.remove('is-hidden');
+}
+
+function _confirmEmptySlotBattle() {
+  closeShopConfirm();
+  const dungeonId = _pendingDungeonId;
+  _pendingDungeonId = null;
+
+  // restore confirm button to default shop behavior
+  const confirmBtn = document.querySelector('#shop-confirm-modal .btn--primary');
+  if (confirmBtn) {
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.onclick = confirmShopBuy;
+  }
+
+  _selectedDungeonId = dungeonId;
+  showArenaView(dungeonId);
+  prepareArena(dungeonId);
+}
+
 async function enterDungeon(dungeonId) {
   if (_battleRunning) return;
 
@@ -177,6 +251,12 @@ async function enterDungeon(dungeonId) {
   const level = getState().player.level;
   if (!dungeon || !dungeon.unlocked || level < dungeon.levelReq) {
     toast('This dungeon is still locked.', 'bad');
+    return;
+  }
+
+  if (_hasEmptyFillableSlot()) {
+    _pendingDungeonId = dungeonId;
+    _showEmptySlotConfirm();
     return;
   }
 
