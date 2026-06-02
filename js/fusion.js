@@ -114,7 +114,7 @@ function _renderFusionCatPickerBody() {
       + '</div>'
       + '<div class="fusion-cat-pick-row__right">'
       +   '<span class="fusion-cat-pick-row__bonus">' + _catBonus(i.id) + '</span>'
-      +   '<span class="fusion-cat-pick-row__qty">' + i.qty + ' remaining</span>'
+      +   '<span class="fusion-cat-pick-row__qty">' + i.qty + '<span style="font-weight:500;font-size:10px;opacity:0.8;margin-left:3px;">remaining</span></span>'
       + '</div>'
       + '</button>';
   });

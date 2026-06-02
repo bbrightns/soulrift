@@ -3129,9 +3129,8 @@
   font-size: 11px;
   color: var(--c-text-3);
   line-height: 1.4;
-  /* stays within left column, wraps before reaching right column */
   padding-right: var(--sp-2);
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 .inv-rarity-badge {
@@ -3534,8 +3533,8 @@
 }
 .fusion-cat-pick-row__qty {
   font-family: var(--f-head);
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
   padding: 2px 7px;
   background: rgba(197,160,89,.12);
   border: 1px solid rgba(197,160,89,.28);
