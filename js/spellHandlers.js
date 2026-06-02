@@ -318,7 +318,7 @@ registerHandler('divine_reflection', async (ctx) => {
   const reflectPct = lvlChance(0.60, 0.04, 0.90, ctx.spellLvl);
   ctx.battleStatus.divineReflect = reflectPct;
   await ctx.log(
-    ctx.playerName + ' casts Divine Reflection. Next enemy hit is reflected at ' + Math.round(reflectPct * 100) + '%.', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' casts Divine Reflection. Next enemy hit is reflected at ' + Math.round(reflectPct * 100) + '%.'), 'player'
   );
 });
 
@@ -329,7 +329,7 @@ registerHandler('energy_blast', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Energy Blast for ' + ctx.baseDmg + ' damage. Ignores evasion.', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' casts Energy Blast for ' + ctx.baseDmg + ' damage. Ignores evasion.'), 'player'
   );
 });
 
@@ -342,7 +342,7 @@ registerHandler('heavenfall_chronicle', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' calls down Heavenfall Chronicle' + ', ×' + stacks + ' charge) for ' + total + ' holy damage!', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' calls down Heavenfall Chronicle' + ', ×' + stacks + ' charge) for ' + total + ' holy damage!'), 'player'
   );
 });
 
@@ -357,7 +357,7 @@ registerHandler('siege', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Siege for ' + ctx.baseDmg + ' dmg. Enemy DEF reduced by ' + defReduction + ' permanently.', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' casts Siege for ' + ctx.baseDmg + ' dmg. Enemy DEF reduced by ' + defReduction + ' permanently.'), 'player'
   );
 });
 
@@ -371,7 +371,7 @@ registerHandler('dark_combo', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - dmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Dark Combo for ' + dmg + ' dmg (+' + Math.round(comboPct * 100) + '%). Combo: ' + combo + '/5.', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' casts Dark Combo for ' + dmg + ' dmg (+' + Math.round(comboPct * 100) + '%). Combo: ' + combo + '/5.'), 'player'
   );
 });
 
@@ -384,7 +384,7 @@ registerHandler('night_raid', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Night Raid for ' + total + ' dmg.' + (isNight ? ' Night bonus +50%!' : ''), 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' casts Night Raid for ' + total + ' dmg.' + (isNight ? ' Night bonus +50%!' : '')), 'player'
   );
 });
 
@@ -395,7 +395,7 @@ registerHandler('dark_rift', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - trueDmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' opens Dark Rift for ' + trueDmg + ' TRUE damage. Ignores defense.', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' opens Dark Rift for ' + trueDmg + ' TRUE damage. Ignores defense.'), 'player'
   );
 });
 
@@ -407,7 +407,7 @@ registerHandler('demon_summoning', async (ctx) => {
   ctx.battleStatus.demonStacks = [];
   ctx.battleStatus.demonStacks.push({ turnsLeft: 3, power: demonPower });
   await ctx.log(
-    ctx.playerName + ' summons a demon. Attacks for ' + demonPower + '/turn for 3 turns.', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' summons a demon. Attacks for ' + demonPower + '/turn for 3 turns.'), 'player'
   );
 });
 
@@ -421,14 +421,16 @@ registerHandler('oblivion_gospel', async (ctx) => {
   ctx.updateHud();
 
   const hpPct = ctx.enemy.hp / ctx.enemyTemplate.hp;
-  let msg = ctx.playerName + ' casts Oblivion Gospel for ' + total + ' dark damage!';
+  let msg = ctxGoldenName(ctx) + ' casts Oblivion Gospel for ' + total + ' dark damage!';
   if (hpPct < 0.20 && ctx.enemy.hp > 0) {
     const executeDmg = ctx.enemy.hp;
     ctx.enemy.hp = 0;
     ctx.updateHud();
     msg += ' EXECUTE! (' + executeDmg + ' remaining HP obliterated)';
   }
-  await ctx.log(msg, 'player');
+  await ctx.log(
+    ctx.spellIconHTML + wrapLogText(msg), 'player'
+  );
 });
 
 /* ══════════════════════════════════════════════════════════
@@ -442,7 +444,7 @@ registerHandler('melt_armor', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - ctx.baseDmg);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Melt Armor for ' + ctx.baseDmg + ' dmg. Enemy DEF melted by ' + defReduction + '.', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' casts Melt Armor for ' + ctx.baseDmg + ' dmg. Enemy DEF melted by ' + defReduction + '.'), 'player'
   );
 });
 
@@ -452,7 +454,7 @@ registerHandler('fire_storm', async (ctx) => {
   if (!ctx.battleStatus.fireStormStacks) ctx.battleStatus.fireStormStacks = [];
   ctx.battleStatus.fireStormStacks.push({ turnsLeft: 2, power: stormPower });
   await ctx.log(
-    ctx.playerName + ' unleashes Fire Storm.', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' unleashes Fire Storm.'), 'player'
   );
 });
 
@@ -463,7 +465,7 @@ registerHandler('phoenix_blood', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' casts Phoenix Blood for ' + total + ' dmg. (Missing HP: ' + Math.round(missingHpPct * 100) + '%)', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' casts Phoenix Blood for ' + total + ' dmg. (Missing HP: ' + Math.round(missingHpPct * 100) + '%)'), 'player'
   );
 });
 
@@ -474,7 +476,7 @@ registerHandler('wyvern_kamikaze', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' commands Wyvern Kamikaze for ' + total + ' physical fire damage!', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' commands Wyvern Kamikaze for ' + total + ' physical fire damage!'), 'player'
   );
 });
 
@@ -510,11 +512,11 @@ registerHandler('absolute_zero', async (ctx) => {
   if (Math.random() < freezeChance) {
     ctx.battleStatus.enemyFrozen = true;
     await ctx.log(
-      ctx.playerName + ' casts Absolute Zero for ' + ctx.baseDmg + ' dmg. FROZEN (' + Math.round(freezeChance * 100) + '% chance)!', 'player'
+      ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' casts Absolute Zero for ' + ctx.baseDmg + ' dmg. FROZEN (' + Math.round(freezeChance * 100) + '% chance)!'), 'player'
     );
   } else {
     await ctx.log(
-      ctx.playerName + ' casts Absolute Zero for ' + ctx.baseDmg + ' dmg. Freeze failed.', 'player'
+      ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' casts Absolute Zero for ' + ctx.baseDmg + ' dmg. Freeze failed.'), 'player'
     );
   }
 });
@@ -524,7 +526,8 @@ registerHandler('golem_command', async (ctx) => {
   const golemPower = Math.floor(ctx.baseDmg * 0.50);
   ctx.battleStatus.golemStacks = [{ turnsLeft: 3, power: golemPower }];
   await ctx.log(
-    ctx.playerName + ' commands a Golem. Attacks for ' + golemPower + '/turn for 3 turns.', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' commands a Golem. Attacks for ' + golemPower + '/turn for 3 turns.'),
+    'player'
   );
 });
 
@@ -537,13 +540,13 @@ registerHandler('golem_master', async (ctx) => {
       g.turnsLeft = Math.min(g.turnsLeft + 2, 6);
     });
     await ctx.log(
-      ctx.playerName + ' upgrades the Golem. Power ×1.6, +2 turns.', 'player'
+      ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' upgrades the Golem. Power ×1.6, +2 turns.'), 'player'
     );
   } else {
     const warGolemPower = Math.floor(ctx.baseDmg * 0.70);
     ctx.battleStatus.golemStacks = [{ turnsLeft: 4, power: warGolemPower }];
     await ctx.log(
-      ctx.playerName + ' summons a War Golem. Attacks for ' + warGolemPower + '/turn for 4 turns.', 'player'
+      ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' summons a War Golem. Attacks for ' + warGolemPower + '/turn for 4 turns.'), 'player'
     );
   }
 });
@@ -562,7 +565,7 @@ registerHandler('glacial_singularity', async (ctx) => {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - total);
   ctx.updateHud();
   await ctx.log(
-    ctx.playerName + ' collapses Glacial Singularity' + ', ×' + combo + ' combo) for ' + total + ' damage!', 'player'
+    ctx.spellIconHTML + wrapLogText(ctxGoldenName(ctx) + ' collapses Glacial Singularity' + ', ×' + combo + ' combo) for ' + total + ' damage!'), 'player'
   );
 });
 
