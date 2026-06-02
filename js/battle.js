@@ -443,7 +443,20 @@ function updateCombatHud(player, enemy, enemyTemplate) {
   setText('player-combat-name', battlePlayerName());
   setText('enemy-combat-name', enemy.name);
 
-  // enemy avatar
+  const playerAvatarEl = document.getElementById('player-combat-avatar');
+  const playerPlaceholder = document.getElementById('player-avatar-placeholder');
+  const playerTower = getTower();
+  if (playerAvatarEl) {
+    if (playerTower) {
+      playerAvatarEl.src = '/asset/player_avatars/' + playerTower + '.png';
+      playerAvatarEl.style.display = 'block';
+      if (playerPlaceholder) playerPlaceholder.style.display = 'none';
+    } else {
+      playerAvatarEl.style.display = 'none';
+      if (playerPlaceholder) playerPlaceholder.style.display = '';
+    }
+  }
+
   const enemyAvatarEl = document.getElementById('enemy-combat-avatar');
   const enemyPlaceholder = document.getElementById('enemy-avatar-placeholder');
   if (enemyAvatarEl && enemyTemplate) {
