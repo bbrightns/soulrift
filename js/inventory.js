@@ -78,7 +78,12 @@ function renderCatalystItems() {
     catalyst_core:    'Catalyst Core',
     catalyst_crystal: 'Catalyst Crystal',
   };
-  const CATALYST_DESC = {
+  const CATALYST_FLAVOUR = {
+    catalyst_shard:   'A rough shard of fusion ore',
+    catalyst_core:    'A refined core of arcane fusion',
+    catalyst_crystal: 'A perfect crystal of pure resonance',
+  };
+  const CATALYST_BONUS_LABEL = {
     catalyst_shard:   '+15% fusion success rate',
     catalyst_core:    '+30% fusion success rate',
     catalyst_crystal: '+50% fusion success rate',
@@ -101,7 +106,8 @@ function renderCatalystItems() {
     + '<img src="/asset/catalyst_icons/' + i.id + '.png" class="inv-spell-icon" alt="">'
     + '<div class="inv-spell-left" style="justify-content:center;">'
     +   '<span class="inv-spell-name">' + CATALYST_NAMES[i.id] + '</span>'
-    +   '<span class="inv-spell-desc">' + CATALYST_DESC[i.id] + '</span>'
+    +   '<span class="inv-spell-desc">' + CATALYST_FLAVOUR[i.id] + '</span>'
+    +   '<span class="inv-cat-bonus">' + CATALYST_BONUS_LABEL[i.id] + '</span>'
     + '</div>'
     + '<div class="inv-spell-right" style="justify-content:center;">'
     +   '<div class="inv-spell-row">'

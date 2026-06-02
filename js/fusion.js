@@ -17,15 +17,149 @@ function _towerColor(tower) {
     || 'var(--c-gold)';
 }
 
+/* ── Catalyst helpers ────────────────────────────────── */
+
+function _catLabel(id) {
+  return {
+    catalyst_shard:   'Catalyst Shard',
+    catalyst_core:    'Catalyst Core',
+    catalyst_crystal: 'Catalyst Crystal',
+  }[id] || id;
+}
+
+function _catDesc(id) {
+  return {
+    catalyst_shard:   'A rough shard of fusion ore',
+    catalyst_core:    'A refined core of arcane fusion',
+    catalyst_crystal: 'A perfect crystal of pure resonance',
+  }[id] || '';
+}
+
+function _catBonus(id) {
+  return CATALYST_BONUS[id]
+    ? '+' + Math.round(CATALYST_BONUS[id] * 100) + '%'
+    : '';
+}
+
+// Small inline version — used in cost hint inside renderFusionPanel
+function formatCatalystName(id) {
+  return '<img src="/asset/catalyst_icons/' + id + '.png" '
+    + 'style="width:16px;height:16px;border-radius:2px;vertical-align:middle;margin-right:4px;" alt="">'
+    + _catLabel(id);
+}
+
+/* ── Trigger button (main fusion area) ───────────────── */
+function _renderFusionCatTrigger() {
+  const wrap = document.getElementById('fusion-cat-trigger-wrap');
+  if (!wrap) return;
+
+  if (!_fusionCatalyst) {
+    wrap.innerHTML =
+      '<button class="fusion-cat-trigger" onclick="openFusionCatPanel()">'
+      + '<span class="fusion-cat-trigger__label">NO CATALYST</span>'
+      + '<span class="fusion-cat-trigger__hint">Tap to select</span>'
+      + '</button>';
+  } else {
+    const owned = (getState().items || []).find(i => i.id === _fusionCatalyst);
+    const qty   = owned ? owned.qty : 0;
+    wrap.innerHTML =
+      '<div class="fusion-cat-selected" onclick="openFusionCatPanel()">'
+      + '<img src="/asset/catalyst_icons/' + _fusionCatalyst + '.png" '
+      +   'class="fusion-cat-selected__icon" alt="">'
+      + '<div class="fusion-cat-selected__info">'
+      +   '<span class="fusion-cat-selected__name">' + _catLabel(_fusionCatalyst) + '</span>'
+      +   '<span class="fusion-cat-selected__desc">' + _catDesc(_fusionCatalyst) + '</span>'
+      +   '<span class="fusion-cat-selected__bonus">' + _catBonus(_fusionCatalyst) + ' success rate</span>'
+      + '</div>'
+      + '<button class="fusion-cat-clear-btn" '
+      +   'onclick="event.stopPropagation();clearFusionCatalyst()" '
+      +   'aria-label="Remove catalyst">✕</button>'
+      + '</div>';
+  }
+}
+
+/* ── Catalyst bottomsheet ────────────────────────────── */
+function openFusionCatPanel() {
+  _renderFusionCatPickerBody();
+  document.getElementById('fusion-cat-panel').classList.add('is-open');
+}
+
+function closeFusionCatPanel() {
+  document.getElementById('fusion-cat-panel').classList.remove('is-open');
+}
+
+function _renderFusionCatPickerBody() {
+  const wrap = document.getElementById('fusion-cat-picker-body');
+  if (!wrap) return;
+
+  const items = (getState().items || [])
+    .filter(i => CATALYST_BONUS[i.id] && i.qty > 0)
+    .sort((a, b) => (CATALYST_BONUS[b.id] || 0) - (CATALYST_BONUS[a.id] || 0));
+
+  if (!items.length && !true) {
+    // always show "No Catalyst" option even if inventory empty
+  }
+
+  const noneActive = !_fusionCatalyst;
+
+  const rows = items.map(i => {
+    const active = _fusionCatalyst === i.id;
+    return '<button class="fusion-cat-pick-row' + (active ? ' is-selected' : '') + '" '
+      + 'onclick="pickFusionCatalyst(\'' + i.id + '\')">'
+      + '<img src="/asset/catalyst_icons/' + i.id + '.png" '
+      +   'class="fusion-cat-pick-row__icon" alt="">'
+      + '<div class="fusion-cat-pick-row__info">'
+      +   '<span class="fusion-cat-pick-row__name">' + _catLabel(i.id) + '</span>'
+      +   '<span class="fusion-cat-pick-row__desc">' + _catDesc(i.id) + '</span>'
+      + '</div>'
+      + '<div class="fusion-cat-pick-row__right">'
+      +   '<span class="fusion-cat-pick-row__bonus">' + _catBonus(i.id) + '</span>'
+      +   '<span class="fusion-cat-pick-row__qty">' + i.qty + ' remaining</span>'
+      + '</div>'
+      + '</button>';
+  });
+
+  // "No catalyst" always last
+  rows.push(
+    '<button class="fusion-cat-pick-row' + (noneActive ? ' is-selected' : '') + '" '
+    + 'onclick="pickFusionCatalyst(null)">'
+    + '<div class="fusion-cat-pick-row__icon fusion-cat-pick-row__icon--none">–</div>'
+    + '<div class="fusion-cat-pick-row__info">'
+    +   '<span class="fusion-cat-pick-row__name">No Catalyst</span>'
+    +   '<span class="fusion-cat-pick-row__desc">No success rate bonus</span>'
+    + '</div>'
+    + '<div class="fusion-cat-pick-row__right">'
+    +   '<span class="fusion-cat-pick-row__bonus" style="color:var(--c-text-3);">+0%</span>'
+    + '</div>'
+    + '</button>'
+  );
+
+  wrap.innerHTML = '<div class="fusion-cat-picker-list">' + rows.join('') + '</div>';
+}
+
+function pickFusionCatalyst(id) {
+  _fusionCatalyst = id || null;
+  closeFusionCatPanel();
+  _renderFusionCatTrigger();
+  _updateCrucibleSlots();
+  renderFusionPanel();
+}
+
+function clearFusionCatalyst() {
+  _fusionCatalyst = null;
+  _renderFusionCatTrigger();
+  _updateCrucibleSlots();
+  renderFusionPanel();
+}
+
 /* ── Render ──────────────────────────────────────────── */
 function renderFusion() {
-  _fusionSpellId = null;
+  _fusionSpellId  = null;
   _fusionSpellLvl = null;
   _fusionCatalyst = null;
   renderFusionSpellList();
-  renderFusionCatalystList();
+  _renderFusionCatTrigger();
   _updateCrucibleSlots();
-  _updateCatalystDisplay();
   renderFusionPanel();
 }
 
@@ -57,35 +191,6 @@ function renderFusionSpellList() {
       + '<div class="fusion-stone-card__qty">×' + s.qty + '</div>'
       + '</div>';
   }).join('');
-}
-
-function renderFusionCatalystList() {
-  const wrap = document.getElementById('fusion-catalyst-list');
-  if (!wrap) return;
-
-  const items = (getState().items || []).filter(i => CATALYST_BONUS[i.id] && i.qty > 0);
-
-  if (!items.length) {
-    wrap.innerHTML = '<div class="fusion-no-catalyst">No catalysts owned.<br><small>Buy from Market or find in dungeons.</small></div>';
-    return;
-  }
-
-  wrap.innerHTML = items.map(i => {
-    const active = _fusionCatalyst === i.id;
-    const bonus = '+' + Math.round(CATALYST_BONUS[i.id] * 100) + '%';
-    return '<button class="fusion-cat-btn' + (active ? ' is-active' : '') + '" '
-      + 'onclick="selectFusionCatalyst(\'' + i.id + '\')">'
-      + formatCatalystName(i.id)
-      + ' <span class="fusion-cat-bonus">' + bonus + '</span>'
-      + ' <span style="opacity:0.5">×' + i.qty + '</span>'
-      + '</button>';
-  }).join('');
-}
-
-function formatCatalystName(id) {
-  const labels = { catalyst_shard: 'Shard', catalyst_core: 'Core', catalyst_crystal: 'Crystal' };
-  const label = labels[id] || id;
-  return '<img src="/asset/catalyst_icons/' + id + '.png" class="fusion-cat-icon" alt="">' + label;
 }
 
 function _updateCrucibleSlots() {
@@ -126,20 +231,6 @@ function _updateCrucibleSlots() {
   if (badgePct) {
     badgePct.textContent = pct + '%';
     badgePct.style.color = rateColor(pct);
-  }
-}
-
-function _updateCatalystDisplay() {
-  const slot = document.getElementById('fusion-cat-display');
-  const txt = document.getElementById('fusion-cat-display-text');
-  if (!txt) return;
-  if (!_fusionCatalyst) {
-    txt.innerHTML = 'None';
-    if (slot) slot.classList.remove('is-active');
-  } else {
-    const bonus = '+' + Math.round(CATALYST_BONUS[_fusionCatalyst] * 100) + '%';
-    txt.innerHTML = formatCatalystName(_fusionCatalyst) + ' ' + bonus;
-    if (slot) slot.classList.add('is-active');
   }
 }
 
@@ -184,27 +275,11 @@ function rateColor(pct) {
   return 'var(--c-bad, #e05050)';
 }
 
-/* ── Catalyst picker toggle ──────────────────────────── */
-function toggleFusionCatalystPicker() {
-  const picker = document.getElementById('fusion-catalyst-list');
-  if (picker) picker.classList.toggle('is-hidden');
-}
-
 /* ── Selection ───────────────────────────────────────── */
 function selectFusionSpell(id, lvl) {
   _fusionSpellId = id;
   _fusionSpellLvl = lvl;
   renderFusionSpellList();
-  _updateCrucibleSlots();
-  renderFusionPanel();
-}
-
-function selectFusionCatalyst(id) {
-  _fusionCatalyst = (_fusionCatalyst === id) ? null : id;
-  const picker = document.getElementById('fusion-catalyst-list');
-  if (picker) picker.classList.add('is-hidden');
-  renderFusionCatalystList();
-  _updateCatalystDisplay();
   _updateCrucibleSlots();
   renderFusionPanel();
 }
@@ -390,9 +465,12 @@ function closeFusionResult() {
 /* ── Screen hook ─────────────────────────────────────── */
 onScreen('fusion', renderFusion);
 
-window.selectFusionSpell = selectFusionSpell;
-window.selectFusionCatalyst = selectFusionCatalyst;
-window.executeFusion = executeFusion;
-window.closeFusionResult = closeFusionResult;
-window.renderFusion = renderFusion;
-window.toggleFusionCatalystPicker = toggleFusionCatalystPicker;
+window.selectFusionSpell    = selectFusionSpell;
+window.executeFusion        = executeFusion;
+window.executeFusionAll     = executeFusionAll;
+window.closeFusionResult    = closeFusionResult;
+window.renderFusion         = renderFusion;
+window.openFusionCatPanel   = openFusionCatPanel;
+window.closeFusionCatPanel  = closeFusionCatPanel;
+window.pickFusionCatalyst   = pickFusionCatalyst;
+window.clearFusionCatalyst  = clearFusionCatalyst;

@@ -343,10 +343,7 @@
           <!-- Catalyst -->
           <div class="fusion-catalyst-section">
             <div class="fusion-cat-label">CATALYST SLOT</div>
-            <button class="fusion-cat-slot" id="fusion-cat-display" onclick="toggleFusionCatalystPicker()" type="button" aria-label="Toggle catalyst picker">
-              <span id="fusion-cat-display-text">None</span>
-            </button>
-            <div id="fusion-catalyst-list" class="fusion-cat-picker is-hidden"></div>
+            <div id="fusion-cat-trigger-wrap"></div>
           </div>
 
           <!-- Cost + Invoke -->
@@ -565,6 +562,17 @@
       </div>
     </div>
 
+    <!-- Fusion Catalyst Picker Bottomsheet -->
+    <div id="fusion-cat-panel" onclick="if(event.target===this)closeFusionCatPanel()">
+      <div class="profile-sheet">
+        <div class="profile-handle"></div>
+        <div class="fusion-cat-panel-header spell-picker-header">
+          <div class="section-label" style="margin:0;">Select Catalyst</div>
+        </div>
+        <div id="fusion-cat-picker-body" class="spell-picker"></div>
+      </div>
+    </div>
+
     <!-- ── GM Dev Panel ──────────────────────────────────────── -->
     <div id="gm-panel" role="dialog" aria-modal="true" aria-label="GM Mode" onclick="if(event.target===this)closeGMPanel()">
       <div class="gm-sheet">
@@ -625,6 +633,19 @@
 
       </div>
     </div><!-- /gm-panel -->
+
+    <!-- Fusion Catalyst Picker Bottomsheet -->
+    <div id="fusion-cat-panel" onclick="if(event.target===this)closeFusionCatPanel()">
+      <div class="profile-sheet">
+        <div class="profile-sheet-topbar">
+          <div class="profile-handle"></div>
+        </div>
+        <div class="spell-picker-header">
+          <div class="section-label" style="margin:0;">Select Catalyst</div>
+        </div>
+        <div id="fusion-cat-picker-body" class="spell-picker"></div>
+      </div>
+    </div>
 
   </div><!-- /app -->
 
