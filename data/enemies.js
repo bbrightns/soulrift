@@ -38,6 +38,10 @@ const ENEMIES_DATA = [
     opener: 'A heavy forest beast lowers its head and charges first.',
     dropTable: [
       { id: 'catalyst_shard', type: 'catalyst', chance: 0.2 },
+/*      { id: 'catalyst_shard', type: 'catalyst', chance: 1 },
+      { id: 'catalyst_core', type: 'catalyst', chance: 1 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 1 },
+      { type: 'uncommon_spell_tiered', tier: 'strong', chance: 1 },*/
     ],
   },
 
@@ -90,7 +94,7 @@ const ENEMIES_DATA = [
     hp: 130, atk: 30, def: 10, exp: 55, gold: 115,
     opener: 'A small clockwork imp skitters across the gears, eyes ticking like a watch.',
     dropTable: [
-      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.01 },
     ],
   },
   { // Clockwork Soldier
@@ -102,7 +106,7 @@ const ENEMIES_DATA = [
     hp: 150, atk: 34, def: 14, exp: 60, gold: 125,
     opener: 'A soldier of brass and springs snaps to attention, blade raised.',
     dropTable: [
-      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.01 },
     ],
   },
   { // Time-Worn Mage
@@ -116,7 +120,7 @@ const ENEMIES_DATA = [
     opener: 'A mage frozen mid-cast for centuries finally completes the spell — aimed at you.',
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'weak', chance: 0.2 },
-      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.01 },
     ],
   },
   { // Rusted Warden
@@ -130,7 +134,7 @@ const ENEMIES_DATA = [
     opener: 'Ancient mechanisms grind as the warden lurches forward, unstoppable.',
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'mid', chance: 0.2 },
-      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.01 },
     ],
   },
   { // Chronolith
@@ -145,7 +149,7 @@ const ENEMIES_DATA = [
     opener: "The tower's core awakens. Time stutters. The Chronolith has no patience for the living.",
     dropTable: [
       { type: 'uncommon_spell_tiered', tier: 'strong', chance: 0.2 },
-      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.1 },
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.01 },
     ],
   },
 

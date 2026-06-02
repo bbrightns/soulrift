@@ -428,10 +428,13 @@ function showBattleOutcome(outcome) {
   if (dropEl) {
     if (outcome.drops && outcome.drops.length > 0) {
       dropEl.innerHTML = outcome.drops.map(d => {
-        const iconSrc = d.type === 'catalyst' ? '/asset/catalyst_icons/' + d.catalystId + '.png' : null;
-        const iconHTML = iconSrc ? '<img src="' + iconSrc + '" style="width:22px;height:22px;border-radius:4px;vertical-align:middle;margin-right:6px;" alt="">' : '✦ ';
-        return '<div class="c-gold" style="font-size:15px;letter-spacing:.04em;margin-top:6px;display:flex;align-items:center;">'
-          + iconHTML + 'You got <strong style="margin-left:4px;">' + d.name + '</strong>!</div>';
+        const iconSrc = d.type === 'catalyst'
+          ? '/asset/catalyst_icons/' + d.catalystId + '.png'
+          : '/asset/spell_icons/' + d.spellId + '.png';
+        return '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;">'
+          + '<img src="' + iconSrc + '" style="width:28px;height:28px;border-radius:4px;object-fit:cover;" alt="">'
+          + '<span class="c-gold" style="font-size:14px;letter-spacing:.04em;">You got <strong>' + d.name + '</strong>!</span>'
+          + '</div>';
       }).join('');
     } else {
       dropEl.innerHTML = '';
@@ -581,7 +584,7 @@ function rollDrops(enemyTemplate) {
       const spell = getSpellDef(spellId);
       if (!spell) return;
       giveSpell(spellId, 1);
-      drops.push({ type: 'spell', name: spell.name, rarity: 'uncommon' });
+      drops.push({ type: 'spell', spellId, name: spell.name, rarity: 'uncommon' });
     } else if (entry.type === 'rare_spell_tiered') {
       const tower = getTower();
       const spellId = CODEX_SPELL_TIERS[tower];
@@ -590,7 +593,7 @@ function rollDrops(enemyTemplate) {
       const spell = getSpellDef(spellId);
       if (!spell) return;
       giveSpell(spellId, 1);
-      drops.push({ type: 'spell', name: spell.name, rarity: 'rare' });
+      drops.push({ type: 'spell', spellId, name: spell.name, rarity: 'rare' });
     }
   });
 
