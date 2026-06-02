@@ -444,16 +444,32 @@ function updateCombatHud(player, enemy, enemyTemplate) {
   setText('enemy-combat-name', enemy.name);
 
   // enemy avatar
-  const avatarEl = document.getElementById('enemy-combat-avatar');
-  if (avatarEl && enemyTemplate) {
+  const enemyAvatarEl = document.getElementById('enemy-combat-avatar');
+  const enemyPlaceholder = document.getElementById('enemy-avatar-placeholder');
+  if (enemyAvatarEl && enemyTemplate) {
     const id = enemy.name === '???' ? null : enemyTemplate.id;
-    avatarEl.src = id ? '/asset/enemy_avatars/' + id + '.png' : '';
-    avatarEl.style.display = id ? 'block' : 'none';
+    if (id) {
+      enemyAvatarEl.src = '/asset/enemy_avatars/' + id + '.png';
+      enemyAvatarEl.style.display = 'block';
+      if (enemyPlaceholder) enemyPlaceholder.style.display = 'none';
+    } else {
+      enemyAvatarEl.style.display = 'none';
+      if (enemyPlaceholder) enemyPlaceholder.style.display = '';
+    }
   }
 
-  setFill('player-hp-fill', clampPct(player.hp, player.hpMax));
-  setFill('player-sp-fill', clampPct(player.sp, player.spMax));
-  setFill('enemy-hp-fill', clampPct(enemy.hp, enemyTemplate.hp));
+  // HP/SP use scaleX transform so shrink direction is controlled by transform-origin in CSS
+  const playerHpPct = clampPct(player.hp, player.hpMax) / 100;
+  const playerSpPct = clampPct(player.sp, player.spMax) / 100;
+  const enemyHpPct = clampPct(enemy.hp, enemyTemplate.hp) / 100;
+
+  const playerHpFill = document.getElementById('player-hp-fill');
+  const playerSpFill = document.getElementById('player-sp-fill');
+  const enemyHpFill = document.getElementById('enemy-hp-fill');
+
+  if (playerHpFill) playerHpFill.style.transform = 'scaleX(' + playerHpPct + ')';
+  if (playerSpFill) playerSpFill.style.transform = 'scaleX(' + playerSpPct + ')';
+  if (enemyHpFill) enemyHpFill.style.transform = 'scaleX(' + enemyHpPct + ')';
 
   setText('player-hp-text', 'HP ' + player.hp + ' / ' + player.hpMax);
   setText('player-sp-text', 'SP ' + player.sp + ' / ' + player.spMax);
@@ -475,8 +491,12 @@ function prepareArena(dungeonId) {
     logWrap.innerHTML = '<div class="battle-log-line">Prepare your 10-turn blueprint, then begin the fight.</div>';
   }
   clearBattleOutcome();
-  document.getElementById('combat-hud')?.classList.remove('hud--post-battle');
-  document.getElementById('combat-hud')?.classList.add('hud--hidden-enemy');
+  const hudEl = document.getElementById('combat-hud');
+  if (hudEl) {
+    hudEl.classList.remove('hud--post-battle');
+    hudEl.classList.add('hud--hidden-enemy');
+    hudEl.style.display = '';   // ensure visible after post-battle hide
+  }
   const hiddenEnemy = { ..._preparedEnemyTemplate, name: '???' };
   updateCombatHud(player, hiddenEnemy, _preparedEnemyTemplate);
   setText('enemy-hp-text', 'HP ?? / ??');
@@ -572,8 +592,12 @@ async function runAutoBattle(dungeonId) {
   _selectedDungeonId = activeDungeonId;
   showArenaView(activeDungeonId);
   setBattleButton(true);
-  document.getElementById('combat-hud')?.classList.remove('hud--post-battle');
-  document.getElementById('combat-hud')?.classList.remove('hud--hidden-enemy');
+  const hudStartEl = document.getElementById('combat-hud');
+  if (hudStartEl) {
+    hudStartEl.classList.remove('hud--post-battle');
+    hudStartEl.classList.remove('hud--hidden-enemy');
+    hudStartEl.style.display = '';
+  }
 
   const logWrap = document.getElementById('battle-log');
   if (logWrap) logWrap.innerHTML = '';
@@ -846,7 +870,8 @@ async function runAutoBattle(dungeonId) {
 
   saveState();
   syncHeader();
-  document.getElementById('combat-hud')?.classList.add('hud--post-battle');
+  const hudEl = document.getElementById('combat-hud');
+  if (hudEl) hudEl.classList.add('hud--post-battle');
   _battleRunning = false;
 
   if (_autoLoopEnabled) {

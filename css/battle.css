@@ -1,46 +1,214 @@
 /* ============================================================
    SOULRIFT — /css/battle.css
-   Phase 1 combat presentation styles
-   BUILD: Phase 1 (placeholder — populate when battle.js built)
+   Combat HUD — mirrored HP bars, centered avatars, VS
    ============================================================ */
 
-/* ── Collapsed Enemy HUD before battle ─────────────────────────── */
-#combat-hud.hud--hidden-enemy .combatant-card--enemy {
-  filter: blur(1px);
+/* ── Outer HUD wrapper ───────────────────────────────────── */
+.combat-hud {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--c-border-md);
+  border-radius: var(--r-md);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.025), transparent 65%),
+    var(--c-raised);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: opacity 0.3s ease;
 }
 
-/* ── Collapsed HUD during battle ─────────────────────────── */
-#combat-hud.hud--collapsed .combatant-card {
-  padding-top: var(--sp-1);
-  padding-bottom: var(--sp-1);
-  min-height: 0;
+/* Hidden until battle starts */
+.combat-hud.hud--hidden-enemy .combat-side--enemy,
+.combat-hud.hud--hidden-enemy .combat-bar--enemy-hp,
+.combat-hud.hud--hidden-enemy #enemy-hp-text {
+  filter: blur(3px);
+  opacity: 0.4;
+  pointer-events: none;
 }
 
-#combat-hud.hud--collapsed .combatant-label,
-#combat-hud.hud--collapsed .combatant-name {
+.combat-hud.hud--hidden-enemy .combat-avatar-wrap--enemy {
+  filter: blur(3px);
+  opacity: 0.4;
+}
+
+/* Post-battle: hide entire HUD */
+.combat-hud.hud--post-battle {
   display: none;
 }
 
-#combat-hud.hud--collapsed .combat-bar {
-  margin-top: 2px;
+/* ── Row 1: HP bars ──────────────────────────────────────── */
+.combat-row--hp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 10px;
+}
+
+.combat-bar--player-hp,
+.combat-bar--enemy-hp {
+  height: 10px;
+  overflow: hidden;
+  background: rgba(0,0,0,.45);
+  box-shadow: var(--shadow-inset-md);
+  position: relative;
+}
+
+/* Player HP: fill from left, shrinks from right (last drop on left) */
+.combat-bar--player-hp {
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.combat-bar--player-hp span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #c03030, #5d1111);
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+
+/* Enemy HP: fill from right, shrinks from left (last drop on right) */
+.combat-bar--enemy-hp span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #5d1111, #c03030);
+  transform-origin: right center;
+  transition: transform 0.3s ease;
+}
+
+/* ── Row 2+: SP + Avatars + VS + Names ───────────────────── */
+.combat-row--main {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  min-height: 52px;
+}
+
+/* ── Side panels ─────────────────────────────────────────── */
+.combat-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 6px 8px;
+  gap: 0;
+}
+
+.combat-side--player {
+  align-items: flex-start;
+}
+
+.combat-side--enemy {
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.combat-side--enemy .combat-name {
+  margin-top: auto;
   margin-bottom: 2px;
 }
 
-/* ── Collapsed HUD after battle ─────────────────────────── */
-#combat-hud.hud--post-battle {
-  max-height: 48px;
-  overflow: hidden;
-  opacity: 0.5;
-  transition: max-height 0.4s ease, opacity 0.4s ease;
+.combat-name {
+  margin-top: auto;
+  margin-bottom: 2px;
 }
 
-#combat-hud.hud--post-battle .combatant-name,
-#combat-hud.hud--post-battle .combatant-label,
-#combat-hud.hud--post-battle .combat-bar,
-#combat-hud.hud--post-battle .combat-stat,
-#combat-hud.hud--post-battle .enemy-hp-group,
-#combat-hud.hud--post-battle .combat-vs {
-  display: none;
+.combat-stat {
+  font-size: 9px;
+  color: var(--c-text-3);
+  letter-spacing: .02em;
+  line-height: 1.4;
+}
+
+/* ── Player SP bar (shorter, flush left with HP bar) ─────── */
+.combat-bar--player-sp {
+  height: 6px;
+  width: 55%;
+  overflow: hidden;
+  background: rgba(0,0,0,.45);
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.05);
+  box-shadow: var(--shadow-inset-md);
+  align-self: flex-start;
+  margin-bottom: 4px;
+  margin-left: 0;
+}
+
+.combat-bar--player-sp span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #66c7e8, #12345a);
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+
+/* ── Names ───────────────────────────────────────────────── */
+.combat-name {
+  font-family: var(--f-head);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-text-hi);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.combat-stat {
+  font-size: 9px;
+  color: var(--c-text-3);
+  letter-spacing: .02em;
+}
+
+/* ── Center cluster: avatars + VS ────────────────────────── */
+.combat-center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+}
+
+.combat-avatar-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--r-md);
+  background: var(--c-inset);
+  border: 1px solid var(--c-border-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22px;
+}
+
+.combat-avatar {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  display: block;
+}
+
+.combat-avatar-placeholder {
+  font-size: 22px;
+  color: var(--c-text-3);
+  line-height: 1;
+}
+
+/* VS badge */
+.combat-vs {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--c-inset);
+  border: 1px solid var(--c-border-md);
+  color: var(--c-gold-dim);
+  font-family: var(--f-head);
+  font-size: 9px;
+  box-shadow: var(--shadow-inset-md);
 }
 
 /* ── Expanded battle log ─────────────────────────────────── */
@@ -49,31 +217,125 @@
   min-height: 180px;
 }
 
-.combatant-row {
-  align-items: stretch;
-}
-
-.combatant-card {
-  padding: 8px 10px;
-}
-
-.combatant-name {
-  margin: 2px 0 4px;
-  min-height: 0;
-}
-
-.combatant-card--enemy {
-  display: flex;
-  flex-direction: column;
-}
-
-.combatant-card--enemy .combatant-label,
-.combatant-card--enemy .combatant-name {
+/* ── Battle result panel ─────────────────────────────────── */
+.battle-result-panel {
+  position: relative;
+  overflow: hidden;
   flex: 0 0 auto;
+  border: 1px solid var(--c-border-md);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  text-align: center;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.03), transparent 62%),
+    var(--c-raised);
+  box-shadow: var(--shadow-md), var(--shadow-inset);
+  animation: resultIn .24s ease both;
 }
 
-.enemy-hp-group {
+.battle-result-panel::before,
+.battle-result-panel::after {
+  content: '';
+  position: absolute;
+  left: 12%; right: 12%;
+  height: 1px;
+  pointer-events: none;
+}
+.battle-result-panel::before { top: 0; }
+.battle-result-panel::after  { bottom: 0; }
+
+.battle-result-panel--victory {
+  border-color: rgba(46,144,80,.55);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(46,144,80,.16), transparent 68%),
+    linear-gradient(145deg, rgba(197,160,89,.08), transparent 64%),
+    var(--c-raised);
+  box-shadow: 0 0 20px rgba(46,144,80,.18), var(--shadow-md), var(--shadow-inset);
+}
+.battle-result-panel--victory::before,
+.battle-result-panel--victory::after {
+  background: linear-gradient(90deg, transparent, rgba(46,144,80,.65), var(--c-gold), transparent);
+}
+
+.battle-result-panel--defeat {
+  border-color: rgba(184,48,48,.55);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(184,48,48,.17), transparent 68%),
+    linear-gradient(145deg, rgba(90,14,14,.18), transparent 64%),
+    var(--c-raised);
+  box-shadow: 0 0 20px rgba(184,48,48,.18), var(--shadow-md), var(--shadow-inset);
+}
+.battle-result-panel--defeat::before,
+.battle-result-panel--defeat::after {
+  background: linear-gradient(90deg, transparent, rgba(184,48,48,.62), var(--c-crimson-hi), transparent);
+}
+
+.battle-result-title {
+  font-family: var(--f-head);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.battle-result-panel--victory .battle-result-title {
+  color: var(--c-gold-hi);
+  text-shadow: 0 0 16px rgba(197,160,89,.28), 0 0 28px rgba(46,144,80,.18);
+}
+.battle-result-panel--defeat .battle-result-title {
+  color: #d86a6a;
+  text-shadow: 0 0 16px rgba(184,48,48,.25);
+}
+
+.battle-result-subtitle {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--c-text-2);
+}
+
+.battle-result-rewards {
+  margin-top: 9px;
+  font-family: var(--f-head);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.battle-result-panel--victory .battle-result-rewards { color: var(--c-ok); }
+.battle-result-panel--defeat  .battle-result-rewards { color: var(--c-text-2); }
+
+@keyframes resultIn {
+  from { opacity: 0; transform: translateY(6px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);   }
+}
+
+/* ── Arena action row ────────────────────────────────────── */
+.arena-action { flex: 0 0 auto; }
+.arena-action-row { display: flex; gap: var(--sp-2); }
+.arena-action-row .btn--primary { flex: 1; }
+
+.arena-auto-btn {
   flex: 0 0 auto;
-  margin-top: auto;
-  margin-bottom: auto;
+  padding: 0 var(--sp-3);
+  min-width: 84px;
+  background: transparent;
+  border: 1px solid var(--c-border-md);
+  border-radius: var(--r-md);
+  color: var(--c-text-3);
+  font-family: var(--f-head);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--ease-fast), color var(--ease-fast),
+              border-color var(--ease-fast), box-shadow var(--ease-fast);
+}
+.arena-auto-btn.is-active {
+  background: rgba(46,144,80,.12);
+  border-color: rgba(46,144,80,.50);
+  color: var(--c-ok);
+  box-shadow: 0 0 10px rgba(46,144,80,.18);
+}
+.arena-auto-btn:hover:not(.is-active) {
+  border-color: var(--c-border-hi);
+  color: var(--c-text-2);
 }
