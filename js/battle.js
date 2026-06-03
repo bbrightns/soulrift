@@ -28,6 +28,11 @@ function scaleRewardByLevel(base, playerLevel, dungeonLevelReq) {
   return Math.max(1, Math.floor(base * mult));
 }
 
+function enemyAvatarHTML(enemyTemplate) {
+  return '<img src="/asset/enemy_avatars/' + enemyTemplate.id + '.png" '
+    + 'class="log-spell-icon log-spell-icon--enemy" alt="">';
+}
+
 function getDungeonPerks() {
   const dungeon = window.getDungeonDef ? getDungeonDef(_selectedDungeonId) : null;
   return (dungeon && Array.isArray(dungeon.perks)) ? dungeon.perks : [];
@@ -666,7 +671,7 @@ async function runAutoBattle(dungeonId) {
 
   updateCombatHud(player, enemy, enemyTemplate);
   await appendBattleLog('Battle begins in ' + enemy.area + '.', 'system');
-  await appendBattleLog(enemy.opener, 'enemy');
+  await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.opener), 'enemy');
 
   for (let turn = 1; turn <= 10; turn++) {
     await sleep(randDelay(200, 300));
@@ -758,14 +763,14 @@ async function runAutoBattle(dungeonId) {
 
     if (battleStatus.enemyFrozen) {
       battleStatus.enemyFrozen = false;
-      await appendBattleLog(enemy.name + ' is frozen and cannot act this turn.', 'enemy');
+      await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' is frozen and cannot act this turn.'), 'enemy');
     } else {
       // Fog miss check
       let missed = false;
       if (battleStatus.fogActive && battleStatus.fogActive.turnsLeft > 0) {
         if (Math.random() < battleStatus.fogActive.missChance) {
           missed = true;
-          await appendBattleLog(enemy.name + ' attacks but misses through the fog!', 'enemy');
+          await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' attacks but misses through the fog!'), 'enemy');
         }
         battleStatus.fogActive.turnsLeft--;
         if (battleStatus.fogActive.turnsLeft <= 0) battleStatus.fogActive = null;
@@ -798,7 +803,7 @@ async function runAutoBattle(dungeonId) {
           player.hp = Math.max(0, player.hp - hit);
           if (typeof SFX !== 'undefined') SFX.enemyHit();
           updateCombatHud(player, enemy, enemyTemplate);
-          await appendBattleLog(enemy.name + ' strikes for ' + hit + ' damage.', 'enemy');
+          await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' strikes for ' + hit + ' damage.'), 'enemy');
           if (timePressure && turn === timePressure.startTurn) {
             await appendBattleLog('The clocktower groans. "TIME OUT" — every strike hits harder.', 'system');
           }

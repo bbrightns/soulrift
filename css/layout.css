@@ -1512,7 +1512,6 @@
 .battle-log-line--reward,
 .battle-log-line--warn {
   display: block;
-  /* non-spell lines stay as block, no icon slot */
 }
 
 .battle-log-line--turn {
@@ -1522,10 +1521,18 @@
 
 .battle-log-line--player {
   color: var(--c-text);
+  align-items: center;
 }
 
 .battle-log-line--enemy {
   color: var(--c-text-2);
+  flex-direction: row-reverse;
+  align-items: center;
+  text-align: right;
+}
+
+.log-spell-icon--enemy {
+  flex-shrink: 0;
 }
 
 .battle-log-line--warn {

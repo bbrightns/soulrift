@@ -224,6 +224,14 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.battle-log-line--enemy {
+  flex-direction: row-reverse;
+}
+
+.log-spell-icon--enemy {
+  align-self: stretch;
+}
+
 /* ── Battle result panel ─────────────────────────────────── */
 .battle-result-panel {
   position: relative;
