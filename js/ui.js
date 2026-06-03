@@ -46,11 +46,11 @@ function _closeModal(el) {
 
 /* ── Screen map: key → HTML id ───────────────────────────── */
 const SCREENS = {
-  battle:  'screen-battle',
-  order:   'screen-order',
-  market:  'screen-market',
-  items:   'screen-items',
-  fusion:  'screen-fusion',
+  battle: 'screen-battle',
+  order: 'screen-order',
+  market: 'screen-market',
+  items: 'screen-items',
+  fusion: 'screen-fusion',
   library: 'screen-library',
 };
 
@@ -132,9 +132,9 @@ function initNav() {
 /* ── Header sync ─────────────────────────────────────────── */
 function syncHeader() {
   const s = getState();
-  const goldEl  = document.getElementById('hud-gold-val');
+  const goldEl = document.getElementById('hud-gold-val');
   const levelEl = document.getElementById('hud-level');
-  if (goldEl)  goldEl.textContent  = s.gold.toLocaleString();
+  if (goldEl) goldEl.textContent = s.gold.toLocaleString();
   if (levelEl) levelEl.textContent = 'LV ' + s.player.level;
 
   /* tower color theme on root */
@@ -212,19 +212,19 @@ function closeProfilePanel() {
 }
 
 function renderProfilePanel() {
-  const s  = getState();
-  const p  = s.player;
+  const s = getState();
+  const p = s.player;
   const towerNames = {
     light: '✦ Light Tower',
-    dark:  '◐ Dark Tower',
-    fire:  '△ Fire Tower',
-    ice:   '◇ Ice Tower',
+    dark: '◐ Dark Tower',
+    fire: '△ Fire Tower',
+    ice: '◇ Ice Tower',
   };
   const towerBadge = {
     light: 'badge--light',
-    dark:  'badge--dark',
-    fire:  'badge--fire',
-    ice:   'badge--ice',
+    dark: 'badge--dark',
+    fire: 'badge--fire',
+    ice: 'badge--ice',
   };
   const towerAvatars = { light: '✦', dark: '◐', fire: '△', ice: '◇' };
 
@@ -233,19 +233,19 @@ function renderProfilePanel() {
     if (el) el.textContent = val;
   };
 
-  fill('prof-name',   s.playerName || 'Arcane Wanderer');
+  fill('prof-name', s.playerName || 'Arcane Wanderer');
   fill('prof-avatar', towerAvatars[s.tower] || '✦');
-  fill('prof-tower',  towerNames[s.tower] || '—');
-  fill('prof-level',  p.level);
-  fill('prof-exp',    p.exp + ' / ' + p.expNext);
-  fill('prof-hp',     p.hpMax);
-  fill('prof-sp',     p.spMax);
-  fill('prof-gold',   s.gold.toLocaleString());
-  fill('prof-str',    p.str);
-  fill('prof-atk',    p.atk);
-  fill('prof-int',    p.int);
-  fill('prof-agi',    p.agi);
-  fill('prof-def',    p.def);
+  fill('prof-tower', towerNames[s.tower] || '—');
+  fill('prof-level', p.level);
+  fill('prof-exp', p.exp + ' / ' + p.expNext);
+  fill('prof-hp', p.hpMax);
+  fill('prof-sp', p.spMax);
+  fill('prof-gold', s.gold.toLocaleString());
+  fill('prof-str', p.str);
+  fill('prof-atk', p.atk);
+  fill('prof-int', p.int);
+  fill('prof-agi', p.agi);
+  fill('prof-def', p.def);
 
   /* tower badge color */
   const badgeEl = document.getElementById('prof-tower-badge');
@@ -306,8 +306,8 @@ function toast(msg, type = '', ms = 2600) {
 }
 
 /* ── Format helpers ──────────────────────────────────────── */
-function fmtNum(n)     { return Number(n).toLocaleString(); }
-function fmtPct(n)     { return Math.round(n * 100) + '%'; }
+function fmtNum(n) { return Number(n).toLocaleString(); }
+function fmtPct(n) { return Math.round(n * 100) + '%'; }
 
 /* ── App boot ────────────────────────────────────────────── */
 function bootApp() {
@@ -324,7 +324,7 @@ function bootApp() {
 }
 
 /* ── Library ─────────────────────────────────────────────── */
-let _libTower  = null;
+let _libTower = null;
 let _libRarity = 'all';
 
 function renderLibrary() {
@@ -333,11 +333,11 @@ function renderLibrary() {
 }
 
 function _renderLibFilters() {
-  const towerEl  = document.getElementById('library-tower-filter');
+  const towerEl = document.getElementById('library-tower-filter');
   const rarityEl = document.getElementById('library-rarity-filter');
   if (!towerEl || !rarityEl) return;
 
-  const towers  = ['light', 'dark', 'fire', 'ice'];
+  const towers = ['light', 'dark', 'fire', 'ice'];
   const tLabels = { light: 'Light', dark: 'Dark', fire: 'Fire', ice: 'Ice' };
   const allTowers = ['all', ...towers];
   const tAllLabels = { all: 'All', ...tLabels };
@@ -349,7 +349,7 @@ function _renderLibFilters() {
   }).join('');
 
   const rarities = ['all', 'common', 'uncommon', 'rare', 'ultimate'];
-  const rLabels  = { all: 'All', common: 'Common', uncommon: 'Uncommon', rare: 'Rare', ultimate: 'Ultimate' };
+  const rLabels = { all: 'All', common: 'Common', uncommon: 'Uncommon', rare: 'Rare', ultimate: 'Ultimate' };
 
   rarityEl.innerHTML = rarities.map(r => {
     const on = r === _libRarity;
@@ -376,10 +376,17 @@ function _renderLibCards() {
     return;
   }
 
+  const playerTower = getTower();
+
   const obtainBadge = s => {
-    if (s.obtain === 'shop') return `<span class="lib-obtain lib-obtain--shop">Available in Shop</span>`;
+    if (s.obtain === 'shop') {
+      if (s.tower === playerTower) {
+        return `<span class="lib-obtain lib-obtain--shop">Available in Shop</span>`;
+      }
+      return `<span class="lib-obtain lib-obtain--drop" style="opacity:.55">Other Tower</span>`;
+    }
     if (s.obtain === 'boss') return `<span class="lib-obtain lib-obtain--boss">Boss Drop</span>`;
-    return                          `<span class="lib-obtain lib-obtain--drop">Drop Only</span>`;
+    return `<span class="lib-obtain lib-obtain--drop">Drop Only</span>`;
   };
 
   const cap = str => str.charAt(0).toUpperCase() + str.slice(1);
@@ -408,7 +415,7 @@ function _renderLibCards() {
 }
 
 onScreen('library', () => {
-  _libTower  = 'all';
+  _libTower = getTower() || 'all';
   _libRarity = 'all';
   renderLibrary();
 });
