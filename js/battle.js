@@ -19,6 +19,15 @@ function randDelay(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
+function scaleRewardByLevel(base, playerLevel, dungeonLevelReq) {
+  const gap = playerLevel - dungeonLevelReq;
+  if (gap <= 5) return base;
+  if (gap >= 20) return Math.max(1, Math.floor(base * 0.10));
+  const t = (gap - 5) / 15;
+  const mult = 1 - t * 0.90;
+  return Math.max(1, Math.floor(base * mult));
+}
+
 function getDungeonPerks() {
   const dungeon = window.getDungeonDef ? getDungeonDef(_selectedDungeonId) : null;
   return (dungeon && Array.isArray(dungeon.perks)) ? dungeon.perks : [];
@@ -663,7 +672,7 @@ async function runAutoBattle(dungeonId) {
     await sleep(randDelay(700, 1200));
     await appendBattleLog('Turn ' + turn + '.', 'turn');
 
-    if (enemyTemplate.regenPerTurn && enemy.hp > 0) {
+    if (enemyTemplate.regenPerTurn && enemy.hp > 0 && enemy.hp < enemyTemplate.hp) {
       const regen = enemyTemplate.regenPerTurn;
       enemy.hp = Math.min(enemyTemplate.hp, enemy.hp + regen);
       updateCombatHud(player, enemy, enemyTemplate);
@@ -847,8 +856,10 @@ async function runAutoBattle(dungeonId) {
   if (won) {
     s.stats.wins++;
     s.stats.kills++;
-    const goldReward = enemy.gold + Math.floor(Math.random() * 25);
-    const expReward = enemy.exp;
+    const dungeon = window.getDungeonDef ? getDungeonDef(_selectedDungeonId) : null;
+    const dungeonReq = dungeon ? dungeon.levelReq : 1;
+    const goldReward = scaleRewardByLevel(enemy.gold + Math.floor(Math.random() * 25), s.player.level, dungeonReq);
+    const expReward = scaleRewardByLevel(enemy.exp, s.player.level, dungeonReq);
     s.gold += goldReward;
     s.stats.goldEarned += goldReward;
     const _levelBefore = s.player.level;
