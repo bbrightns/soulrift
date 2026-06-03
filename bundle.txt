@@ -1244,6 +1244,14 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+.battle-log-line--enemy {
+  flex-direction: row-reverse;
+}
+
+.log-spell-icon--enemy {
+  align-self: stretch;
+}
+
 /* ── Battle result panel ─────────────────────────────────── */
 .battle-result-panel {
   position: relative;
@@ -2934,20 +2942,50 @@ body {
 .battle-log-line--reward,
 .battle-log-line--warn {
   display: block;
-  /* non-spell lines stay as block, no icon slot */
 }
 
 .battle-log-line--turn {
   color: var(--c-gold-text);
   border-color: var(--c-border-md);
+  background: linear-gradient(90deg, rgba(197,160,89,0.10), rgba(197,160,89,0.04));
+  font-family: var(--f-head);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  text-align: center;
+  border-color: rgba(197,160,89,0.28);
+}
+
+.battle-log-line--system {
+  background: transparent;
+  border-color: transparent;
+  font-family: var(--f-head);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--c-text-2);
+  box-shadow: none;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .battle-log-line--player {
   color: var(--c-text);
+  align-items: center;
 }
 
 .battle-log-line--enemy {
   color: var(--c-text-2);
+  flex-direction: row-reverse;
+  align-items: center;
+  text-align: right;
+}
+
+.log-spell-icon--enemy {
+  flex-shrink: 0;
 }
 
 .battle-log-line--warn {
@@ -7101,6 +7139,20 @@ function randDelay(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
+function scaleRewardByLevel(base, playerLevel, dungeonLevelReq) {
+  const gap = playerLevel - dungeonLevelReq;
+  if (gap <= 5) return base;
+  if (gap >= 20) return Math.max(1, Math.floor(base * 0.10));
+  const t = (gap - 5) / 15;
+  const mult = 1 - t * 0.90;
+  return Math.max(1, Math.floor(base * mult));
+}
+
+function enemyAvatarHTML(enemyTemplate) {
+  return '<img src="/asset/enemy_avatars/' + enemyTemplate.id + '.png" '
+    + 'class="log-spell-icon log-spell-icon--enemy" alt="">';
+}
+
 function getDungeonPerks() {
   const dungeon = window.getDungeonDef ? getDungeonDef(_selectedDungeonId) : null;
   return (dungeon && Array.isArray(dungeon.perks)) ? dungeon.perks : [];
@@ -7404,7 +7456,9 @@ async function appendBattleLog(line, type = '') {
   if (!_userScrolledLog) {
     logWrap.scrollTop = logWrap.scrollHeight;
   }
-  await sleep(randDelay(300, 500));
+  if (type === 'player' || type === 'enemy') {
+    await sleep(randDelay(1200, 1500));
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -7703,18 +7757,17 @@ async function runAutoBattle(dungeonId) {
   };
 
   updateCombatHud(player, enemy, enemyTemplate);
-  await appendBattleLog('Battle begins in ' + enemy.area + '.', 'system');
-  await appendBattleLog(enemy.opener, 'enemy');
+  await appendBattleLog('Battle begins in ' + enemy.area, 'system');
+  await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.opener), 'enemy');
 
   for (let turn = 1; turn <= 10; turn++) {
-    await sleep(randDelay(700, 1200));
-    await appendBattleLog('Turn ' + turn + '.', 'turn');
+    await appendBattleLog('Turn ' + turn, 'turn');
 
-    if (enemyTemplate.regenPerTurn && enemy.hp > 0) {
+    if (enemyTemplate.regenPerTurn && enemy.hp > 0 && enemy.hp < enemyTemplate.hp) {
       const regen = enemyTemplate.regenPerTurn;
       enemy.hp = Math.min(enemyTemplate.hp, enemy.hp + regen);
       updateCombatHud(player, enemy, enemyTemplate);
-      await appendBattleLog(enemy.name + ' regenerates ' + regen + ' HP.', 'enemy');
+      await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' regenerates ' + regen + ' HP.'), 'enemy');
     }
 
     // Demon tick
@@ -7796,14 +7849,14 @@ async function runAutoBattle(dungeonId) {
 
     if (battleStatus.enemyFrozen) {
       battleStatus.enemyFrozen = false;
-      await appendBattleLog(enemy.name + ' is frozen and cannot act this turn.', 'enemy');
+      await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' is frozen and cannot act this turn.'), 'enemy');
     } else {
       // Fog miss check
       let missed = false;
       if (battleStatus.fogActive && battleStatus.fogActive.turnsLeft > 0) {
         if (Math.random() < battleStatus.fogActive.missChance) {
           missed = true;
-          await appendBattleLog(enemy.name + ' attacks but misses through the fog!', 'enemy');
+          await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' attacks but misses through the fog!'), 'enemy');
         }
         battleStatus.fogActive.turnsLeft--;
         if (battleStatus.fogActive.turnsLeft <= 0) battleStatus.fogActive = null;
@@ -7835,7 +7888,7 @@ async function runAutoBattle(dungeonId) {
           }
           player.hp = Math.max(0, player.hp - hit);
           updateCombatHud(player, enemy, enemyTemplate);
-          await appendBattleLog(enemy.name + ' strikes for ' + hit + ' damage.', 'enemy');
+          await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' strikes for ' + hit + ' damage.'), 'enemy');
           if (timePressure && turn === timePressure.startTurn) {
             await appendBattleLog('The clocktower groans. "TIME OUT" — every strike hits harder.', 'system');
           }
@@ -7871,7 +7924,6 @@ async function runAutoBattle(dungeonId) {
         );
       } else {
         await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl);
-        updateCombatHud(player, enemy, enemyTemplate);
       }
     } else {
       const dmg = struggleDamage(player, enemy);
@@ -7888,8 +7940,10 @@ async function runAutoBattle(dungeonId) {
 
   const won = enemy.hp <= 0 && player.hp > 0;
   if (won) {
-    const goldReward = enemy.gold + Math.floor(Math.random() * 25);
-    const expReward = enemy.exp;
+    const dungeon = window.getDungeonDef ? getDungeonDef(_selectedDungeonId) : null;
+    const dungeonReq = dungeon ? dungeon.levelReq : 1;
+    const goldReward = scaleRewardByLevel(enemy.gold + Math.floor(Math.random() * 25), s.player.level, dungeonReq);
+    const expReward = scaleRewardByLevel(enemy.exp, s.player.level, dungeonReq);
     s.gold += goldReward;
     gainExp(expReward);
 
@@ -7964,6 +8018,7 @@ async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus
   }
   // Default: deal damage
   enemy.hp = Math.max(0, enemy.hp - baseDmg);
+  updateCombatHud(player, enemy, enemyTemplate);
   await appendBattleLog(
     spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ', spending ' + def.spCost + ' SP for ' + baseDmg + ' damage.'),
     'player'

@@ -244,7 +244,7 @@ const DUNGEONS_DATA = [
   { // Cursed Clocktower
     id: 'cursed_clocktower',
     perks: [
-      { type: 'time_pressure', startTurn: 6, atkBonusPerTurn: 0.15 },
+      { type: 'time_pressure', startTurn: 3, atkBonusPerTurn: 0.15 },
     ],
     name: 'Cursed Clocktower',
     icon: 'clock',
