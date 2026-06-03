@@ -682,7 +682,7 @@ async function runAutoBattle(dungeonId) {
       const regen = enemyTemplate.regenPerTurn;
       enemy.hp = Math.min(enemyTemplate.hp, enemy.hp + regen);
       updateCombatHud(player, enemy, enemyTemplate);
-      await appendBattleLog(enemy.name + ' regenerates ' + regen + ' HP.', 'enemy');
+      await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' regenerates ' + regen + ' HP.'), 'enemy');
     }
 
     // Demon tick
