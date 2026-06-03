@@ -371,7 +371,9 @@ async function appendBattleLog(line, type = '') {
   if (!_userScrolledLog) {
     logWrap.scrollTop = logWrap.scrollHeight;
   }
-  await sleep(randDelay(1200, 1500));
+  if (type === 'player' || type === 'enemy') {
+    await sleep(randDelay(1200, 1500));
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -674,7 +676,6 @@ async function runAutoBattle(dungeonId) {
   await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.opener), 'enemy');
 
   for (let turn = 1; turn <= 10; turn++) {
-    await sleep(randDelay(200, 300));
     await appendBattleLog('Turn ' + turn, 'turn');
 
     if (enemyTemplate.regenPerTurn && enemy.hp > 0 && enemy.hp < enemyTemplate.hp) {
