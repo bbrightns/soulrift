@@ -670,12 +670,12 @@ async function runAutoBattle(dungeonId) {
   };
 
   updateCombatHud(player, enemy, enemyTemplate);
-  await appendBattleLog('Battle begins in ' + enemy.area + '.', 'system');
+  await appendBattleLog('Battle begins in ' + enemy.area, 'system');
   await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.opener), 'enemy');
 
   for (let turn = 1; turn <= 10; turn++) {
     await sleep(randDelay(200, 300));
-    await appendBattleLog('Turn ' + turn + '.', 'turn');
+    await appendBattleLog('Turn ' + turn, 'turn');
 
     if (enemyTemplate.regenPerTurn && enemy.hp > 0 && enemy.hp < enemyTemplate.hp) {
       const regen = enemyTemplate.regenPerTurn;
