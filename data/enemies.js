@@ -38,10 +38,10 @@ const ENEMIES_DATA = [
     opener: 'A heavy forest beast lowers its head and charges first.',
     dropTable: [
       { id: 'catalyst_shard', type: 'catalyst', chance: 0.2 },
-/*      { id: 'catalyst_shard', type: 'catalyst', chance: 1 },
-      { id: 'catalyst_core', type: 'catalyst', chance: 1 },
-      { id: 'catalyst_crystal', type: 'catalyst', chance: 1 },
-      { type: 'uncommon_spell_tiered', tier: 'strong', chance: 1 },*/
+      /*      { id: 'catalyst_shard', type: 'catalyst', chance: 1 },
+            { id: 'catalyst_core', type: 'catalyst', chance: 1 },
+            { id: 'catalyst_crystal', type: 'catalyst', chance: 1 },
+            { type: 'uncommon_spell_tiered', tier: 'strong', chance: 1 },*/
     ],
   },
 
@@ -210,6 +210,189 @@ const ENEMIES_DATA = [
       { type: 'rare_spell_tiered', chance: 0.05 },
     ],
   },
+
+  // Bangkok Nightmare enemies
+  { // Tuk Tuk
+    id: 'tuk_tuk',
+    dungeonId: 'bangkok_nightmare',
+    weight: 5,
+    name: 'Tuk Tuk',
+    area: 'Bangkok Nightmare',
+    hp: 310,
+    atk: 58,
+    def: 12,
+    exp: 130,
+    gold: 0, // Base gold = 0; gold is stolen from the player instead (handled by perk)
+    goldSteal: true, // flag read by battle outcome logic
+    goldStealAmount: { min: 80, max: 180 }, // stolen regardless of win/loss
+    opener: 'A battered Tuk Tuk revs its engine. The driver grins and holds out his hand before the fight even starts.',
+    dropTable: [],
+  },
+  { // Street Food Vendor
+    id: 'street_food_vendor',
+    dungeonId: 'bangkok_nightmare',
+    weight: 4,
+    name: 'Street Food Vendor',
+    area: 'Bangkok Nightmare',
+    hp: 280,
+    atk: 52,
+    def: 10,
+    exp: 115,
+    gold: 160,
+    // Sells cursed food — applies a random debuff every 3 turns
+    spCurse: true, // flag: every 3rd turn, reduce player SP by 8
+    spCurseAmount: 8,
+    spCurseInterval: 3,
+    opener: 'A suspicious skewer is thrust toward you. "You buy! Very good price!" The smell alone makes your SP waver.',
+    dropTable: [],
+  },
+  { // Public Bus (Black Smoke)
+    id: 'public_bus',
+    dungeonId: 'bangkok_nightmare',
+    weight: 3,
+    name: 'Public Bus No. 8',
+    area: 'Bangkok Nightmare',
+    hp: 420,
+    atk: 55,
+    def: 20,
+    exp: 145,
+    gold: 200,
+    // Emits black smoke each hit — reduces player's effective ATK scaling by 10% per stack (max 3 stacks)
+    smokeStacks: true,
+    smokePerHit: 1,
+    maxSmokeStacks: 3,
+    smokeAtkReduction: 0.10,
+    regenPerTurn: 5,
+    opener: 'A decrepit bus lumbers forward, belching thick black smoke. You can barely see the enemy — or your own spell circle.',
+    dropTable: [
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.03 },
+    ],
+  },
+  { // Motorbike Swarm
+    id: 'motorbike_swarm',
+    dungeonId: 'bangkok_nightmare',
+    weight: 3,
+    name: 'Motorbike Swarm',
+    area: 'Bangkok Nightmare',
+    hp: 260,
+    atk: 68,
+    def: 8,
+    exp: 120,
+    gold: 175,
+    // Weaves through traffic — 25% chance to dodge player physical/basic attacks
+    dodgeChance: 0.25,
+    opener: 'A dozen motorbikes appear from every direction, threading gaps that shouldn\'t exist.',
+    dropTable: [],
+  },
+  { // Limousine (Boss)
+    id: 'limousine',
+    isBoss: true,
+    dungeonId: 'bangkok_nightmare',
+    weight: 1,
+    name: 'Limousine (VIP)',
+    area: 'Bangkok Nightmare',
+    hp: 680,
+    atk: 82,
+    def: 32,
+    exp: 210,
+    gold: 420,
+    regenPerTurn: 12,
+    // Boss-level traffic jam: whenever the player deals damage, 40% chance the damage is queued rather than applied immediately
+    trafficJamBoss: true,
+    trafficJamChance: 0.40,
+    // Honks every 5 turns — stuns the player (skips their spell cast)
+    hornStun: true,
+    hornInterval: 5,
+    opener: 'A black limousine with tinted windows rolls to a stop, blocking the entire road. The window slides down exactly one centimeter.',
+    dropTable: [
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.12 },
+      { type: 'rare_spell_tiered', chance: 0.08 },
+    ],
+  },
+
+  // Rift's End enemies
+  { // The First Arcanist
+    id: 'first_arcanist',
+    dungeonId: 'rifts_end',
+    weight: 3,
+    name: 'The First Arcanist',
+    area: "Rift's End",
+    hp: 1200,
+    atk: 195,
+    def: 22,
+    exp: 480,
+    gold: 900,
+    regenPerTurn: 15,
+    // Mirror ability: reflects 25% of all spell damage back to caster
+    spellReflect: true,
+    spellReflectPct: 0.25,
+    // Casts a "Mana Rupture" on turns 4 and 8 — drains 20 SP from player
+    manaRupture: true,
+    manaRuptureInterval: 4,
+    manaRuptureDrain: 20,
+    opener: 'The original tower mage. Every spell you know — they wrote. "I taught this to children." Their disappointment hits harder than their spells.',
+    dropTable: [
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.50 },
+      { type: 'rare_spell_tiered', chance: 0.20 },
+    ],
+  },
+  { // The Void Sentinel
+    id: 'void_sentinel',
+    dungeonId: 'rifts_end',
+    weight: 3,
+    name: 'The Void Sentinel',
+    area: "Rift's End",
+    hp: 1800,
+    atk: 155,
+    def: 88,
+    exp: 520,
+    gold: 1100,
+    regenPerTurn: 25,
+    // Shield phase: first 400 HP of damage each battle is absorbed by a void shield (displays differently)
+    voidShield: true,
+    voidShieldAmount: 400,
+    // Void Crush every 3 turns: deals 15% of player's MAX HP as true damage
+    voidCrush: true,
+    voidCrushInterval: 3,
+    voidCrushPct: 0.15,
+    opener: 'It has no face. It has guarded this rift for ten thousand years. It does not move — the world moves around it.',
+    dropTable: [
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 0.60 },
+      { type: 'rare_spell_tiered', chance: 0.25 },
+    ],
+  },
+  { // The Rift Itself (Final Boss)
+    id: 'the_rift',
+    isBoss: true,
+    dungeonId: 'rifts_end',
+    weight: 1,
+    name: 'The Rift Itself',
+    area: "Rift's End",
+    hp: 2800,
+    atk: 240,
+    def: 55,
+    exp: 850,
+    gold: 2500,
+    regenPerTurn: 30,
+    // Phase threshold: at 50% HP, ATK increases by 60% and regen doubles
+    phaseShift: true,
+    phaseShiftThreshold: 0.50,
+    phaseShiftAtkMult: 1.60,
+    phaseShiftRegenMult: 2,
+    phaseShiftTriggered: false, // runtime flag, reset per battle
+    // Reality Fracture: every 2 turns, reduces all damage dealt this turn by 50% ("reality resists")
+    realityFracture: true,
+    realityFractureInterval: 2,
+    realityFractureReduction: 0.50,
+    // Entropy Strike: boss attack ignores 40% of player DEF
+    entropyStrike: true,
+    entropyDefBypass: 0.40,
+    opener: "It doesn't attack you. It simply becomes aware of you. The last thing anyone ever hears is the sound of their own memories unraveling.",
+    dropTable: [
+      { id: 'catalyst_crystal', type: 'catalyst', chance: 1.00 }, // guaranteed
+      { type: 'rare_spell_tiered', chance: 0.50 },
+    ],
+  },
 ];
 
 const DUNGEONS_DATA = [
@@ -271,6 +454,66 @@ const DUNGEONS_DATA = [
     description: 'A sunken arcane library frozen mid-collapse. Books float in void-water, ink bleeds into darkness. Magic itself is unreliable here.',
     perks: [
       { type: 'ink_bleed', chanceNormal: 0.15, chanceBoss: 0.20 }
+    ],
+  },
+  { // Bangkok Nightmare
+    id: 'bangkok_nightmare',
+    name: 'Bangkok Nightmare',
+    icon: 'car',
+    tag: '◈ Urban Hellscape',
+    difficulty: 'Nightmare',
+    image: '/asset/dungeon_scene/bangkok_nightmare.png',
+    levelReq: 20,
+    unlocked: true,
+    expRange: '+115~210',
+    goldRange: '+0~420', // intentionally low minimum — Tuk Tuk steals
+    description: 'A city that never sleeps and never moves. Time crawls like traffic on Sukhumvit at 6pm. Your spells arrive — eventually. Your gold may not.',
+    perks: [
+      {
+        // Traffic Jam: player's spell damage on a given turn is stored and ADDED to
+        // the NEXT turn's damage instead of applying immediately.
+        // Effect: turn N does 0 stored damage + this turn's dmg → stored for N+1.
+        // Turn N+1 does stored(N) + this turn's dmg → both fire. Creates a "burst or die" tension.
+        // Implementation: see battle.js section below.
+        type: 'traffic_jam',
+        delayChance: 1.0,    // 100% of player spells are delayed by 1 turn
+        releaseMultiplier: 1.15, // delayed damage gets +15% when it fires next turn
+      },
+      {
+        // Gold Drain: after battle end (win OR lose), the first enemy in the dungeon
+        // that has goldSteal:true deducts goldStealAmount from player gold.
+        // Handled in battle outcome logic.
+        type: 'gold_drain_on_exit',
+      },
+    ],
+  },
+  { // Rift's End
+    id: 'rifts_end',
+    name: "Rift's End",
+    icon: 'zap',
+    tag: '◈ The Final Threshold',
+    difficulty: 'Nightmare',
+    image: '/asset/dungeon_scene/rifts_end.png',
+    levelReq: 1, // No level lock — but enemies punish under-geared players hard
+    unlocked: true,
+    expRange: '+480~850',
+    goldRange: '+900~2500',
+    description: 'Beyond the last seal. Three beings that predate the tower system wait here. Lv.90+ recommended. Spell stones Lv.9+ strongly advised. Those who enter underprepared become part of the scenery.',
+    perks: [
+      {
+        // Ancient Pressure: all player stats scale down by (90 - playerLevel) * 1.2% if below lv.90.
+        // At lv.1 this is an ~107% reduction — nearly impossible. At lv.89 it's a 1.2% penalty.
+        // Implementation: multiplier applied in spellPower() and enemyStrike() calls.
+        type: 'ancient_pressure',
+        targetLevel: 90,
+        penaltyPerLevel: 0.012, // 1.2% per level below 90
+      },
+      {
+        // Spell Fatigue: spells below Lv.9 deal 40% reduced damage in this dungeon.
+        type: 'spell_fatigue',
+        minSpellLevel: 9,
+        lowLevelPenalty: 0.40, // multiplied into damage if spell < minSpellLevel
+      },
     ],
   },
 ];
