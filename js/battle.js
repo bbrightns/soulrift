@@ -841,7 +841,6 @@ async function runAutoBattle(dungeonId) {
       } else {
         if (typeof SFX !== 'undefined') SFX.playerHit();
         await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl);
-        updateCombatHud(player, enemy, enemyTemplate);
       }
     } else {
       const dmg = struggleDamage(player, enemy);
@@ -948,6 +947,7 @@ async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus
   }
   // Default: deal damage
   enemy.hp = Math.max(0, enemy.hp - baseDmg);
+  updateCombatHud(player, enemy, enemyTemplate);
   await appendBattleLog(
     spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ', spending ' + def.spCost + ' SP for ' + baseDmg + ' damage.'),
     'player'
