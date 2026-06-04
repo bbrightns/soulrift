@@ -366,9 +366,7 @@ async function appendBattleLog(line, type = '') {
   entry.innerHTML = line;
   logWrap.appendChild(entry);
   if (!_userScrolledLog) logWrap.scrollTop = logWrap.scrollHeight;
-  if (type === 'player' || type === 'enemy') {
-    await sleep(randDelay(1200, 1500));
-  }
+  await sleep(randDelay(1200, 1500));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1031,7 +1029,7 @@ async function runAutoBattle(dungeonId) {
           battleStatus.trafficJamStored += toStore;
           updateCombatHud(player, enemy, enemyTemplate);
           await appendBattleLog(
-            spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ' — stuck in traffic. Stored: ' + toStore + ' dmg (fires next turn, +15%)'),
+            spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ' — stuck in traffic. Stored: ' + toStore + ' dmg'),
             'warn'
           );
 
