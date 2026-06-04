@@ -648,6 +648,28 @@ async function runAutoBattle(dungeonId) {
     return owned ? slot : null;
   });
   const player = { ...s.player, hp: s.player.hpMax, sp: s.player.spMax };
+  // Ancient Pressure — stat penalty per level below 90
+  const _ancientPressure = getPerk('ancient_pressure');
+  if (_ancientPressure) {
+    const _gap = Math.max(0, _ancientPressure.targetLevel - s.player.level);
+    const _penalty = Math.min(0.90, _gap * _ancientPressure.penaltyPerLevel);
+    if (_penalty > 0) {
+      player.atk = Math.max(1, Math.floor(player.atk * (1 - _penalty)));
+      player.int = Math.max(1, Math.floor(player.int * (1 - _penalty)));
+      player.str = Math.max(1, Math.floor(player.str * (1 - _penalty)));
+      player.def = Math.max(1, Math.floor(player.def * (1 - _penalty)));
+      // Log warning once at battle start (placed inside the "Battle begins" log block)
+    }
+  }
+
+  // Phase-shift flag — reset per battle
+  battleStatus.riftPhaseTriggered = false;
+  battleStatus.voidShieldBroken = false;
+  battleStatus.voidShieldRemaining = enemyTemplate.voidShield ? enemyTemplate.voidShieldAmount : 0;
+  battleStatus.smokeStackCount = 0;
+  battleStatus.playerStunned = false;
+  battleStatus.trafficJamStored = 0;
+  battleStatus.realityFractureActive = false;
   const enemyTemplate = _preparedEnemyTemplate || (window.getRandomEnemy
     ? getRandomEnemy(activeDungeonId)
     : { name: 'Training Shadow', area: 'Booby Forest', hp: 45, atk: 7, def: 2, exp: 20, gold: 55, opener: 'A shadow stirs.' });
@@ -762,6 +784,91 @@ async function runAutoBattle(dungeonId) {
       }
     }
 
+    // ── Enemy: Mana Rupture (First Arcanist) ─────────────────
+    if (enemyTemplate.manaRupture && turn % enemyTemplate.manaRuptureInterval === 0) {
+      const _drained = Math.min(player.sp, enemyTemplate.manaRuptureDrain);
+      player.sp = Math.max(0, player.sp - _drained);
+      updateCombatHud(player, enemy, enemyTemplate);
+      await appendBattleLog(
+        enemyAvatarHTML(enemyTemplate)
+        + wrapLogText(enemy.name + ' Mana Rupture — drained ' + _drained + ' SP from you!'),
+        'warn'
+      );
+    }
+
+    // ── Enemy: Street Food Vendor SP curse ───────────────────
+    if (enemyTemplate.spCurse && turn % enemyTemplate.spCurseInterval === 0) {
+      const _spLost = Math.min(player.sp, enemyTemplate.spCurseAmount);
+      player.sp = Math.max(0, player.sp - _spLost);
+      updateCombatHud(player, enemy, enemyTemplate);
+      await appendBattleLog(
+        enemyAvatarHTML(enemyTemplate)
+        + wrapLogText('The cursed food takes effect — ' + _spLost + ' SP drained.'),
+        'warn'
+      );
+    }
+
+    // ── Enemy: Smoke Stacks (Public Bus) — applied on hit ────
+    // (actual hit reduction applied in enemy strike section, stacks build per turn)
+
+    // ── Enemy: Phase Shift (The Rift) ────────────────────────
+    if (enemyTemplate.phaseShift
+      && !battleStatus.riftPhaseTriggered
+      && enemy.hp <= Math.floor(enemyTemplate.hp * enemyTemplate.phaseShiftThreshold)) {
+      battleStatus.riftPhaseTriggered = true;
+      enemy.atk = Math.floor(enemy.atk * enemyTemplate.phaseShiftAtkMult);
+      enemyTemplate.regenPerTurn = Math.floor((enemyTemplate.regenPerTurn || 0) * enemyTemplate.phaseShiftRegenMult);
+      await appendBattleLog('— THE RIFT TEARS OPEN —', 'turn');
+      await appendBattleLog(
+        enemyAvatarHTML(enemyTemplate)
+        + wrapLogText(enemy.name + ' enters second phase. ATK surges. Reality accelerates.'),
+        'warn'
+      );
+    }
+
+    // ── Enemy: Reality Fracture (The Rift) ───────────────────
+    if (enemyTemplate.realityFracture && turn % enemyTemplate.realityFractureInterval === 0) {
+      battleStatus.realityFractureActive = true;
+      await appendBattleLog(
+        enemyAvatarHTML(enemyTemplate)
+        + wrapLogText('Reality fractures — your next spell is halved.'),
+        'warn'
+      );
+    }
+
+    // ── Enemy: Void Crush (Void Sentinel) ────────────────────
+    if (enemyTemplate.voidCrush && turn % enemyTemplate.voidCrushInterval === 0) {
+      const _voidDmg = Math.floor(player.hpMax * enemyTemplate.voidCrushPct);
+      player.hp = Math.max(0, player.hp - _voidDmg);
+      updateCombatHud(player, enemy, enemyTemplate);
+      await appendBattleLog(
+        enemyAvatarHTML(enemyTemplate)
+        + wrapLogText(enemy.name + ' VOID CRUSH — ' + _voidDmg + ' true damage (ignores DEF)!'),
+        'warn'
+      );
+      if (player.hp <= 0) break;
+    }
+
+    // ── Enemy: Horn Stun (Limousine) ─────────────────────────
+    if (enemyTemplate.hornStun && turn % enemyTemplate.hornInterval === 0) {
+      battleStatus.playerStunned = true;
+      await appendBattleLog(
+        enemyAvatarHTML(enemyTemplate)
+        + wrapLogText(enemy.name + ' lays on the horn. The sound is incomprehensible. Your spell is lost.'),
+        'warn'
+      );
+    }
+
+    // ── Enemy: Void Shield first-turn announce ───────────────
+    if (enemyTemplate.voidShield && turn === 1 && !battleStatus.voidShieldBroken) {
+      await appendBattleLog(
+        enemyAvatarHTML(enemyTemplate)
+        + wrapLogText(enemy.name + ' is shielded by the void ('
+          + battleStatus.voidShieldRemaining + ' HP to break).'),
+        'system'
+      );
+    }
+
     if (battleStatus.enemyFrozen) {
       battleStatus.enemyFrozen = false;
       await appendBattleLog(enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' is frozen and cannot act this turn.'), 'enemy');
@@ -787,7 +894,30 @@ async function runAutoBattle(dungeonId) {
           battleStatus.angelWingActive = 0;
         }
         if (!dodged) {
-          let hit = Math.floor(enemyStrike(enemy, player, turn) * timePressureBonus);
+          let hit;
+          if (enemyTemplate.entropyStrike) {
+            // Bypasses 40% of player DEF
+            const _bypassedDef = Math.floor(player.def * enemyTemplate.entropyDefBypass);
+            const _rawAtk = enemy.atk + Math.floor(turn * 0.8);
+            hit = Math.max(2, _rawAtk - Math.floor((player.def - _bypassedDef) * 0.45));
+            hit = Math.floor(hit * timePressureBonus);
+          } else {
+            hit = Math.floor(enemyStrike(enemy, player, turn) * timePressureBonus);
+          }
+
+          // Smoke Stacks (Public Bus) — each hit adds a stack, reducing player damage output
+          if (enemyTemplate.smokeStacks && !dodged && !missed) {
+            if (battleStatus.smokeStackCount < enemyTemplate.maxSmokeStacks) {
+              battleStatus.smokeStackCount++;
+              await appendBattleLog(
+                enemyAvatarHTML(enemyTemplate)
+                + wrapLogText('Black smoke stacks: ' + battleStatus.smokeStackCount
+                  + '/' + enemyTemplate.maxSmokeStacks
+                  + '. Your spells lose ' + Math.round(battleStatus.smokeStackCount * enemyTemplate.smokeAtkReduction * 100) + '% power.'),
+                'warn'
+              );
+            }
+          }
           if (battleStatus.emberSkinTurns > 0) {
             const reduced = Math.floor(hit * battleStatus.emberSkinReduction);
             hit = Math.max(1, hit - reduced);
@@ -819,43 +949,149 @@ async function runAutoBattle(dungeonId) {
     const spellLvl = parseInt(parts[1]) || 1;
     const def = spellId && window.getSpellDef ? getSpellDef(spellId) : null;
 
-    if (!def) {
-      const dmg = struggleDamage(player, enemy);
-      enemy.hp = Math.max(0, enemy.hp - dmg);
-      updateCombatHud(player, enemy, enemyTemplate);
-      await appendBattleLog(wrapLogText(logName() + ' has no spell prepared and performs Struggle for ' + dmg + ' damage.'), 'player');
-    } else if (player.sp >= def.spCost) {
-      player.sp -= def.spCost;
-      const inkBleed = getPerk('ink_bleed');
-      const inkChance = inkBleed
-        ? (enemyTemplate.isBoss ? inkBleed.chanceBoss : inkBleed.chanceNormal)
-        : 0;
-      let inkBleedRoll = Math.random();
-      console.log("Ink Bleed Roll:", inkBleedRoll, "Chance:", inkChance);
-      if (inkBleed && inkBleedRoll < inkChance) {
+    // Horn stun check (Limousine boss)
+    if (battleStatus.playerStunned) {
+      battleStatus.playerStunned = false;
+      await appendBattleLog(
+        wrapLogText(logName() + ' is stunned and cannot cast this turn!'),
+        'warn'
+      );
+    } else {
+
+      // Traffic Jam perk — delay spell damage by 1 turn
+      const _trafficJam = getPerk('traffic_jam');
+
+      // Release stored damage from last turn first
+      if (_trafficJam && battleStatus.trafficJamStored > 0) {
+        const _stored = battleStatus.trafficJamStored;
+        battleStatus.trafficJamStored = 0;
+        // Apply void shield absorption on delayed damage
+        let _delayedDmg = _stored;
+        if (battleStatus.voidShieldRemaining > 0 && !battleStatus.voidShieldBroken) {
+          const _abs = Math.min(battleStatus.voidShieldRemaining, _delayedDmg);
+          battleStatus.voidShieldRemaining -= _abs;
+          _delayedDmg -= _abs;
+          if (battleStatus.voidShieldRemaining <= 0) {
+            battleStatus.voidShieldBroken = true;
+            await appendBattleLog('Void Shield shattered!', 'system');
+          }
+        }
+        if (_delayedDmg > 0) {
+          enemy.hp = Math.max(0, enemy.hp - _delayedDmg);
+          updateCombatHud(player, enemy, enemyTemplate);
+          await appendBattleLog(
+            '🚦 Traffic clears — delayed spell fires for ' + _delayedDmg + ' damage!',
+            'player'
+          );
+          if (enemy.hp <= 0) break;
+        }
+      }
+
+      if (!def) {
+        // Struggle
+        const dmg = struggleDamage(player, enemy);
+        enemy.hp = Math.max(0, enemy.hp - dmg);
         updateCombatHud(player, enemy, enemyTemplate);
         await appendBattleLog(
-          'Drowned ink seeps into the spell circle — ' + def.name + ' dissolves into black water.',
+          wrapLogText(logName() + ' has no spell and Struggles for ' + dmg + ' damage.'),
+          'player'
+        );
+      } else if (player.sp < def.spCost) {
+        // Not enough SP
+        const dmg = struggleDamage(player, enemy);
+        enemy.hp = Math.max(0, enemy.hp - dmg);
+        updateCombatHud(player, enemy, enemyTemplate);
+        await appendBattleLog(
+          wrapLogText(logName() + ' tries ' + def.name + ' but only has '
+            + player.sp + '/' + def.spCost + ' SP. Struggle: ' + dmg + ' dmg.'),
           'warn'
         );
       } else {
-        if (typeof SFX !== 'undefined') SFX.playerHit();
-        await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl);
+        player.sp -= def.spCost;
+
+        // Ink Bleed check (Drowned Codex)
+        const inkBleed = getPerk('ink_bleed');
+        const inkChance = inkBleed
+          ? (enemyTemplate.isBoss ? inkBleed.chanceBoss : inkBleed.chanceNormal)
+          : 0;
+        if (inkBleed && Math.random() < inkChance) {
+          updateCombatHud(player, enemy, enemyTemplate);
+          await appendBattleLog(
+            'Drowned ink seeps into the spell circle — ' + def.name + ' dissolves into black water.',
+            'warn'
+          );
+        } else if (_trafficJam) {
+          // Traffic Jam — queue damage instead of applying immediately
+          // Compute base damage now so it uses this turn's stats
+          let _baseDmgNow = Math.max(1, spellPower(def, player, spellLvl) - enemy.def);
+          // Smoke stacks reduce queued damage too
+          if (battleStatus.smokeStackCount > 0) {
+            const _smokeReduction = battleStatus.smokeStackCount * enemyTemplate.smokeAtkReduction;
+            _baseDmgNow = Math.floor(_baseDmgNow * (1 - _smokeReduction));
+          }
+          const _toStore = Math.floor(_baseDmgNow * _trafficJam.releaseMultiplier);
+          battleStatus.trafficJamStored += _toStore;
+          updateCombatHud(player, enemy, enemyTemplate);
+          await appendBattleLog(
+            spellIconHTML(def.id)
+            + wrapLogText(logName() + ' casts ' + def.name
+              + ' — stuck in traffic. Stored: ' + _toStore + ' dmg (fires next turn, +15%)'),
+            'warn'
+          );
+        } else {
+          // Normal cast
+          await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl);
+        }
       }
-    } else {
-      const dmg = struggleDamage(player, enemy);
-      enemy.hp = Math.max(0, enemy.hp - dmg);
-      updateCombatHud(player, enemy, enemyTemplate);
-      await appendBattleLog(
-        wrapLogText(logName() + ' tries to cast ' + def.name + ' but has only ' + player.sp + '/' + def.spCost + ' SP. The spell fails; Struggle deals ' + dmg + ' damage.'),
-        'warn'
-      );
-    }
+
+      // On the final turn, release any still-queued traffic jam damage
+      if (turn === 10 && _trafficJam && battleStatus.trafficJamStored > 0) {
+        const _finalStored = battleStatus.trafficJamStored;
+        battleStatus.trafficJamStored = 0;
+        let _fd = _finalStored;
+        if (battleStatus.voidShieldRemaining > 0 && !battleStatus.voidShieldBroken) {
+          const _abs = Math.min(battleStatus.voidShieldRemaining, _fd);
+          battleStatus.voidShieldRemaining -= _abs;
+          _fd -= _abs;
+          if (battleStatus.voidShieldRemaining <= 0) {
+            battleStatus.voidShieldBroken = true;
+            await appendBattleLog('Void Shield shattered!', 'system');
+          }
+        }
+        if (_fd > 0) {
+          enemy.hp = Math.max(0, enemy.hp - _fd);
+          updateCombatHud(player, enemy, enemyTemplate);
+          await appendBattleLog(
+            '🚦 Battle ends — final queued spell arrives for ' + _fd + ' damage.',
+            'player'
+          );
+        }
+      }
+
+    } // end stun-else
 
     if (enemy.hp <= 0) break;
   }
 
   const won = enemy.hp <= 0 && player.hp > 0;
+  // Gold Drain on Exit — Tuk Tuk takes his fee regardless of outcome
+  const _goldDrainPerk = getPerk('gold_drain_on_exit');
+  if (_goldDrainPerk) {
+    const _thiefDef = (window.ENEMIES_DATA || []).find(
+      e => e.dungeonId === _selectedDungeonId && e.goldSteal
+    );
+    if (_thiefDef) {
+      const _stolen = _thiefDef.goldStealMin
+        + Math.floor(Math.random() * (_thiefDef.goldStealMax - _thiefDef.goldStealMin + 1));
+      const _actualStolen = Math.min(s.gold, _stolen);
+      s.gold -= _actualStolen;
+      await appendBattleLog(
+        '🛺 The Tuk Tuk driver collects his fee: '
+        + _actualStolen + ' Gold. Non-negotiable.',
+        'warn'
+      );
+    }
+  }
   if (!s.stats) s.stats = { battles: 0, wins: 0, kills: 0, goldEarned: 0 };
   s.stats.battles++;
   if (won) {
@@ -931,6 +1167,62 @@ function wrapLogText(html) {
 
 async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl) {
   const baseDmg = Math.max(1, spellPower(def, player, spellLvl) - enemy.def);
+  // Spell Fatigue: low-level spells deal reduced damage in Rift's End
+  const _spellFatiguePerk = getPerk('spell_fatigue');
+  let baseDmg = Math.max(1, spellPower(def, player, spellLvl) - enemy.def);
+  if (_spellFatiguePerk && spellLvl < _spellFatiguePerk.minSpellLevel) {
+    baseDmg = Math.floor(baseDmg * _spellFatiguePerk.lowLevelPenalty);
+  }
+
+  // Reality Fracture: The Rift halves spell damage on fracture turns
+  if (battleStatus.realityFractureActive) {
+    baseDmg = Math.floor(baseDmg * 0.50);
+    battleStatus.realityFractureActive = false;
+  }
+  // Smoke stack damage penalty (Public Bus)
+  if (ctx.battleStatus.smokeStackCount > 0 && ctx.enemyTemplate.smokeStacks) {
+    const _smokeReduction = ctx.battleStatus.smokeStackCount
+      * ctx.enemyTemplate.smokeAtkReduction;
+    ctx.baseDmg = Math.max(1, Math.floor(ctx.baseDmg * (1 - _smokeReduction)));
+  }
+
+  // Void Shield absorption (Void Sentinel)
+  function applyVoidShield(dmg) {
+    if (ctx.battleStatus.voidShieldBroken
+      || ctx.battleStatus.voidShieldRemaining <= 0) return dmg;
+    const absorbed = Math.min(ctx.battleStatus.voidShieldRemaining, dmg);
+    ctx.battleStatus.voidShieldRemaining -= absorbed;
+    if (ctx.battleStatus.voidShieldRemaining <= 0) {
+      ctx.battleStatus.voidShieldBroken = true;
+      // Log is appended by the caller after damage
+    }
+    return dmg - absorbed;
+  }
+
+  // Spell Reflect (First Arcanist) — called after damage lands
+  async function applySpellReflect(finalDmg) {
+    if (!ctx.enemyTemplate.spellReflect || finalDmg <= 0) return;
+    const reflected = Math.floor(finalDmg * ctx.enemyTemplate.spellReflectPct);
+    if (reflected <= 0) return;
+    ctx.player.hp = Math.max(0, ctx.player.hp - reflected);
+    ctx.updateHud();
+    await ctx.log(
+      wrapLogText(ctx.enemyTemplate.name
+        + ' reflects ' + reflected + ' damage back at you!'),
+      'warn'
+    );
+  }
+
+  // Motorbike dodge — enemy evades player attacks
+  if (ctx.enemyTemplate.dodgeChance && Math.random() < ctx.enemyTemplate.dodgeChance) {
+    await ctx.log(
+      ctx.spellIconHTML
+      + wrapLogText(ctxGoldenName(ctx) + ' casts ' + ctx.def.name
+        + ' — the swarm weaves through it!'),
+      'warn'
+    );
+    return; // spell misses entirely
+  }
   const handler = window.getSpellHandler ? getSpellHandler(def.id) : null;
   if (handler) {
     const ctx = {
@@ -945,7 +1237,21 @@ async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus
     await handler(ctx);
     return;
   }
-  // Default: deal damage
+  // Default: deal damage (no registered handler — use baseDmg)
+  let _defaultDmg = applyVoidShield(ctx.baseDmg);
+  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - _defaultDmg);
+  ctx.updateHud();
+  if (ctx.battleStatus.voidShieldBroken && !ctx.battleStatus._shieldBreakLogged) {
+    ctx.battleStatus._shieldBreakLogged = true;
+    await ctx.log('The Void Shield shatters!', 'system');
+  }
+  await ctx.log(
+    ctx.spellIconHTML
+    + wrapLogText(logName() + ' casts ' + ctx.def.name
+      + ', spending ' + ctx.def.spCost + ' SP for ' + _defaultDmg + ' damage.'),
+    'player'
+  );
+  await applySpellReflect(_defaultDmg);
   enemy.hp = Math.max(0, enemy.hp - baseDmg);
   updateCombatHud(player, enemy, enemyTemplate);
   await appendBattleLog(
