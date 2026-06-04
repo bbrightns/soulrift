@@ -469,18 +469,16 @@ const DUNGEONS_DATA = [
     goldRange: '+0~420', // intentionally low minimum — Tuk Tuk steals
     description: 'A city that never sleeps and never moves. Time crawls like traffic on Sukhumvit at 6pm. Your spells arrive — eventually. Your gold may not.',
     perks: [
-      {
-        // Traffic Jam: player's spell damage on a given turn is stored and ADDED to
+      { // Traffic Jam: player's spell damage on a given turn is stored and ADDED to
         // the NEXT turn's damage instead of applying immediately.
         // Effect: turn N does 0 stored damage + this turn's dmg → stored for N+1.
         // Turn N+1 does stored(N) + this turn's dmg → both fire. Creates a "burst or die" tension.
         // Implementation: see battle.js section below.
         type: 'traffic_jam',
         delayChance: 1.0,    // 100% of player spells are delayed by 1 turn
-        releaseMultiplier: 1.15, // delayed damage gets +15% when it fires next turn
+        releaseMultiplier: 1, // delayed damage gets +15% when it fires next turn
       },
-      {
-        // Gold Drain: after battle end (win OR lose), the first enemy in the dungeon
+      { // Gold Drain: after battle end (win OR lose), the first enemy in the dungeon
         // that has goldSteal:true deducts goldStealAmount from player gold.
         // Handled in battle outcome logic.
         type: 'gold_drain_on_exit',
@@ -500,7 +498,7 @@ const DUNGEONS_DATA = [
     goldRange: '+900~2500',
     description: 'Beyond the last seal. Three beings that predate the tower system wait here. Lv.90+ recommended. Spell stones Lv.9+ strongly advised. Those who enter underprepared become part of the scenery.',
     perks: [
-      {
+      { // Ancient Pressure
         // Ancient Pressure: all player stats scale down by (90 - playerLevel) * 1.2% if below lv.90.
         // At lv.1 this is an ~107% reduction — nearly impossible. At lv.89 it's a 1.2% penalty.
         // Implementation: multiplier applied in spellPower() and enemyStrike() calls.
@@ -508,7 +506,7 @@ const DUNGEONS_DATA = [
         targetLevel: 90,
         penaltyPerLevel: 0.012, // 1.2% per level below 90
       },
-      {
+      { // Spell Fatigue
         // Spell Fatigue: spells below Lv.9 deal 40% reduced damage in this dungeon.
         type: 'spell_fatigue',
         minSpellLevel: 9,
