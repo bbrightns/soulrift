@@ -1508,9 +1508,7 @@
 }
 
 .battle-log-line--turn,
-.battle-log-line--system,
-.battle-log-line--reward,
-.battle-log-line--warn {
+.battle-log-line--system {
   display: block;
 }
 
@@ -1544,6 +1542,20 @@
 
 .battle-log-line--player {
   color: var(--c-text);
+  align-items: center;
+}
+
+.battle-log-line--warn {
+  color: var(--c-warn);
+  border-color: rgba(192, 120, 24, .32);
+  display: flex;
+  align-items: center;
+}
+
+.battle-log-line--reward {
+  color: var(--c-ok);
+  border-color: rgba(46, 144, 80, .32);
+  display: flex;
   align-items: center;
 }
 
