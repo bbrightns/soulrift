@@ -38,8 +38,8 @@ async function applyReflect(ctx, finalDmg) {
   ctx.player.hp = Math.max(0, ctx.player.hp - ref);
   ctx.updateHud();
   await ctx.log(
-    wrapLogText(ctx.enemyTemplate.name + ' reflects ' + ref + ' damage back!'),
-    'warn'
+    (ctx.enemyAvatarHTML || '') + wrapLogText(ctx.enemyTemplate.name + ' reflects ' + ref + ' damage back!'),
+    'enemy warn'
   );
 }
 

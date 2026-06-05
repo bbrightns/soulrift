@@ -362,7 +362,10 @@ async function appendBattleLog(line, type = '') {
   const logWrap = document.getElementById('battle-log');
   if (!logWrap) return;
   const entry = document.createElement('div');
-  entry.className = 'battle-log-line' + (type ? ' battle-log-line--' + type : '');
+  const typeClasses = type
+    ? type.split(' ').map(t => 'battle-log-line--' + t).join(' ')
+    : '';
+  entry.className = 'battle-log-line' + (typeClasses ? ' ' + typeClasses : '');
   entry.innerHTML = line;
   logWrap.appendChild(entry);
   if (!_userScrolledLog) logWrap.scrollTop = logWrap.scrollHeight;
@@ -810,7 +813,7 @@ async function runAutoBattle(dungeonId) {
       updateCombatHud(player, enemy, enemyTemplate);
       await appendBattleLog(
         enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' Mana Rupture — drained ' + drained + ' SP!'),
-        'warn'
+        'enemy warn'
       );
     }
 
@@ -821,7 +824,7 @@ async function runAutoBattle(dungeonId) {
       updateCombatHud(player, enemy, enemyTemplate);
       await appendBattleLog(
         enemyAvatarHTML(enemyTemplate) + wrapLogText('Cursed food takes effect — ' + spLost + ' SP drained.'),
-        'warn'
+        'enemy warn'
       );
     }
 
@@ -835,7 +838,7 @@ async function runAutoBattle(dungeonId) {
       await appendBattleLog('— THE RIFT TEARS OPEN —', 'turn');
       await appendBattleLog(
         enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' enters second phase. ATK surges. Reality accelerates.'),
-        'warn'
+        'enemy warn'
       );
     }
 
@@ -844,7 +847,7 @@ async function runAutoBattle(dungeonId) {
       battleStatus.realityFractureActive = true;
       await appendBattleLog(
         enemyAvatarHTML(enemyTemplate) + wrapLogText('Reality fractures — your next spell is halved.'),
-        'warn'
+        'enemy warn'
       );
     }
 
@@ -855,7 +858,7 @@ async function runAutoBattle(dungeonId) {
       updateCombatHud(player, enemy, enemyTemplate);
       await appendBattleLog(
         enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' VOID CRUSH — ' + voidDmg + ' true damage!'),
-        'warn'
+        'enemy warn'
       );
       if (player.hp <= 0) break;
     }
@@ -865,7 +868,7 @@ async function runAutoBattle(dungeonId) {
       battleStatus.playerStunned = true;
       await appendBattleLog(
         enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' lays on the horn. Your spell is lost.'),
-        'warn'
+        'enemy warn'
       );
     }
 
@@ -922,7 +925,7 @@ async function runAutoBattle(dungeonId) {
                 enemyAvatarHTML(enemyTemplate) + wrapLogText(
                   'Black smoke stacks: ' + battleStatus.smokeStackCount + '/' + enemyTemplate.maxSmokeStacks
                   + '. Your spells lose ' + Math.round(battleStatus.smokeStackCount * enemyTemplate.smokeAtkReduction * 100) + '% power.'
-                ), 'warn'
+                ), 'enemy warn'
               );
             }
           }
@@ -1066,15 +1069,17 @@ async function runAutoBattle(dungeonId) {
   const won = enemy.hp <= 0 && player.hp > 0;
 
   // Gold Drain — Tuk Tuk exit fee (win or lose)
-  const goldDrainPerk = getPerk('gold_drain_on_exit');
-  if (goldDrainPerk) {
-    const thiefDef = (window.ENEMIES_DATA || []).find(e => e.dungeonId === _selectedDungeonId && e.goldSteal);
-    if (thiefDef) {
-      const stolen = thiefDef.goldStealMin + Math.floor(Math.random() * (thiefDef.goldStealMax - thiefDef.goldStealMin + 1));
-      const actualStolen = Math.min(s.gold, stolen);
-      s.gold -= actualStolen;
-      await appendBattleLog('🛺 The Tuk Tuk driver collects his fee: ' + actualStolen + ' Gold. Non-negotiable.', 'warn');
-    }
+  if (enemyTemplate.id === 'tuk_tuk' && enemyTemplate.goldStealAmount) {
+    const { min, max } = enemyTemplate.goldStealAmount;
+    const stolen = min + Math.floor(Math.random() * (max - min + 1));
+    const actualStolen = Math.min(s.gold, stolen);
+    s.gold -= actualStolen;
+    saveState();
+    syncHeader();
+    await appendBattleLog(
+      enemyAvatarHTML(enemyTemplate) + wrapLogText('The Tuk Tuk driver collects his fee: ' + actualStolen + ' Gold. Non-negotiable.'),
+      'enemy'
+    );
   }
   if (!s.stats) s.stats = { battles: 0, wins: 0, kills: 0, goldEarned: 0 };
   s.stats.battles++;
@@ -1178,6 +1183,7 @@ async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus
     playerName: battlePlayerName(),
     baseDmg,
     spellIconHTML: spellIconHTML(def.id),
+    enemyAvatarHTML: enemyAvatarHTML(enemyTemplate),
     log: appendBattleLog,
     updateHud: () => updateCombatHud(player, enemy, enemyTemplate),
   };
@@ -1229,7 +1235,7 @@ async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus
     if (reflected > 0) {
       player.hp = Math.max(0, player.hp - reflected);
       updateCombatHud(player, enemy, enemyTemplate);
-      await appendBattleLog(wrapLogText(enemyTemplate.name + ' reflects ' + reflected + ' damage back!'), 'warn');
+      await appendBattleLog(wrapLogText(enemyTemplate.name + ' reflects ' + reflected + ' damage back!'), 'enemy warn');
     }
   }
 }
