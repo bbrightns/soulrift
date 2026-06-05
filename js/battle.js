@@ -1115,7 +1115,7 @@ async function runAutoBattle(dungeonId) {
     setBattleResult('<span class="c-ok">Victory recorded</span>');
   } else {
     if (typeof SFX !== 'undefined') SFX.defeat();
-    await appendBattleLog('Defeat. The tower recalls ' + logName() + ' before the Rift closes.', 'warn');
+    await appendBattleLog(wrapLogText('Defeat. The tower recalls ' + logName() + ' before the Rift closes.'), 'warn');
     showBattleOutcome({ won: false, goldReward: 0, expReward: 0 });
     setBattleResult('<span class="c-bad">Battle failed</span>');
   }
