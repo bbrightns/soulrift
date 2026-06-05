@@ -1754,6 +1754,7 @@
   display: none !important;
 }
 
+/* DUNGEON SELECT */
 .dungeon-list {
   display: grid;
   gap: var(--sp-4);
