@@ -492,7 +492,7 @@ const DUNGEONS_DATA = [
     tag: '◈ The Final Threshold',
     difficulty: 'Nightmare',
     image: '/asset/dungeon_scene/rifts_end.png',
-    levelReq: 1, // No level lock — but enemies punish under-geared players hard
+    levelReq: 60,
     unlocked: true,
     expRange: '+480~850',
     goldRange: '+900~2500',
