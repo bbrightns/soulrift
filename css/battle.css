@@ -354,3 +354,8 @@
   border-color: var(--c-border-hi);
   color: var(--c-text-2);
 }
+
+/* Tighter section label spacing inside battle arena */
+.battle-arena-view .section-label {
+  margin-bottom: 0px;
+}
