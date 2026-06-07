@@ -90,7 +90,12 @@ function renderCatalystItems() {
   const items = (getState().items || []).filter(i => CATALYST_NAMES[i.id] && i.qty > 0);
 
   if (!items.length) {
-    wrap.innerHTML = '<div class="empty-state--inline">No catalysts owned.</div>';
+    wrap.innerHTML =
+      '<div class="empty-state empty-state--sm">'
+      + '<div class="empty-state__icon">◈</div>'
+      + '<div class="empty-state__title">No Catalysts</div>'
+      + '<div class="empty-state__body">Catalysts boost fusion success rate. Defeat dungeon enemies to find them.</div>'
+      + '</div>';
     return;
   }
 

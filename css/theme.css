@@ -393,6 +393,35 @@ body {
   line-height: 1.65;
   opacity: .8;
 }
+.empty-state__cta {
+  margin-top: var(--sp-2);
+  padding: var(--sp-2) var(--sp-5);
+  background: var(--c-gold-dim);
+  color: var(--c-gold-text);
+  border: 1px solid var(--c-gold-dim);
+  border-radius: var(--r-md);
+  font-family: var(--f-head);
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--ease-base), border-color var(--ease-base);
+}
+.empty-state__cta:hover,
+.empty-state__cta:focus-visible {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+  outline: none;
+}
+
+/* compact variant — for sub-sections inside a screen */
+.empty-state--sm {
+  padding: var(--sp-4) var(--sp-4);
+  gap: var(--sp-1);
+}
+.empty-state--sm .empty-state__icon { font-size: 22px; opacity: .18; }
+.empty-state--sm .empty-state__title { font-size: 11px; }
+.empty-state--sm .empty-state__body  { font-size: 11px; max-width: 220px; }
 
 /* ── ─────────────────────────────────────────────────────── */
 /* ORNAMENT                                                    */

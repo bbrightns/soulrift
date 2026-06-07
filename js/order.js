@@ -36,6 +36,22 @@ function renderBlueprint() {
   const grid = document.getElementById('blueprint-grid');
   if (!grid) return;
 
+  /* ── No spell stones at all: show CTA to Market ─────── */
+  if (!getSpells().length) {
+    grid.innerHTML =
+      '<div class="empty-state">'
+      + '<div class="empty-state__icon">◆</div>'
+      + '<div class="empty-state__title">No Spell Stones</div>'
+      + '<div class="empty-state__body">Buy spell stones from the Market, then return here to build your battle order.</div>'
+      + '<button class="empty-state__cta" type="button" onclick="showScreen(\'market\')">Go to Market</button>'
+      + '</div>';
+    renderBlueprintSummary();
+    return;
+  }
+
+  /* ── Has spells but blueprint completely unassigned ──── */
+  const _anyFilled = bp.some(s => !!s);
+
   // Stale slot validation: clear slots whose spell is no longer owned
   bp.forEach((spellId, i) => {
     if (!spellId) return;
@@ -78,6 +94,16 @@ function renderBlueprint() {
 
     grid.appendChild(slot);
   });
+
+  /* ── Hint banner when nothing is assigned yet ─────── */
+  if (!_anyFilled) {
+    const hint = document.createElement('div');
+    hint.className = 'bp-hint';
+    hint.innerHTML =
+      '<span class="bp-hint__icon">◈</span>'
+      + ' Tap any slot above to assign a spell stone.';
+    grid.appendChild(hint);
+  }
 
   renderBlueprintSummary();
   renderSpellPicker();
