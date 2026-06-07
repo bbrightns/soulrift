@@ -102,35 +102,40 @@ const TOWER_GROWTH = {
 
 function gainExp(amount) {
   const s = getState();
-  s.player.exp += amount;
-  while (s.player.exp >= s.player.expNext) {
-    s.player.exp -= s.player.expNext;
-    s.player.level += 1;
-    s.player.expNext = Math.floor(s.player.expNext * 1.25);
+  const p = s.player;
+  p.exp += amount;
+
+  let leveled = false;
+  while (p.exp >= p.expNext) {
+    p.exp -= p.expNext;
+    p.level += 1;
+    p.expNext = Math.floor(p.expNext * 1.25);
+    leveled = true;
     if (typeof SFX !== 'undefined') SFX.levelUp();
 
     const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
-    s.player.hpMax += g.hpMax;
-    s.player.spMax += g.spMax;
-    s.player.atk += g.atk;
-    s.player.def += g.def;
-    s.player.str += g.str;
-    s.player.int += g.int;
-    s.player.agi += g.agi;
+    p.hpMax += g.hpMax;
+    p.spMax += g.spMax;
+    p.atk   += g.atk;
+    p.def   += g.def;
+    p.str   += g.str;
+    p.int   += g.int;
+    p.agi   += g.agi;
 
-    if (s.player.level % 5 === 0) {
-      s.player.hpMax += 10;
-      s.player.spMax += 5;
-      s.player.atk += 2;
-      s.player.def += 2;
-      s.player.str += 2;
-      s.player.int += 2;
-      s.player.agi += 2;
-      if (typeof toast === 'function') toast('Power Surge! Level ' + s.player.level + ' milestone reached!', 'gold');
+    if (p.level % 5 === 0) {
+      p.hpMax += 10;
+      p.spMax += 5;
+      p.atk += 2;
+      p.def += 2;
+      p.str += 2;
+      p.int += 2;
+      p.agi += 2;
+      if (typeof toast === 'function') toast('Power Surge! Level ' + p.level + ' milestone reached!', 'gold');
     }
   }
+
   saveState();
-  return s.player.level;
+  if (leveled) syncHeader();
 }
 
 function battlePlayerName() {

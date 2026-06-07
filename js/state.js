@@ -86,20 +86,26 @@ function _clone(obj) {
 
 /* Safely merge a saved object onto the default shape.
    Prevents crashes when old saves are missing new keys. */
-function _hydrate(saved) {
-  const base = _clone(DEFAULTS);
-  if (!saved) return base;
+function _mergeDeep(base, saved) {
+  const out = { ...base };
   for (const k of Object.keys(base)) {
     if (saved[k] === undefined) continue;
     const bv = base[k], sv = saved[k];
-    if (bv !== null && typeof bv === 'object' && !Array.isArray(bv)
-        && typeof sv === 'object' && !Array.isArray(sv)) {
-      base[k] = { ...bv, ...sv };
+    if (
+      bv !== null && typeof bv === 'object' && !Array.isArray(bv) &&
+      sv !== null && typeof sv === 'object' && !Array.isArray(sv)
+    ) {
+      out[k] = _mergeDeep(bv, sv);
     } else {
-      base[k] = sv;
+      out[k] = sv;
     }
   }
-  return base;
+  return out;
+}
+
+function _hydrate(saved) {
+  if (!saved) return _clone(DEFAULTS);
+  return _mergeDeep(_clone(DEFAULTS), saved);
 }
 
 /* ── Public API ──────────────────────────────────────────── */
