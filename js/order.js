@@ -181,6 +181,47 @@ function clearBlueprintAndRender() {
   renderBlueprint();
 }
 
+function showClearConfirm() {
+  const bp = getState().blueprint;
+  const filled = bp.filter(s => !!s).length;
+  if (filled === 0) {
+    toast('Blueprint is already empty.', 'gold');
+    return;
+  }
+
+  const modal = document.getElementById('shop-confirm-modal');
+  const body  = document.getElementById('shop-confirm-body');
+  if (!modal || !body) return;
+
+  body.innerHTML =
+    '<div style="font-size:30px;margin-bottom:var(--sp-3)">◌</div>'
+    + '<div style="font-size:15px;font-weight:700;color:var(--c-text-hi);margin-bottom:var(--sp-2)">Clear Blueprint?</div>'
+    + '<div style="font-size:13px;color:var(--c-text-2);">'
+    + filled + ' spell' + (filled !== 1 ? 's' : '') + ' will be unassigned. This cannot be undone.'
+    + '</div>';
+
+  const confirmBtn = modal.querySelector('.btn--primary');
+  const cancelBtn  = modal.querySelector('.btn--ghost');
+  if (confirmBtn) {
+    confirmBtn.textContent = 'Clear All';
+    confirmBtn.onclick = _executeClearBlueprint;
+  }
+  if (cancelBtn) {
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.onclick = closeShopConfirm;
+  }
+  modal.classList.remove('is-hidden');
+}
+
+function _executeClearBlueprint() {
+  closeShopConfirm();
+  const confirmBtn = document.querySelector('#shop-confirm-modal .btn--primary');
+  if (confirmBtn) { confirmBtn.textContent = 'Confirm'; confirmBtn.onclick = confirmShopBuy; }
+  clearBlueprint();
+  renderBlueprint();
+  toast('Blueprint cleared.', 'ok');
+}
+
 function openSpellPicker() {
   renderSpellPicker();
   const panel = document.getElementById('spell-picker-panel');

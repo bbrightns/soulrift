@@ -229,6 +229,29 @@ function _hasEmptyFillableSlot() {
 
 let _pendingDungeonId = null;
 
+function _showAllEmptyConfirm() {
+  const modal = document.getElementById('shop-confirm-modal');
+  const body  = document.getElementById('shop-confirm-body');
+  if (!modal || !body) return;
+
+  body.innerHTML =
+    '<div style="font-size:32px;margin-bottom:var(--sp-3)">⚔️</div>'
+    + '<div style="font-size:15px;font-weight:700;color:var(--c-text-hi);margin-bottom:var(--sp-2)">No Spells Assigned</div>'
+    + '<div style="font-size:13px;color:var(--c-text-2);margin-bottom:var(--sp-1)">Your blueprint is empty.</div>'
+    + '<div style="font-size:12px;color:var(--c-text-3)">All 10 turns will use Struggle (weak fallback attack). Visit Order to assign spells first.</div>';
+
+  const confirmBtn = modal.querySelector('.btn--primary');
+  const cancelBtn  = modal.querySelector('.btn--ghost');
+  if (confirmBtn) {
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Enter Anyway';
+    confirmBtn.onclick = _confirmEmptySlotBattle;
+  }
+  if (cancelBtn) cancelBtn.textContent = 'Go Back';
+
+  modal.classList.remove('is-hidden');
+}
+
 function _showEmptySlotConfirm() {
   const modal = document.getElementById('shop-confirm-modal');
   const body = document.getElementById('shop-confirm-body');
@@ -283,6 +306,12 @@ async function enterDungeon(dungeonId) {
   const level = getState().player.level;
   if (!dungeon || !dungeon.unlocked || level < dungeon.levelReq) {
     toast('This dungeon is still locked.', 'bad');
+    return;
+  }
+
+  if (getState().blueprint.every(slot => !slot)) {
+    _pendingDungeonId = dungeonId;
+    _showAllEmptyConfirm();
     return;
   }
 

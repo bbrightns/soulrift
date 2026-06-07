@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-07T00:00:00Z",
+  "title": "Design System: SOULRIFT",
+  "extensions": {
+    "colorMeta": {
+      "void":          { "role": "neutral",   "displayName": "The Void",            "canonical": "#05050a",  "tonalRamp": ["#05050a","#0a0a12","#0f0f1a","#141420","#1a1a28","#222232","#2e2e42","#3a3a52"] },
+      "surface":       { "role": "neutral",   "displayName": "Observatory Surface", "canonical": "#141420",  "tonalRamp": ["#08080e","#0f0f18","#141420","#1a1a28","#222234","#2e2e42","#3c3c54","#4e4e68"] },
+      "overlay":       { "role": "neutral",   "displayName": "Elevated Overlay",    "canonical": "#1a1a28",  "tonalRamp": ["#0a0a14","#121220","#1a1a28","#222234","#2c2c40","#383852","#464660","#565670"] },
+      "inset":         { "role": "neutral",   "displayName": "Inset Well",          "canonical": "#09090f",  "tonalRamp": ["#050508","#07070c","#09090f","#0e0e16","#12121e","#181826","#20202e","#2a2a3a"] },
+      "gold":          { "role": "primary",   "displayName": "Rift Gold",           "canonical": "#d4aa55",  "tonalRamp": ["#2a1c08","#3e2a0e","#5a3e14","#7a5820","#9a7432","#c09a44","#d4aa55","#f5d878"] },
+      "gold-text":     { "role": "primary",   "displayName": "Gold Text",           "canonical": "#e8c070",  "tonalRamp": ["#2a1c08","#3e2a0e","#5a3e14","#7a5820","#9a7432","#c09a44","#e8c070","#f5d878"] },
+      "gold-hi":       { "role": "primary",   "displayName": "Gold Highlight",      "canonical": "#f5d878",  "tonalRamp": ["#3a2810","#5a3c18","#7a5422","#9a7030","#c09040","#d8aa58","#f0cc78","#f5d878"] },
+      "gold-dim":      { "role": "primary",   "displayName": "Gold Dim",            "canonical": "#7a6030",  "tonalRamp": ["#1a1408","#2a200c","#3e3012","#54401a","#6a5224","#7a6030","#9a7e42","#baa05a"] },
+      "crimson":       { "role": "secondary", "displayName": "Deep Crimson",        "canonical": "#8b1a1a",  "tonalRamp": ["#1a0404","#2e0808","#4a1010","#6a1414","#8b1a1a","#b02828","#c83838","#e05050"] },
+      "crimson-hi":    { "role": "secondary", "displayName": "Crimson High",        "canonical": "#c03030",  "tonalRamp": ["#2a0808","#420e0e","#5e1414","#801a1a","#a02222","#c03030","#d84848","#ee6868"] },
+      "fire":          { "role": "tertiary",  "displayName": "Rift Fire",           "canonical": "#d94f1a",  "tonalRamp": ["#1e0a04","#30100a","#4a1c0e","#6a2a14","#8a381c","#b04820","#d94f1a","#f07040"] },
+      "dark-tower":    { "role": "tertiary",  "displayName": "Void Dark",           "canonical": "#7030c0",  "tonalRamp": ["#100818","#1c1030","#2e1a4e","#401e6a","#5a2898","#7030c0","#9050d8","#b878ee"] },
+      "light-tower":   { "role": "tertiary",  "displayName": "Pale Light",          "canonical": "#b89820",  "tonalRamp": ["#1e1804","#2e2408","#48380e","#624e14","#80681c","#b89820","#d8b830","#ecd858"] },
+      "ice":           { "role": "tertiary",  "displayName": "Frost Ice",           "canonical": "#66c7e8",  "tonalRamp": ["#081820","#102030","#183040","#204858","#2e6878","#4090a8","#66c7e8","#90d8f0"] },
+      "text-primary":  { "role": "neutral",   "displayName": "Text Primary",        "canonical": "#e8e0d0",  "tonalRamp": ["#282420","#3c3830","#504a40","#686050","#888070","#a89e8e","#c8c0b0","#e8e0d0"] },
+      "text-secondary":{ "role": "neutral",   "displayName": "Text Secondary",      "canonical": "#a09880",  "tonalRamp": ["#1e1c18","#302c28","#484038","#605848","#807060","#a09880","#c0b8a0","#dcd4bc"] },
+      "text-muted":    { "role": "neutral",   "displayName": "Text Muted",          "canonical": "#605850",  "tonalRamp": ["#141210","#201e1a","#302c28","#403c36","#524c44","#605850","#807870","#a09890"] },
+      "text-hi":       { "role": "neutral",   "displayName": "Text Highlight",      "canonical": "#f5f0e8",  "tonalRamp": ["#2a2820","#3c3a30","#504e40","#686450","#888068","#a8a090","#ccc8b8","#f5f0e8"] },
+      "status-ok":     { "role": "neutral",   "displayName": "Ward Green",          "canonical": "#2e9050",  "tonalRamp": ["#061409","#0e2412","#162e1a","#1e4024","#245830","#2e9050","#40b868","#5cd080"] },
+      "status-warn":   { "role": "neutral",   "displayName": "Omen Amber",          "canonical": "#c07818",  "tonalRamp": ["#1e1004","#30180a","#482410","#623218","#804420","#c07818","#d89030","#ecc060"] },
+      "status-bad":    { "role": "neutral",   "displayName": "Blood Red",           "canonical": "#b83030",  "tonalRamp": ["#200808","#360e0e","#4e1414","#6a1c1c","#882424","#b83030","#d04848","#e86868"] }
+    },
+    "typographyMeta": {
+      "display":   { "displayName": "Display",   "purpose": "SOULRIFT logotype and landing title only. Never inside the app shell." },
+      "headline":  { "displayName": "Headline",  "purpose": "Screen titles — the active area of the observatory." },
+      "title":     { "displayName": "Title",     "purpose": "Card names, spell names, tower names, panel section heads." },
+      "body":      { "displayName": "Body",      "purpose": "Spell descriptions, dungeon lore, functional system copy." },
+      "label":     { "displayName": "Label",     "purpose": "Section dividers, nav labels, badges, HUD metadata." }
+    },
+    "shadows": [
+      { "name": "xs",        "value": "0 1px 4px rgba(0,0,0,0.60)",                                          "purpose": "Badges, chips, minimal lift." },
+      { "name": "sm",        "value": "0 2px 8px rgba(0,0,0,0.75)",                                          "purpose": "Standard card elevation at rest." },
+      { "name": "md",        "value": "0 4px 16px rgba(0,0,0,0.85)",                                         "purpose": "Raised cards, hovered options, selected states." },
+      { "name": "lg",        "value": "0 8px 32px rgba(0,0,0,0.90)",                                         "purpose": "Sheet drawers, hovered tower cards, toasts." },
+      { "name": "xl",        "value": "0 16px 48px rgba(0,0,0,0.95)",                                        "purpose": "Modal overlays, full-screen drawers." },
+      { "name": "inset",     "value": "inset 0 1px 3px rgba(0,0,0,0.70)",                                    "purpose": "Input wells, recessed containers." },
+      { "name": "inset-md",  "value": "inset 0 2px 8px rgba(0,0,0,0.80)",                                    "purpose": "Deeper recesses, health/SP bars." },
+      { "name": "glow-gold-sm", "value": "0 0 8px rgba(197,160,89,0.20)",                                    "purpose": "Focused inputs, selected cards at rest." },
+      { "name": "glow-gold",    "value": "0 0 18px rgba(197,160,89,0.25), 0 0 40px rgba(197,160,89,0.10)",  "purpose": "Primary button hover, active nav." },
+      { "name": "glow-gold-hi", "value": "0 0 24px rgba(197,160,89,0.40), 0 0 60px rgba(197,160,89,0.15)", "purpose": "Victory states, rare item reveals." },
+      { "name": "glow-fire",    "value": "0 0 20px rgba(217,79,26,0.35), 0 0 50px rgba(217,79,26,0.12)",    "purpose": "Fire tower activated states only." },
+      { "name": "glow-dark",    "value": "0 0 20px rgba(112,48,192,0.35), 0 0 50px rgba(112,48,192,0.12)",  "purpose": "Dark tower activated states only." },
+      { "name": "glow-light",   "value": "0 0 20px rgba(184,152,32,0.35), 0 0 50px rgba(184,152,32,0.12)",  "purpose": "Light tower activated states only." },
+      { "name": "glow-ice",     "value": "0 0 20px rgba(102,199,232,0.32), 0 0 50px rgba(102,199,232,0.12)","purpose": "Ice tower activated states only." }
+    ],
+    "motion": [
+      { "name": "ease-fast", "value": "120ms ease",                            "purpose": "State changes: hover, focus, active. Immediate feedback." },
+      { "name": "ease-base", "value": "200ms ease",                            "purpose": "Border color transitions, background fades." },
+      { "name": "ease-slow", "value": "380ms ease",                            "purpose": "Panel transitions, screen changes." },
+      { "name": "screen-in", "value": "opacity 0→1, translateY(4px→0), 200ms ease", "purpose": "Screen activation animation." },
+      { "name": "toast-in",  "value": "opacity 0→1, translateY(-8px→0) scale(0.97→1), 180ms ease", "purpose": "Toast entry." },
+      { "name": "sheet-in",  "value": "translateY(30px→0), 240ms cubic-bezier(.22,1,.36,1)", "purpose": "Bottom sheet open." }
+    ],
+    "breakpoints": [
+      { "name": "mobile",  "value": "480px", "purpose": "Max app width. Above this, app is centered with dark outer frame." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The gold invocation — the heaviest commitment in the system. Used for primary combat, forge, and confirm actions.",
+      "html": "<button class=\"ds-btn-primary\">INVOKE RIFT</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cinzel', Georgia, serif; font-weight: 600; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; min-height: 40px; padding: 0 16px; border-radius: 6px; border: 1px solid rgba(197,160,89,0.60); background: linear-gradient(145deg, #6a4e1e, #c5a059 45%, #9a7a40); color: #080808; cursor: pointer; box-shadow: 0 0 8px rgba(197,160,89,0.20), 0 2px 8px rgba(0,0,0,0.75); transition: filter 120ms ease, box-shadow 120ms ease, transform 120ms ease; user-select: none; white-space: nowrap; } .ds-btn-primary:hover { filter: brightness(1.14); box-shadow: 0 0 18px rgba(197,160,89,0.25), 0 0 40px rgba(197,160,89,0.10), 0 4px 16px rgba(0,0,0,0.85); } .ds-btn-primary:active { filter: brightness(.88); transform: translateY(1px); } .ds-btn-primary:disabled { opacity: .28; pointer-events: none; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Dormant secondary action. Activates to gold on hover. Used for cancel, secondary choices, filter toggles.",
+      "html": "<button class=\"ds-btn-ghost\">DISMISS</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; font-family: 'Cinzel', Georgia, serif; font-weight: 500; font-size: 13px; letter-spacing: .02em; min-height: 40px; padding: 0 16px; border-radius: 6px; border: 1px solid rgba(197,160,89,0.22); background: rgba(255,255,255,0.02); color: #a09880; cursor: pointer; transition: border-color 120ms ease, color 120ms ease, background 120ms ease; user-select: none; white-space: nowrap; } .ds-btn-ghost:hover { border-color: rgba(197,160,89,0.50); color: #e8c070; background: rgba(197,160,89,0.05); } .ds-btn-ghost:active { filter: brightness(.85); }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Irreversible or destructive action. Deep crimson — the color of a seal that should not be broken.",
+      "html": "<button class=\"ds-btn-danger\">DESTROY STONE</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; font-family: 'Cinzel', Georgia, serif; font-weight: 500; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; min-height: 40px; padding: 0 16px; border-radius: 6px; border: 1px solid rgba(184,48,48,0.50); background: linear-gradient(145deg, #5a0e0e, #8b1a1a); color: #e8e0d0; cursor: pointer; transition: filter 120ms ease, box-shadow 120ms ease; } .ds-btn-danger:hover { filter: brightness(1.18); box-shadow: 0 0 16px rgba(184,48,48,0.25); } .ds-btn-danger:active { filter: brightness(.85); transform: translateY(1px); }"
+    },
+    {
+      "name": "Base Card",
+      "kind": "card",
+      "refersTo": "card-base",
+      "description": "The standard observatory panel. Carries the mandatory upper-left specular gradient.",
+      "html": "<div class=\"ds-card\"><p style=\"font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:#e8c070;letter-spacing:.06em;text-transform:uppercase;\">SOUL STONE</p><p style=\"font-size:12px;color:#a09880;margin-top:6px;font-family:Inter,sans-serif;\">Lv 4 — Dark affinity</p></div>",
+      "css": ".ds-card { background: linear-gradient(160deg, rgba(255,255,255,0.018) 0%, transparent 60%), #141420; border: 1px solid rgba(197,160,89,0.10); border-radius: 10px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.75), inset 0 1px 3px rgba(0,0,0,0.70); }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "card-base",
+      "description": "Recessed into the void. Cinzel for character names, Inter for search. Gold border glow on focus.",
+      "html": "<div class=\"ds-input-wrap\"><label class=\"ds-input-label\">CHARACTER NAME</label><input class=\"ds-input\" placeholder=\"Enter your name…\" /></div>",
+      "css": ".ds-input-wrap { display: flex; flex-direction: column; gap: 8px; } .ds-input-label { font-family: 'Cinzel', Georgia, serif; font-size: 11px; font-weight: 600; color: #a09880; letter-spacing: .20em; text-transform: uppercase; } .ds-input { width: 100%; background: #09090f; border: 1px solid rgba(197,160,89,0.22); border-radius: 6px; padding: 12px 16px; font-family: 'Cinzel', Georgia, serif; font-size: 15px; color: #e8e0d0; letter-spacing: .08em; outline: none; transition: border-color 120ms ease, box-shadow 120ms ease; box-shadow: inset 0 2px 8px rgba(0,0,0,0.80); } .ds-input:focus { border-color: rgba(197,160,89,0.50); box-shadow: 0 0 8px rgba(197,160,89,0.20), inset 0 2px 8px rgba(0,0,0,0.80); } .ds-input::placeholder { color: #605850; font-style: italic; font-size: 13px; }"
+    },
+    {
+      "name": "Badge — Gold",
+      "kind": "chip",
+      "refersTo": "card-base",
+      "description": "Tight archival label. Nine-point Cinzel, uppercase. Used for item level, tower affiliation, rarity tier.",
+      "html": "<span class=\"ds-badge-gold\">LV 7</span>",
+      "css": ".ds-badge-gold { display: inline-block; font-size: 9px; font-weight: 700; font-family: 'Cinzel', Georgia, serif; letter-spacing: .10em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; background: rgba(197,160,89,.12); color: #e8c070; border: 1px solid rgba(197,160,89,.32); }"
+    },
+    {
+      "name": "Badge — Rarity (Epic)",
+      "kind": "chip",
+      "refersTo": "card-base",
+      "description": "Rarity tier badge. Each rarity maps to a specific color from the palette. Shown as an example at epic tier.",
+      "html": "<span class=\"ds-badge-epic\">EPIC</span>",
+      "css": ".ds-badge-epic { display: inline-block; font-size: 9px; font-weight: 700; font-family: 'Cinzel', Georgia, serif; letter-spacing: .10em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; background: rgba(136,64,200,.12); color: #8840c8; border: 1px solid rgba(136,64,200,.32); }"
+    },
+    {
+      "name": "Section Label",
+      "kind": "custom",
+      "refersTo": "card-base",
+      "description": "Observatory instrument label. Marks categorical shifts within a panel — not a rhythm device for every section.",
+      "html": "<div class=\"ds-section-label\">EQUIPPED SPELLS</div>",
+      "css": ".ds-section-label { font-family: 'Cinzel', Georgia, serif; font-size: 9px; font-weight: 600; color: #7a6030; text-transform: uppercase; letter-spacing: .28em; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; } .ds-section-label::before { content: '▸'; font-size: 8px; color: #d4aa55; opacity: .7; } .ds-section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(197,160,89,0.22), transparent); }"
+    },
+    {
+      "name": "Toast — Gold",
+      "kind": "custom",
+      "refersTo": "card-base",
+      "description": "Victory notification — rare item discovery, level-up, major reward. Gold border, gold text, glow.",
+      "html": "<div class=\"ds-toast-gold\">Soul Stone discovered: Arcane Shard</div>",
+      "css": ".ds-toast-gold { background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent), #1a1a28; border: 1px solid rgba(197,160,89,0.50); border-radius: 6px; padding: 9px 16px; font-size: 12px; color: #e8c070; box-shadow: 0 0 8px rgba(197,160,89,0.20), 0 8px 32px rgba(0,0,0,0.90); animation: ds-toast-in .18s ease; } @keyframes ds-toast-in { from { opacity: 0; transform: translateY(-8px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Forbidden Observatory",
+    "overview": "SOULRIFT's design system is a relic, not a product. Every screen is an instrument panel inside a sealed observatory: celestial machinery in dark iron, star-charts inked in aged gold, brass fittings that glow faintly when the rift opens. The interface does not present information — it reveals it, slowly, to those patient enough to look.\n\nThe system carries two modes simultaneously: the oppressive stillness of deep space (dark backgrounds, near-invisible borders, long shadows) and the sudden revelation of forbidden light (gold glows, tower-color flares, crimson danger). These two states — dormant and activated — define every interactive moment.\n\nThis system explicitly rejects: mobile F2P visual noise, anime/JRPG softness, generic fantasy parchment, SaaS dashboard flatness, and any surface that explains itself before it has been touched.",
+    "keyCharacteristics": [
+      "Void-dark foundation with near-invisible layering — depth without noise",
+      "Gold as the single primary accent; all other colors are elemental roles or system states",
+      "Cinzel serif for all game language; Inter for functional body copy — two registers, never mixed",
+      "Components inscribed and revealed: dormant until activated, then they glow",
+      "SVG grain noise + cosmic radial gradients as atmosphere — the texture of the observatory itself",
+      "Touch-first: 44px minimum tap targets, one-thumb reachability throughout"
+    ],
+    "rules": [
+      { "name": "The Restraint Rule",       "body": "Gold appears on ≤15% of any screen's surface area. Its scarcity is the mechanism. An interface where everything glows gold is an interface where nothing does.", "section": "colors" },
+      { "name": "The One Tower Rule",       "body": "A single tower's color governs all active states on a given screen. Fire and Ice never coexist in active states.", "section": "colors" },
+      { "name": "The Two Registers Rule",   "body": "Cinzel belongs to the world; Inter belongs to the interface. Never use Cinzel for body-length descriptions and never use Inter for game entity names, spell titles, or level identifiers.", "section": "typography" },
+      { "name": "The Uppercase Ceiling Rule","body": "Uppercase is for labels (≤4 words) and proper nouns used as labels. Never used for body-length prose.", "section": "typography" },
+      { "name": "The Glow Restraint Rule",  "body": "Glows appear only in response to interaction. A surface glowing at rest is an error. Exception: the landing screen's star field, which is ambient by design.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep #05050a as the body background on every screen — non-negotiable.",
+      "Do add the linear-gradient(160deg, rgba(255,255,255,0.018)...) specular to every card surface.",
+      "Do use border opacity (subtle → mid → bright) to build depth signals.",
+      "Do restrict Cinzel to the game register: entity names, screen titles, spell names, labels ≤4 words.",
+      "Do pair new interactive states with filter: brightness() rather than background color shifts.",
+      "Do scope tower colors to data-tower-attributed elements only.",
+      "Do add @media (prefers-reduced-motion: reduce) alternatives for every animation.",
+      "Do keep all tap targets ≥44px."
+    ],
+    "donts": [
+      "Don't introduce warm-neutral backgrounds (beige, cream, parchment). There is no day mode.",
+      "Don't use border-left or border-right greater than 1px as a colored accent stripe.",
+      "Don't use background-clip: text with a gradient. All text uses solid palette colors.",
+      "Don't use gold as a fill on large surfaces. The primary button gradient is the single exception.",
+      "Don't make components glow at rest without user interaction.",
+      "Don't add glassmorphism as a default treatment on new components.",
+      "Don't use more than two fonts (Cinzel + Inter is the complete pair).",
+      "Don't replicate mobile F2P visual language: badge-dots at rest, countdown timers, rainbow rarity shines.",
+      "Don't add eyebrow labels above every section. The section-label component marks categorical shifts only."
+    ]
+  }
+}
