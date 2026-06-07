@@ -1000,11 +1000,7 @@ async function runAutoBattle(dungeonId) {
         const ready = battleStatus.pendingQueue.filter(p => p.turnsLeft <= 0);
         battleStatus.pendingQueue = battleStatus.pendingQueue.filter(p => p.turnsLeft > 0);
         for (const pending of ready) {
-          await appendBattleLog(
-            spellIconHTML(pending.def.id) + wrapLogText('🚦 Traffic clears — ' + pending.def.name + ' takes effect!'),
-            'player'
-          );
-          await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl);
+          await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl, true);
           if (enemy.hp <= 0) break;
           if (player.hp <= 0) break;
         }
@@ -1061,8 +1057,13 @@ async function runAutoBattle(dungeonId) {
             ? turnsLeft + ' turn'
             : turnsLeft + ' turns';
           await appendBattleLog(
-            spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ' — stuck in traffic for ' + delayLabel + '.'),
-            'warn'
+            spellIconHTML(def.id) + wrapLogText(
+              '<span style="color:var(--c-text-3);font-style:italic;">'
+              + logName() + ' casts ' + def.name
+              + ' — <span style="color:var(--c-warn);">queued ' + delayLabel + '</span>'
+              + '</span>'
+            ),
+            ''
           );
 
         } else {
@@ -1073,11 +1074,7 @@ async function runAutoBattle(dungeonId) {
       // Final turn: flush all remaining queued spells
       if (turn === 10 && _trafficJam && battleStatus.pendingQueue.length > 0) {
         for (const pending of battleStatus.pendingQueue) {
-          await appendBattleLog(
-            spellIconHTML(pending.def.id) + wrapLogText('🚦 Battle ends — ' + pending.def.name + ' arrives at last.'),
-            'player'
-          );
-          await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl);
+          await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl, true);
           if (enemy.hp <= 0) break;
         }
         battleStatus.pendingQueue = [];
@@ -1178,7 +1175,7 @@ function wrapLogText(html) {
   return '<span class="log-line-text">' + html + '</span>';
 }
 
-async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl) {
+async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl, fromQueue = false) {
   // ── Base damage ──────────────────────────────────────────
   let baseDmg = spellPower(def, player, spellLvl);
 
@@ -1204,6 +1201,7 @@ async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus
     spellLvl: spellLvl || 1,
     playerName: battlePlayerName(),
     baseDmg,
+    fromQueue,
     spellIconHTML: spellIconHTML(def.id),
     enemyAvatarHTML: enemyAvatarHTML(enemyTemplate),
     log: appendBattleLog,
