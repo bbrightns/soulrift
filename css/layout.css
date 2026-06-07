@@ -525,6 +525,13 @@
   color: var(--c-text-3);
 }
 
+/* ── Market list spacing ─────────────────────────────────── */
+#market-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
 /* ── Spell shop / library cards ─────────────────────────── */
 .spell-shop-card {
   position: relative;

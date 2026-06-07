@@ -70,16 +70,22 @@ function _toggleSpellExpand(cardEl, spellId) {
     const def = window.getSpellDef ? getSpellDef(spellId) : null;
     const player = getPlayer();
     if (def && player) {
-      const isDamage = def.role && !def.role.toLowerCase().includes('buff')
-        && !def.role.toLowerCase().includes('survival')
-        && !def.role.toLowerCase().includes('support');
+      /* roles that never deal direct damage */
+      const NON_DAMAGE = [
+        'buff', 'survival', 'support', 'recovery', 'regeneration',
+        'cleanse', 'shield', 'defense', 'evasion', 'tempo',
+        'summon', 'build', 'setup',
+      ];
+      const roleLower = (def.role || '').toLowerCase();
+      const isDamage = def.role && !NON_DAMAGE.some(kw => roleLower.includes(kw));
       if (isDamage) {
         const dmg = spellPower(def, player, 1);
         dmgEl.textContent = '~' + dmg;
         dmgEl.className = 'spell-expand-dmg c-ok';
       } else {
-        dmgEl.textContent = 'Support / Buff';
+        dmgEl.textContent = 'No direct damage';
         dmgEl.className = 'spell-expand-dmg';
+        dmgEl.style.color = 'var(--c-text-2)';
       }
     }
   }
