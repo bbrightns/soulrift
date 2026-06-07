@@ -798,10 +798,15 @@ async function runAutoBattle(dungeonId) {
   }
 
   const won = enemy.hp <= 0 && player.hp > 0;
+  if (!s.stats) s.stats = { battles: 0, wins: 0, kills: 0, goldEarned: 0 };
+  s.stats.battles++;
   if (won) {
+    s.stats.wins++;
+    s.stats.kills++;
     const goldReward = enemy.gold + Math.floor(Math.random() * 25);
     const expReward = enemy.exp;
     s.gold += goldReward;
+    s.stats.goldEarned += goldReward;
     gainExp(expReward);
 
     const drops = rollDrops(enemyTemplate);

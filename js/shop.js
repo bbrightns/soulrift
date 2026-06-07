@@ -20,6 +20,11 @@ function renderMarket() {
     return;
   }
 
+  const marketFooter =
+    '<div class="market-footer-hint">'
+    + '◆ Harder dungeons drop rarer spell stones and catalysts'
+    + '</div>';
+
   wrap.innerHTML = spells.map(spell => (
     '<div class="card card--raised spell-shop-card" style="margin-bottom:var(--sp-2);">'
     + '<div class="shop-card-top">'
@@ -40,7 +45,7 @@ function renderMarket() {
     + '<button class="shop-buy-btn shop-buy-btn--right" onclick="buyShopSpell(\'' + spell.id + '\',100)">Buy ×100</button>'
     + '</div>'
     + '</div>'
-  )).join('');
+  )).join('') + marketFooter;
 }
 
 let _shopPending = null;  // { spellId, qty }

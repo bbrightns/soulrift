@@ -353,18 +353,15 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
+  padding: 8px 0;
   border-bottom: 1px solid var(--c-border);
   font-size: 13px;
 }
 .stat-row:last-child { border-bottom: none; }
 .stat-row__key   { color: var(--c-text-2); font-size: 12px; letter-spacing: .02em; }
-.stat-row__val   { color: var(--c-text-hi); font-weight: 600; }
-.stat-row__val--gold {
-  color: var(--c-gold-text);
-  font-family: var(--f-head);
-  font-size: 13px;
-}
+.stat-row__val   { color: var(--c-text-hi); font-weight: 700; font-size: 14px; }
+/* gold = currency only (Gold stat, Gold Earned). No font-family switch — same Inter, just tinted. */
+.stat-row__val--gold { color: var(--c-gold-text); }
 
 /* ── ─────────────────────────────────────────────────────── */
 /* EMPTY STATE                                                 */
@@ -465,11 +462,35 @@ body {
 .vital-bar__fill--sp  { background: linear-gradient(90deg,#1a4a8b,#4a90d9); }
 .vital-bar__fill--exp { background: linear-gradient(90deg,var(--c-gold-dim),var(--c-gold)); }
 
+/* Section separator — used only once (PROGRESSION). Avoid repeating on every section. */
 .prof-section-head { display:flex; align-items:center; gap:var(--sp-2);
-                     margin: var(--sp-4) 0 var(--sp-2); }
-.prof-section-head__icon  { color: var(--c-gold); font-size:10px; }
-.prof-section-head__title { color: var(--c-text-2); font-size:11px;
-                             letter-spacing:.1em; font-family:var(--f-head); }
+                     margin: var(--sp-5) 0 var(--sp-3); }
+.prof-section-head__icon  { color: var(--c-gold); font-size:9px; opacity:.7; }
+.prof-section-head__title { color: var(--c-text-3); font-size:10px;
+                             letter-spacing:.14em; font-family:var(--f-head); text-transform:uppercase; }
+
+/* Inline micro-label for secondary sections (STATS, HISTORY) — sits on the divider line, not above */
+.prof-inline-label {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: var(--sp-5) 0 var(--sp-3);
+}
+.prof-inline-label::before,
+.prof-inline-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--c-border);
+}
+.prof-inline-label span {
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: var(--c-text-3);
+  font-family: var(--f-head);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 
 
 /* ── Fusion Crucible ─────────────────────────────────── */

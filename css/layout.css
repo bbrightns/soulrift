@@ -526,6 +526,17 @@
   position: relative;
   overflow: hidden;
 }
+.market-footer-hint {
+  margin-top: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  background: color-mix(in srgb, var(--c-gold) 6%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--c-gold) 22%, transparent);
+  border-radius: var(--r-md);
+  font-size: 11px;
+  color: var(--c-gold-dim);
+  text-align: center;
+  letter-spacing: .04em;
+}
 
 .spell-card__name {
   font-family: var(--f-head);
@@ -793,9 +804,10 @@
 }
 
 .prof-chip__val {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--c-text-hi);
+  letter-spacing: -.01em;
 }
 
 .prof-chip__val--gold {
@@ -835,6 +847,12 @@
   background: rgba(60, 80, 200, 0.08);
 }
 
+/* Data block — clean rows inside the panel, no nested card border */
+.prof-data-block {
+  margin-bottom: var(--sp-4);
+  padding: 0 var(--sp-1);
+}
+
 .profile-hero {
   display: flex;
   align-items: center;
@@ -843,26 +861,58 @@
 }
 
 .profile-avatar {
-  width: 48px;
-  height: 48px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   background: var(--c-inset);
-  border: 1px solid var(--c-border-md);
+  border: 1.5px solid var(--c-border-hi);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 30px;
   flex-shrink: 0;
+  transition: box-shadow var(--ease-base);
 }
 
+.profile-hero__name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
 .profile-hero__name {
   font-family: var(--f-head);
-  font-size: 16px;
+  font-size: 21px;
   font-weight: 700;
-  color: var(--c-gold-text);
-  letter-spacing: .08em;
-  line-height: 1.2;
+  color: var(--c-gold-hi);
+  letter-spacing: .06em;
+  line-height: 1.15;
 }
+.prof-name-edit-btn {
+  background: transparent;
+  border: none;
+  color: var(--c-gold-dim);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--r-sm);
+  line-height: 1;
+  transition: color var(--ease-base);
+  flex-shrink: 0;
+}
+.prof-name-edit-btn:hover { color: var(--c-gold-text); }
+.prof-name-input {
+  background: var(--c-bg);
+  border: 1px solid var(--c-gold-dim);
+  border-radius: var(--r-sm);
+  color: var(--c-gold-text);
+  font-family: var(--f-head);
+  font-size: 15px;
+  letter-spacing: .06em;
+  padding: 2px var(--sp-2);
+  width: 100%;
+  outline: none;
+}
+.prof-name-input:focus { border-color: var(--c-gold); }
 
 .profile-hero__sub {
   font-size: 11px;

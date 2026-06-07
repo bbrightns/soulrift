@@ -158,6 +158,37 @@ function syncHeader() {
   if (nameEl) nameEl.textContent = (s.playerName || 'Wanderer').toUpperCase();
 }
 
+/* ── Profile name edit ───────────────────────────────────── */
+function startEditName() {
+  const nameEl  = document.getElementById('prof-name');
+  const editBtn = document.getElementById('prof-name-edit-btn');
+  if (!nameEl || !editBtn) return;
+  const current = getState().playerName || '';
+  nameEl.innerHTML =
+    '<input id="prof-name-input" class="prof-name-input" type="text"'
+    + ' value="' + current.replace(/"/g, '&quot;') + '"'
+    + ' maxlength="20" placeholder="Your name"'
+    + ' onkeydown="if(event.key===\'Enter\')saveEditName()"'
+    + ' />';
+  editBtn.textContent = '✓';
+  editBtn.setAttribute('aria-label', 'Save name');
+  editBtn.onclick = saveEditName;
+  requestAnimationFrame(() => {
+    const inp = document.getElementById('prof-name-input');
+    if (inp) { inp.focus(); inp.select(); }
+  });
+}
+
+function saveEditName() {
+  const inp = document.getElementById('prof-name-input');
+  if (!inp) return;
+  const newName = inp.value.trim() || 'Arcane Wanderer';
+  getState().playerName = newName;
+  saveState();
+  syncHeader();
+  renderProfilePanel();
+}
+
 /* ── Profile panel ───────────────────────────────────────── */
 function openProfilePanel() {
   if (!getState().towerChosen) return;
@@ -222,6 +253,13 @@ function renderProfilePanel() {
     if (el) el.style.width = Math.min(100, Math.max(0, pct)) + '%';
   };
   setBar('prof-exp-bar', (p.exp / p.expNext) * 100);
+
+  /* lifetime stats */
+  const st = s.stats || {};
+  fill('prof-stat-battles', (st.battles  || 0).toLocaleString());
+  fill('prof-stat-wins',    (st.wins     || 0).toLocaleString());
+  fill('prof-stat-kills',   (st.kills    || 0).toLocaleString());
+  fill('prof-stat-gold',    (st.goldEarned || 0).toLocaleString());
 
   /* avatar tower glow — use design tokens */
   const towerGlowToken = {

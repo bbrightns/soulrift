@@ -58,6 +58,14 @@ const DEFAULTS = {
     history:   {},
   },
 
+  /* Lifetime stats */
+  stats: {
+    battles:   0,
+    wins:      0,
+    kills:     0,
+    goldEarned: 0,
+  },
+
   /* Settings */
   settings: {
     battleSpeed: 'normal',  // 'slow' | 'normal' | 'fast'

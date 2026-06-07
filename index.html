@@ -428,7 +428,11 @@
         <div class="profile-hero">
           <div class="profile-avatar" id="prof-avatar">🧙</div>
           <div>
-            <div class="profile-hero__name" id="prof-name">Arcane Wanderer</div>
+            <div class="profile-hero__name-row">
+              <div class="profile-hero__name" id="prof-name">Arcane Wanderer</div>
+              <button class="prof-name-edit-btn" id="prof-name-edit-btn"
+                onclick="startEditName()" aria-label="Edit name" type="button">✎</button>
+            </div>
             <div class="profile-hero__sub">
               <span id="prof-tower-badge" class="badge badge--gold">--</span>
               <span id="prof-tower" style="font-size:12px;color:var(--c-text-2);">--</span>
@@ -441,9 +445,9 @@
         <!-- Progression -->
         <div class="prof-section-head">
           <span class="prof-section-head__icon">◆</span>
-          <span class="prof-section-head__title">PROGRESSION</span>
+          <span class="prof-section-head__title">Progression</span>
         </div>
-        <div class="card card--raised" style="margin-bottom:var(--sp-4);">
+        <div class="prof-data-block">
           <div class="stat-row">
             <span class="stat-row__key">Level</span>
             <span class="stat-row__val stat-row__val--gold" id="prof-level">1</span>
@@ -464,10 +468,7 @@
         </div>
 
         <!-- Stats (includes vitals) -->
-        <div class="prof-section-head">
-          <span class="prof-section-head__icon">◆</span>
-          <span class="prof-section-head__title">STATS</span>
-        </div>
+        <div class="prof-inline-label"><span>Combat Stats</span></div>
         <div class="prof-stats-grid" style="margin-bottom:var(--sp-5);">
 
           <div class="prof-chip-vitals">
@@ -481,28 +482,49 @@
             </div>
           </div>
           <div class="prof-chip">
-            <span class="prof-chip__key">💪 Strength</span>
+            <span class="prof-chip__key">💪 Str</span>
             <span class="prof-chip__val" id="prof-str">8</span>
           </div>
 
           <div class="prof-chip">
-            <span class="prof-chip__key">🧠 Intel</span>
+            <span class="prof-chip__key">🧠 Int</span>
             <span class="prof-chip__val" id="prof-int">8</span>
           </div>
           <div class="prof-chip">
-            <span class="prof-chip__key">⚔ Attack</span>
+            <span class="prof-chip__key">⚔ Atk</span>
             <span class="prof-chip__val" id="prof-atk">10</span>
           </div>
 
           <div class="prof-chip">
-            <span class="prof-chip__key">⚡ Agility</span>
+            <span class="prof-chip__key">⚡ Agi</span>
             <span class="prof-chip__val" id="prof-agi">6</span>
           </div>
           <div class="prof-chip">
-            <span class="prof-chip__key">🛡 Defense</span>
+            <span class="prof-chip__key">🛡 Def</span>
             <span class="prof-chip__val" id="prof-def">5</span>
           </div>
 
+        </div>
+
+        <!-- History -->
+        <div class="prof-inline-label"><span>Battle History</span></div>
+        <div class="prof-data-block" style="margin-bottom:var(--sp-5);">
+          <div class="stat-row">
+            <span class="stat-row__key">Battles</span>
+            <span class="stat-row__val" id="prof-stat-battles">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__key">Wins</span>
+            <span class="stat-row__val" id="prof-stat-wins">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__key">Enemies Slain</span>
+            <span class="stat-row__val" id="prof-stat-kills">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__key">Gold Earned</span>
+            <span class="stat-row__val stat-row__val--gold" id="prof-stat-gold">0</span>
+          </div>
         </div>
 
         <!-- Actions -->
