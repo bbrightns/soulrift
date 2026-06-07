@@ -59,20 +59,20 @@ function buyShopSpell(spellId, qty = 1) {
 
   body.innerHTML =
     '<img src="/asset/spell_icons/' + def.id + '.png" class="shop-confirm-icon" alt="">'
-    + '<div style="font-size:15px;font-weight:700;color:var(--c-text-hi);margin:var(--sp-3) 0 var(--sp-2)">'
-    + def.name + ' ×' + qty
-    + '</div>'
-    + '<div style="font-size:13px;color:var(--c-text-2);margin-bottom:var(--sp-1)">Cost: <span style="color:var(--c-gold-text);font-weight:600">' + total + ' Gold</span></div>'
-    + '<div style="font-size:12px;color:' + (canAfford ? 'var(--c-text-2)' : 'var(--c-bad)') + '">'
+    + '<div class="modal-title" id="modal-confirm-title">' + def.name + ' ×' + qty + '</div>'
+    + '<div class="modal-body">Cost: <span class="modal-stat--gold">' + total + ' Gold</span></div>'
+    + '<div class="' + (canAfford ? 'modal-hint' : 'modal-body modal-stat--bad') + '">'
     + 'You have: ' + playerGold + ' Gold'
-    + (!canAfford ? '<br><span>Not enough gold.</span>' : '')
+    + (!canAfford ? '<br>Not enough gold.' : '')
     + '</div>';
 
   const confirmBtn = modal.querySelector('.btn--primary');
   if (confirmBtn) confirmBtn.disabled = !canAfford;
 
   _shopPending = canAfford ? { spellId, qty } : null;
+  modal.setAttribute('aria-labelledby', 'modal-confirm-title');
   modal.classList.remove('is-hidden');
+  if (typeof _openModal === 'function') _openModal(modal);
 }
 
 function confirmShopBuy() {
@@ -100,7 +100,7 @@ function confirmShopBuy() {
 
 function closeShopConfirm() {
   const modal = document.getElementById('shop-confirm-modal');
-  if (modal) modal.classList.add('is-hidden');
+  if (modal) { if (typeof _closeModal === 'function') _closeModal(modal); modal.classList.add('is-hidden'); }
   _shopPending = null;
   const confirmBtn = modal ? modal.querySelector('.btn--primary') : null;
   if (confirmBtn) {

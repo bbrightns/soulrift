@@ -158,7 +158,7 @@ function renderDungeonList() {
     return ''
       + '<article class="dungeon-card' + stateClass + '"' + onclick + '>'
       + '  <div class="dungeon-scene">'
-      + '    <img src="' + dungeon.image + '" alt="' + dungeon.name + '">'
+      + '    <img src="' + dungeon.image + '" alt="' + dungeon.name + '" loading="lazy">'
       + '    <div class="firefly f1"></div>'
       + '    <div class="firefly f2"></div>'
       + '    <div class="firefly f3"></div>'
@@ -235,10 +235,10 @@ function _showAllEmptyConfirm() {
   if (!modal || !body) return;
 
   body.innerHTML =
-    '<div style="font-size:32px;margin-bottom:var(--sp-3)">⚔️</div>'
-    + '<div style="font-size:15px;font-weight:700;color:var(--c-text-hi);margin-bottom:var(--sp-2)">No Spells Assigned</div>'
-    + '<div style="font-size:13px;color:var(--c-text-2);margin-bottom:var(--sp-1)">Your blueprint is empty.</div>'
-    + '<div style="font-size:12px;color:var(--c-text-3)">All 10 turns will use Struggle (weak fallback attack). Visit Order to assign spells first.</div>';
+    '<div class="modal-icon">⚔️</div>'
+    + '<div class="modal-title" id="modal-confirm-title">No Spells Assigned</div>'
+    + '<div class="modal-body">Your blueprint is empty.</div>'
+    + '<div class="modal-hint">All 10 turns will use Struggle (weak fallback attack). Visit Order to assign spells first.</div>';
 
   const confirmBtn = modal.querySelector('.btn--primary');
   const cancelBtn  = modal.querySelector('.btn--ghost');
@@ -249,7 +249,9 @@ function _showAllEmptyConfirm() {
   }
   if (cancelBtn) cancelBtn.textContent = 'Go Back';
 
+  modal.setAttribute('aria-labelledby', 'modal-confirm-title');
   modal.classList.remove('is-hidden');
+  if (typeof _openModal === 'function') _openModal(modal);
 }
 
 function _showEmptySlotConfirm() {
@@ -262,12 +264,12 @@ function _showEmptySlotConfirm() {
   const filled = bp.filter(s => !!s).length;
 
   body.innerHTML =
-    '<div style="font-size:32px;margin-bottom:var(--sp-3)">⚔️</div>'
-    + '<div style="font-size:15px;font-weight:700;color:var(--c-text-hi);margin-bottom:var(--sp-2)">Empty Slots Detected</div>'
-    + '<div style="font-size:13px;color:var(--c-text-2);margin-bottom:var(--sp-1)">'
-    + filled + ' / 10 slots filled · <span style="color:var(--c-bad)">' + empty + ' empty</span>'
+    '<div class="modal-icon">⚔️</div>'
+    + '<div class="modal-title" id="modal-confirm-title">Empty Slots Detected</div>'
+    + '<div class="modal-body">'
+    + filled + ' / 10 slots filled · <span class="modal-stat--bad">' + empty + ' empty</span>'
     + '</div>'
-    + '<div style="font-size:12px;color:var(--c-text-3)">Empty turns will use Struggle (weak fallback attack). Continue anyway?</div>';
+    + '<div class="modal-hint">Empty turns will use Struggle (weak fallback attack). Continue anyway?</div>';
 
   const confirmBtn = modal.querySelector('.btn--primary');
   if (confirmBtn) {
@@ -279,7 +281,9 @@ function _showEmptySlotConfirm() {
   const cancelBtn = modal.querySelector('.btn--ghost');
   if (cancelBtn) cancelBtn.textContent = 'Go Back';
 
+  modal.setAttribute('aria-labelledby', 'modal-confirm-title');
   modal.classList.remove('is-hidden');
+  if (typeof _openModal === 'function') _openModal(modal);
 }
 
 function _confirmEmptySlotBattle() {

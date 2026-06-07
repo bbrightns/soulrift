@@ -6,6 +6,44 @@
 
 'use strict';
 
+/* ── Modal focus-trap utility ────────────────────────────── */
+let _prevFocusEl = null;
+
+function _focusableEls(el) {
+  return Array.from(el.querySelectorAll(
+    'button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea,[tabindex]:not([tabindex="-1"])'
+  ));
+}
+
+function _openModal(el) {
+  if (!el) return;
+  _prevFocusEl = document.activeElement;
+  requestAnimationFrame(() => {
+    const nodes = _focusableEls(el);
+    if (nodes.length) nodes[0].focus();
+  });
+  el._modalTrap = function(e) {
+    if (e.key === 'Escape') {
+      const closeBtn = el.querySelector('[onclick*="close"],[onclick*="Close"]');
+      if (closeBtn) closeBtn.click();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const nodes = _focusableEls(el);
+    if (!nodes.length) return;
+    const first = nodes[0], last = nodes[nodes.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  el.addEventListener('keydown', el._modalTrap);
+}
+
+function _closeModal(el) {
+  if (!el) return;
+  if (el._modalTrap) { el.removeEventListener('keydown', el._modalTrap); el._modalTrap = null; }
+  if (_prevFocusEl) { try { _prevFocusEl.focus(); } catch (_) {} _prevFocusEl = null; }
+}
+
 /* ── Screen map: key → HTML id ───────────────────────────── */
 const SCREENS = {
   battle:  'screen-battle',
@@ -122,13 +160,17 @@ function syncHeader() {
 
 /* ── Profile panel ───────────────────────────────────────── */
 function openProfilePanel() {
-  if (!getState().towerChosen) return;   /* no profile before tower select */
+  if (!getState().towerChosen) return;
   renderProfilePanel();
-  document.getElementById('profile-panel').classList.add('is-open');
+  const panel = document.getElementById('profile-panel');
+  panel.classList.add('is-open');
+  _openModal(panel);
 }
 
 function closeProfilePanel() {
-  document.getElementById('profile-panel').classList.remove('is-open');
+  const panel = document.getElementById('profile-panel');
+  _closeModal(panel);
+  panel.classList.remove('is-open');
 }
 
 function renderProfilePanel() {
@@ -181,15 +223,13 @@ function renderProfilePanel() {
   };
   setBar('prof-exp-bar', (p.exp / p.expNext) * 100);
 
-  /* avatar tower glow */
-  const towerGlow = {
-    fire:  '0 0 20px rgba(217,79,26,0.6)',
-    dark:  '0 0 20px rgba(112,48,192,0.6)',
-    light: '0 0 20px rgba(184,152,32,0.6)',
-    ice:   '0 0 20px rgba(102,199,232,0.6)',
+  /* avatar tower glow — use design tokens */
+  const towerGlowToken = {
+    fire: 'var(--glow-fire)', dark: 'var(--glow-dark)',
+    light: 'var(--glow-light)', ice: 'var(--glow-ice)',
   };
   const avatarEl = document.getElementById('prof-avatar');
-  if (avatarEl) avatarEl.style.boxShadow = towerGlow[s.tower] || 'none';
+  if (avatarEl) avatarEl.style.boxShadow = towerGlowToken[s.tower] || 'none';
 }
 
 /* ── Toast ───────────────────────────────────────────────── */

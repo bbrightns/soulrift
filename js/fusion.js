@@ -85,7 +85,7 @@ function renderFusionCatalystList() {
 function formatCatalystName(id) {
   const labels = { catalyst_shard: 'Shard', catalyst_core: 'Core', catalyst_crystal: 'Crystal' };
   const label = labels[id] || id;
-  return '<img src="/asset/catalyst_icons/' + id + '.png" style="width:18px;height:18px;border-radius:3px;vertical-align:middle;margin-right:5px;" alt="">' + label;
+  return '<img src="/asset/catalyst_icons/' + id + '.png" class="fusion-cat-icon" alt="">' + label;
 }
 
 function _updateCrucibleSlots() {
@@ -325,17 +325,17 @@ function executeFusionAll() {
 
   const total = results.success + results.downgrade + results.shatter;
   body.innerHTML = iconHTML
-    + '<div class="c-gold" style="font-size:16px;font-weight:700;margin-top:var(--sp-3)">Fusion Complete</div>'
-    + '<div style="margin-top:var(--sp-2);font-size:13px;color:var(--c-text-2)">'
-    + total + ' fusions performed'
-    + '</div>'
+    + '<div class="modal-title modal-title--success" id="modal-result-title">Fusion Complete</div>'
+    + '<div class="modal-body">' + total + ' fusions performed</div>'
     + '<div class="fusion-all-results">'
     + '<div class="fusion-all-row"><span>Success</span><span class="c-ok">' + results.success + '</span></div>'
     + '<div class="fusion-all-row"><span>Downgrade</span><span class="c-warn">' + results.downgrade + '</span></div>'
     + '<div class="fusion-all-row"><span>Shattered</span><span class="c-bad">' + results.shatter + '</span></div>'
     + '</div>';
 
+  modal.setAttribute('aria-labelledby', 'modal-result-title');
   modal.classList.remove('is-hidden');
+  if (typeof _openModal === 'function') _openModal(modal);
 
   _fusionSpellId = null;
   _fusionSpellLvl = null;
@@ -358,24 +358,28 @@ function showFusionResult(success, spellName, spellId, toLvl, failType, downgrad
 
   if (success) {
     body.innerHTML = iconHTML
-      + '<div class="c-gold" style="font-size:18px;font-weight:700;margin-top:var(--sp-3)">Fusion Success!</div>'
-      + '<div style="margin-top:var(--sp-2)">' + spellName + ' upgraded to <strong>Lv ' + toLvl + '</strong></div>';
+      + '<div class="modal-title modal-title--success" id="modal-result-title">Fusion Success!</div>'
+      + '<div class="modal-body">' + spellName + ' upgraded to <strong>Lv ' + toLvl + '</strong></div>';
   } else if (failType === 'downgrade') {
     body.innerHTML = iconHTML
-      + '<div style="color:var(--c-bad,#e05050);font-size:18px;font-weight:700;margin-top:var(--sp-3)">Fusion Failed</div>'
-      + '<div style="margin-top:var(--sp-2)">' + spellName + ' downgraded to <strong>Lv ' + downgradeLvl + '</strong>.<br><small style="opacity:0.6">1 copy returned.</small></div>';
+      + '<div class="modal-title modal-title--bad" id="modal-result-title">Fusion Failed</div>'
+      + '<div class="modal-body">' + spellName + ' downgraded to <strong>Lv ' + downgradeLvl + '</strong>.</div>'
+      + '<div class="modal-hint">1 copy returned.</div>';
   } else {
     body.innerHTML = iconHTML
-      + '<div style="color:var(--c-bad,#e05050);font-size:18px;font-weight:700;margin-top:var(--sp-3)">Fusion Shattered</div>'
-      + '<div style="margin-top:var(--sp-2)">Both copies of ' + spellName + ' were destroyed.<br><small style="opacity:0.6">The rift consumed them.</small></div>';
+      + '<div class="modal-title modal-title--bad" id="modal-result-title">Fusion Shattered</div>'
+      + '<div class="modal-body">Both copies of ' + spellName + ' were destroyed.</div>'
+      + '<div class="modal-hint">The rift consumed them.</div>';
   }
 
+  modal.setAttribute('aria-labelledby', 'modal-result-title');
   modal.classList.remove('is-hidden');
+  if (typeof _openModal === 'function') _openModal(modal);
 }
 
 function closeFusionResult() {
   const modal = document.getElementById('fusion-result-modal');
-  if (modal) modal.classList.add('is-hidden');
+  if (modal) { if (typeof _closeModal === 'function') _closeModal(modal); modal.classList.add('is-hidden'); }
   renderFusion();
   syncHeader();
 }

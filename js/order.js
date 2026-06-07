@@ -194,9 +194,9 @@ function showClearConfirm() {
   if (!modal || !body) return;
 
   body.innerHTML =
-    '<div style="font-size:30px;margin-bottom:var(--sp-3)">◌</div>'
-    + '<div style="font-size:15px;font-weight:700;color:var(--c-text-hi);margin-bottom:var(--sp-2)">Clear Blueprint?</div>'
-    + '<div style="font-size:13px;color:var(--c-text-2);">'
+    '<div class="modal-icon">◌</div>'
+    + '<div class="modal-title" id="modal-confirm-title">Clear Blueprint?</div>'
+    + '<div class="modal-body">'
     + filled + ' spell' + (filled !== 1 ? 's' : '') + ' will be unassigned. This cannot be undone.'
     + '</div>';
 
@@ -210,7 +210,9 @@ function showClearConfirm() {
     cancelBtn.textContent = 'Cancel';
     cancelBtn.onclick = closeShopConfirm;
   }
+  modal.setAttribute('aria-labelledby', 'modal-confirm-title');
   modal.classList.remove('is-hidden');
+  if (typeof _openModal === 'function') _openModal(modal);
 }
 
 function _executeClearBlueprint() {
@@ -227,10 +229,13 @@ function openSpellPicker() {
   const panel = document.getElementById('spell-picker-panel');
   panel.classList.add('is-open');
   document.getElementById('spell-picker').scrollTop = 0;
+  if (typeof _openModal === 'function') _openModal(panel);
 }
 
 function closeSpellPicker() {
-  document.getElementById('spell-picker-panel').classList.remove('is-open');
+  const panel = document.getElementById('spell-picker-panel');
+  if (typeof _closeModal === 'function') _closeModal(panel);
+  panel.classList.remove('is-open');
 }
 
 onScreen('order', renderBlueprint);

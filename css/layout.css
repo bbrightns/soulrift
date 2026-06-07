@@ -86,6 +86,9 @@
   padding: 5px 9px;
   border-radius: var(--r-md);
   border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
   transition: border-color var(--ease-fast), background var(--ease-fast);
 }
 
@@ -1629,6 +1632,9 @@
   transition: border-color var(--ease-base), box-shadow var(--ease-base);
 }
 
+.dungeon-card:not(.is-locked) {
+  will-change: box-shadow;
+}
 .dungeon-card:not(.is-locked):hover,
 .dungeon-card:not(.is-locked):focus-within {
   animation: dungeon-card-pulse 2s ease-in-out infinite;
@@ -1872,7 +1878,7 @@
 .dungeon-locked {
   margin-top: 12px;
   width: 100%;
-  min-height: 38px;
+  min-height: 44px;
   display: grid;
   place-items: center;
   border: 0;
@@ -3116,4 +3122,16 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: var(--sp-3) var(--sp-3) calc(var(--sp-4) + env(safe-area-inset-bottom));
+}
+/* ── Reduced motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .screen.is-active        { animation: none; opacity: 1; transform: none; }
+  .toast                   { animation: none; opacity: 1; }
+  #app-header              { animation: none; opacity: 1; transform: none; }
+  .tower-card              { animation: none; opacity: 1; transform: none; }
+  .battle-result-panel     { animation: none; opacity: 1; transform: none; }
+  .dungeon-card:not(.is-locked):hover,
+  .dungeon-card:not(.is-locked):focus-within { animation: none; }
+  .firefly                 { animation: none; opacity: 0.4; }
+  *, *::before, *::after   { transition-duration: 0.01ms !important; }
 }
