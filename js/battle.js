@@ -706,8 +706,16 @@ async function runAutoBattle(dungeonId) {
     smokeStackCount: 0,
     playerStunned: false,
     pendingQueue: [],     // [{ def, spellLvl, turnsLeft }] — queued by traffic jam
+    hornStunTurn: null,   // rolled once at battle start for Limousine
+    hornStunFired: false,
     realityFractureActive: false,
   };
+
+  // Roll Limousine stun turn once
+  if (enemyTemplate.hornStun && enemyTemplate.hornTurnRange) {
+    const { min, max } = enemyTemplate.hornTurnRange;
+    battleStatus.hornStunTurn = min + Math.floor(Math.random() * (max - min + 1));
+  }
 
   updateCombatHud(player, enemy, enemyTemplate);
   await appendBattleLog('Battle begins in ' + enemy.area, 'system');
@@ -874,11 +882,16 @@ async function runAutoBattle(dungeonId) {
       if (player.hp <= 0) break;
     }
 
-    // Horn Stun (Limousine)
-    if (enemyTemplate.hornStun && turn % enemyTemplate.hornInterval === 0) {
+    // Horn Stun (Limousine) — fires once on the pre-rolled turn
+    if (
+      enemyTemplate.hornStun &&
+      !battleStatus.hornStunFired &&
+      battleStatus.hornStunTurn === turn
+    ) {
+      battleStatus.hornStunFired = true;
       battleStatus.playerStunned = true;
       await appendBattleLog(
-        enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' lays on the horn. Your spell is lost.'),
+        enemyAvatarHTML(enemyTemplate) + wrapLogText(enemy.name + ' lays on the horn. Your next cast is lost.'),
         'enemy warn'
       );
     }
@@ -978,13 +991,10 @@ async function runAutoBattle(dungeonId) {
     const spellLvl = parseInt(parts[1]) || 1;
     const def = spellId && window.getSpellDef ? getSpellDef(spellId) : null;
 
-    if (battleStatus.playerStunned) {
-      battleStatus.playerStunned = false;
-      await appendBattleLog(wrapLogText(logName() + ' is stunned and cannot cast this turn!'), 'warn');
-    } else {
+    {
       const _trafficJam = getPerk('traffic_jam');
 
-      // Tick down pending spells and fire any that are ready
+      // Pending releases always fire — stun does not block them
       if (_trafficJam && battleStatus.pendingQueue.length > 0) {
         battleStatus.pendingQueue.forEach(p => p.turnsLeft--);
         const ready = battleStatus.pendingQueue.filter(p => p.turnsLeft <= 0);
@@ -1002,11 +1012,22 @@ async function runAutoBattle(dungeonId) {
         if (player.hp <= 0) break;
       }
 
-      if (!def) {
+      // Stun only blocks the new cast this turn
+      if (battleStatus.playerStunned) {
+        battleStatus.playerStunned = false;
+        await appendBattleLog(
+          wrapLogText(logName() + ' is stunned — cannot spell this turn!'),
+          'warn'
+        );
+
+      } else if (!def) {
         const dmg = struggleDamage(player, enemy);
         enemy.hp = Math.max(0, enemy.hp - dmg);
         updateCombatHud(player, enemy, enemyTemplate);
-        await appendBattleLog(wrapLogText(logName() + ' has no spell and Struggles for ' + dmg + ' damage.'), 'player');
+        await appendBattleLog(
+          wrapLogText(logName() + ' has no spell and Struggles for ' + dmg + ' damage.'),
+          'player'
+        );
 
       } else if (player.sp < def.spCost) {
         const dmg = struggleDamage(player, enemy);
@@ -1026,7 +1047,10 @@ async function runAutoBattle(dungeonId) {
 
         if (inkBleed && Math.random() < inkChance) {
           updateCombatHud(player, enemy, enemyTemplate);
-          await appendBattleLog('Drowned ink seeps into the spell circle — ' + def.name + ' dissolves into black water.', 'warn');
+          await appendBattleLog(
+            'Drowned ink seeps into the spell circle — ' + def.name + ' dissolves into black water.',
+            'warn'
+          );
 
         } else if (_trafficJam) {
           // Roll delay from enemy override or dungeon default (1 turn)

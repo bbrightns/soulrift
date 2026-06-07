@@ -299,7 +299,7 @@ const ENEMIES_DATA = [
     regenPerTurn: 12,
     trafficJamDelay: { min: 2, max: 3 },
     hornStun: true,
-    hornInterval: 5,
+    hornTurnRange: { min: 6, max: 10 },
     opener: 'A black limousine with tinted windows rolls to a stop, blocking the entire road. The window slides down exactly one centimeter.',
     dropTable: [
       { id: 'catalyst_crystal', type: 'catalyst', chance: 0.12 },
