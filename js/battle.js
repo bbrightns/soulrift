@@ -999,10 +999,19 @@ async function runAutoBattle(dungeonId) {
         battleStatus.pendingQueue.forEach(p => p.turnsLeft--);
         const ready = battleStatus.pendingQueue.filter(p => p.turnsLeft <= 0);
         battleStatus.pendingQueue = battleStatus.pendingQueue.filter(p => p.turnsLeft > 0);
-        for (const pending of ready) {
-          await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl, true);
-          if (enemy.hp <= 0) break;
-          if (player.hp <= 0) break;
+        if (ready.length > 0) {
+          await appendBattleLog(
+            '🚦 ' + wrapLogText(
+              ready.length > 1
+                ? 'Traffic clears — ' + ready.length + ' spells burst through at once!'
+                : 'Traffic clears!'
+            ), 'system'
+          );
+          for (const pending of ready) {
+            await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl, true);
+            if (enemy.hp <= 0) break;
+            if (player.hp <= 0) break;
+          }
         }
         if (enemy.hp <= 0) break;
         if (player.hp <= 0) break;
@@ -1058,9 +1067,9 @@ async function runAutoBattle(dungeonId) {
             : turnsLeft + ' turns';
           await appendBattleLog(
             spellIconHTML(def.id) + wrapLogText(
-              '<span style="color:var(--c-text-3);font-style:italic;">'
+              '<span style="color:var(--c-text-3);">'
               + logName() + ' casts ' + def.name
-              + ' — <span style="color:var(--c-warn);">queued ' + delayLabel + '</span>'
+              + ' — <span style="color:var(--c-warn);font-style:italic;">stuck in traffic for ' + delayLabel + '</span>'
               + '</span>'
             ),
             ''
@@ -1073,6 +1082,14 @@ async function runAutoBattle(dungeonId) {
 
       // Final turn: flush all remaining queued spells
       if (turn === 10 && _trafficJam && battleStatus.pendingQueue.length > 0) {
+        const finalCount = battleStatus.pendingQueue.length;
+        await appendBattleLog(
+          '🚦 ' + wrapLogText(
+            finalCount > 1
+              ? 'Battle ends — ' + finalCount + ' spells finally arrive through the gridlock!'
+              : 'Battle ends — your spell finally crawls through.'
+          ), 'system'
+        );
         for (const pending of battleStatus.pendingQueue) {
           await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl, true);
           if (enemy.hp <= 0) break;

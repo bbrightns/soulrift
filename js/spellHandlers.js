@@ -76,7 +76,7 @@ async function checkMotorbikeDodge(ctx) {
   if (Math.random() < ctx.enemyTemplate.dodgeChance) {
     await ctx.log(
       ctx.spellIconHTML
-      + wrapLogText(queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts ' + ctx.def.name
+      + wrapLogText(ctxGoldenName(ctx) + ' casts ' + ctx.def.name
         + ' — the swarm weaves through it!'),
       'warn'
     );
@@ -86,10 +86,6 @@ async function checkMotorbikeDodge(ctx) {
 }
 
 // Master helper: apply dmg to enemy with all dungeon modifiers, log, reflect
-function queuePrefix(ctx) {
-  return ctx.fromQueue ? '<span style="color:var(--c-warn);font-size:10px;letter-spacing:.08em;margin-right:4px;">◈ DELAYED</span>' : '';
-}
-
 async function dealDamage(ctx, rawDmg, logLine, pierceDef = false) {
   if (await checkMotorbikeDodge(ctx)) return 0;
   let dmg = pierceDef ? Math.max(1, rawDmg) : Math.max(1, rawDmg - ctx.enemy.def);
@@ -98,7 +94,7 @@ async function dealDamage(ctx, rawDmg, logLine, pierceDef = false) {
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - dmg);
   ctx.updateHud();
   await logVoidShieldBreak(ctx);
-  await ctx.log(ctx.spellIconHTML + wrapLogText(queuePrefix(ctx) + logLine), 'player');
+  await ctx.log(ctx.spellIconHTML + wrapLogText(logLine), 'player');
   await applyReflect(ctx, dmg);
   return dmg;
 }
@@ -126,7 +122,7 @@ registerHandler('light_charge', async (ctx) => {
   if (ctx.battleStatus.chargeStacks < 5) ctx.battleStatus.chargeStacks++;
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Light Charge. Stacks: '
+      ctxGoldenName(ctx) + ' casts Light Charge. Stacks: '
       + ctx.battleStatus.chargeStacks + '/5.'
     ), 'player'
   );
@@ -138,7 +134,7 @@ registerHandler('holy_guard', async (ctx) => {
   ctx.updateHud();
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Holy Guard. Restores ' + heal + ' HP.'
+      ctxGoldenName(ctx) + ' casts Holy Guard. Restores ' + heal + ' HP.'
     ), 'player'
   );
 });
@@ -149,7 +145,7 @@ registerHandler('shield_of_absorption', async (ctx) => {
   ctx.updateHud();
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Shield of Absorption. Absorbs ' + shield + ' HP.'
+      ctxGoldenName(ctx) + ' casts Shield of Absorption. Absorbs ' + shield + ' HP.'
     ), 'player'
   );
 });
@@ -168,7 +164,7 @@ registerHandler('angel_wing', async (ctx) => {
   ctx.battleStatus.angelWingActive = dodgeChance;
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Angel Wing. '
+      ctxGoldenName(ctx) + ' casts Angel Wing. '
       + Math.round(dodgeChance * 100) + '% dodge next attack.'
     ), 'player'
   );
@@ -181,7 +177,7 @@ registerHandler('chorus_of_sanctuary', async (ctx) => {
   ctx.battleStatus.regenStacks.push({ amount: perTurn, turnsLeft: 3 });
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Chorus of Sanctuary. Regen ' + perTurn + ' HP/turn for 3 turns.'
+      ctxGoldenName(ctx) + ' casts Chorus of Sanctuary. Regen ' + perTurn + ' HP/turn for 3 turns.'
     ), 'player'
   );
 });
@@ -191,7 +187,7 @@ registerHandler('divine_reflection', async (ctx) => {
   ctx.battleStatus.divineReflect = reflectPct;
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Divine Reflection. Next enemy hit reflected at '
+      ctxGoldenName(ctx) + ' casts Divine Reflection. Next enemy hit reflected at '
       + Math.round(reflectPct * 100) + '%.'
     ), 'player'
   );
@@ -231,7 +227,7 @@ registerHandler('fog', async (ctx) => {
   ctx.battleStatus.fogActive = { turnsLeft: 2, missChance };
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Fog. Enemy '
+      ctxGoldenName(ctx) + ' casts Fog. Enemy '
       + Math.round(missChance * 100) + '% miss for 2 turns.'
     ), 'player'
   );
@@ -296,7 +292,7 @@ registerHandler('demon_summoning', async (ctx) => {
   ctx.battleStatus.demonStacks = [{ turnsLeft: 3, power: demonPower }];
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' summons a demon. ' + demonPower + ' dmg/turn for 3 turns.'
+      ctxGoldenName(ctx) + ' summons a demon. ' + demonPower + ' dmg/turn for 3 turns.'
     ), 'player'
   );
 });
@@ -357,7 +353,7 @@ registerHandler('ember_skin', async (ctx) => {
   ctx.battleStatus.emberSkinReduction = 0.25;
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Ember Skin. -25% incoming damage for ' + turns + ' turns.'
+      ctxGoldenName(ctx) + ' casts Ember Skin. -25% incoming damage for ' + turns + ' turns.'
     ), 'player'
   );
 });
@@ -388,7 +384,7 @@ registerHandler('fire_storm', async (ctx) => {
   ctx.battleStatus.fireStormStacks.push({ turnsLeft: 2, power: stormPower });
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' unleashes Fire Storm. ' + stormPower + ' dmg/turn for 2 turns.'
+      ctxGoldenName(ctx) + ' unleashes Fire Storm. ' + stormPower + ' dmg/turn for 2 turns.'
     ), 'player'
   );
 });
@@ -448,7 +444,7 @@ registerHandler('energy_refill', async (ctx) => {
   ctx.updateHud();
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Energy Refill. Restores ' + refill + ' SP.'
+      ctxGoldenName(ctx) + ' casts Energy Refill. Restores ' + refill + ' SP.'
     ), 'player'
   );
 });
@@ -459,7 +455,7 @@ registerHandler('frost_ward', async (ctx) => {
   ctx.updateHud();
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' casts Frost Ward. Absorbs ' + ward + ' HP.'
+      ctxGoldenName(ctx) + ' casts Frost Ward. Absorbs ' + ward + ' HP.'
     ), 'player'
   );
 });
@@ -497,7 +493,7 @@ registerHandler('golem_command', async (ctx) => {
   ctx.battleStatus.golemStacks = [{ turnsLeft: 3, power: golemPower }];
   await ctx.log(
     ctx.spellIconHTML + wrapLogText(
-      queuePrefix(ctx) + ctxGoldenName(ctx) + ' commands a Golem. ' + golemPower + ' dmg/turn for 3 turns.'
+      ctxGoldenName(ctx) + ' commands a Golem. ' + golemPower + ' dmg/turn for 3 turns.'
     ), 'player'
   );
 });
@@ -511,7 +507,7 @@ registerHandler('golem_master', async (ctx) => {
     });
     await ctx.log(
       ctx.spellIconHTML + wrapLogText(
-        queuePrefix(ctx) + ctxGoldenName(ctx) + ' upgrades the Golem. Power ×1.6, +2 turns.'
+        ctxGoldenName(ctx) + ' upgrades the Golem. Power ×1.6, +2 turns.'
       ), 'player'
     );
   } else {
@@ -519,7 +515,7 @@ registerHandler('golem_master', async (ctx) => {
     ctx.battleStatus.golemStacks = [{ turnsLeft: 4, power: warPower }];
     await ctx.log(
       ctx.spellIconHTML + wrapLogText(
-        queuePrefix(ctx) + ctxGoldenName(ctx) + ' summons a War Golem. ' + warPower + ' dmg/turn for 4 turns.'
+        ctxGoldenName(ctx) + ' summons a War Golem. ' + warPower + ' dmg/turn for 4 turns.'
       ), 'player'
     );
   }
