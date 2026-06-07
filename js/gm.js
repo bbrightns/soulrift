@@ -40,8 +40,9 @@
   function openGMPanel() {
     _populateSpells();
     var state = getState();
-    document.getElementById('gm-gold-input').value = state.gold != null ? state.gold : 0;
+    document.getElementById('gm-gold-input').value  = state.gold != null ? state.gold : 0;
     document.getElementById('gm-level-input').value = (state.player && state.player.level) ? state.player.level : 1;
+    document.getElementById('gm-exp-input').value   = (state.player && state.player.exp   != null) ? state.player.exp : 0;
     var currentSpeed = (state.settings && state.settings.battleSpeed) || 'normal';
     document.querySelectorAll('.gm-speed-btn').forEach(function(b) {
       b.classList.toggle('is-active', b.dataset.speed === currentSpeed);
@@ -80,17 +81,36 @@
     var state = getState();
     var delta = val - state.player.level;
     state.player.level  = val;
-    state.player.hpMax += delta * 6;
-    state.player.spMax += delta * 3;
-    state.player.atk   += delta;
-    state.player.def   += delta;
+    state.player.hpMax = Math.max(10, state.player.hpMax + delta * 6);
+    state.player.spMax = Math.max(10, state.player.spMax + delta * 3);
+    state.player.atk   = Math.max(1, state.player.atk + delta);
+    state.player.def   = Math.max(0, state.player.def + delta);
     state.player.expNext = Math.floor(100 * Math.pow(1.25, val - 1));
-    state.player.hp = Math.min(state.player.hp, state.player.hpMax);
-    state.player.sp = Math.min(state.player.sp, state.player.spMax);
+    state.player.hp = Math.min(state.player.hpMax, Math.max(0, state.player.hp));
+    state.player.sp = Math.min(state.player.spMax, Math.max(0, state.player.sp));
     saveState();
     syncHeader();
     var profPanel = document.getElementById('profile-panel');
     if (profPanel && profPanel.classList.contains('is-open')) renderProfilePanel();
+  }
+
+  function gmSetExp() {
+    var val = parseInt(document.getElementById('gm-exp-input').value, 10);
+    if (isNaN(val) || val < 0) return;
+    var state = getState();
+    state.player.exp = val;
+    /* run level-up loop in case new exp exceeds threshold */
+    if (typeof gainExp === 'function') {
+      state.player.exp = 0;           /* gainExp will add it fresh */
+      gainExp(val);
+    } else {
+      saveState();
+    }
+    syncHeader();
+    var profPanel = document.getElementById('profile-panel');
+    if (profPanel && profPanel.classList.contains('is-open')) renderProfilePanel();
+    /* refresh displayed value to reflect actual exp after level-ups */
+    document.getElementById('gm-exp-input').value = getState().player.exp;
   }
 
   function gmSetSpeed(speed) {
@@ -123,5 +143,6 @@
   window.gmSetGold        = gmSetGold;
   window.gmAddSpellStone  = gmAddSpellStone;
   window.gmSetLevel       = gmSetLevel;
+  window.gmSetExp         = gmSetExp;
   window.gmResetAll       = gmResetAll;
 })();

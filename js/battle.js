@@ -509,8 +509,8 @@ function updateCombatHud(player, enemy, enemyTemplate) {
   if (playerSpFill) playerSpFill.style.transform = 'scaleX(' + playerSpPct + ')';
   if (enemyHpFill) enemyHpFill.style.transform = 'scaleX(' + enemyHpPct + ')';
 
-  setText('player-hp-text', 'HP ' + player.hp + ' / ' + player.hpMax);
-  setText('player-sp-text', 'SP ' + player.sp + ' / ' + player.spMax);
+  setText('player-hp-text', 'HP ' + Math.max(0, player.hp) + ' / ' + Math.max(0, player.hpMax));
+  setText('player-sp-text', 'SP ' + Math.max(0, player.sp) + ' / ' + Math.max(0, player.spMax));
   setText('enemy-hp-text', 'HP ' + enemy.hp + ' / ' + enemyTemplate.hp);
 }
 
