@@ -16,9 +16,9 @@ function sleep(ms) {
 }
 
 const BATTLE_SPEED = {
-  slow:   { min: 1800, max: 2200 },
+  slow: { min: 1800, max: 2200 },
   normal: { min: 1200, max: 1500 },
-  fast:   { min: 280,  max: 420  },
+  fast: { min: 280, max: 420 },
 };
 
 function randDelay() {
@@ -116,11 +116,11 @@ function gainExp(amount) {
     const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
     p.hpMax += g.hpMax;
     p.spMax += g.spMax;
-    p.atk   += g.atk;
-    p.def   += g.def;
-    p.str   += g.str;
-    p.int   += g.int;
-    p.agi   += g.agi;
+    p.atk += g.atk;
+    p.def += g.def;
+    p.str += g.str;
+    p.int += g.int;
+    p.agi += g.agi;
 
     if (p.level % 5 === 0) {
       p.hpMax += 10;
@@ -682,7 +682,6 @@ async function runAutoBattle(dungeonId) {
 
   // ── Battle status ────────────────────────────────────────
   const battleStatus = {
-    // existing
     burnStacks: [],
     burnStackCount: 0,
     chargeStacks: 0,
@@ -700,14 +699,13 @@ async function runAutoBattle(dungeonId) {
     emberSkinReduction: 0,
     divineReflect: 0,
     darkCombo: 0,
-    // new dungeon perks
     riftPhaseTriggered: false,
     voidShieldBroken: false,
     voidShieldRemaining: enemyTemplate.voidShield ? enemyTemplate.voidShieldAmount : 0,
     _vsBreakLogged: false,
     smokeStackCount: 0,
     playerStunned: false,
-    trafficJamStored: 0,
+    pendingSpell: null,   // { def, spellLvl } — queued by traffic jam
     realityFractureActive: false,
   };
 
@@ -986,27 +984,17 @@ async function runAutoBattle(dungeonId) {
     } else {
       const _trafficJam = getPerk('traffic_jam');
 
-      // Release stored damage from previous turn
-      if (_trafficJam && battleStatus.trafficJamStored > 0) {
-        let stored = battleStatus.trafficJamStored;
-        battleStatus.trafficJamStored = 0;
-
-        // Void Shield absorbs delayed damage too
-        if (battleStatus.voidShieldRemaining > 0 && !battleStatus.voidShieldBroken) {
-          const abs = Math.min(battleStatus.voidShieldRemaining, stored);
-          battleStatus.voidShieldRemaining -= abs;
-          stored -= abs;
-          if (battleStatus.voidShieldRemaining <= 0) {
-            battleStatus.voidShieldBroken = true;
-            await appendBattleLog('Void Shield shattered!', 'system');
-          }
-        }
-        if (stored > 0) {
-          enemy.hp = Math.max(0, enemy.hp - stored);
-          updateCombatHud(player, enemy, enemyTemplate);
-          await appendBattleLog('🚦 Traffic clears — delayed spell fires for ' + stored + ' damage!', 'player');
-          if (enemy.hp <= 0) break;
-        }
+      // Release pending spell from previous turn
+      if (_trafficJam && battleStatus.pendingSpell) {
+        const pending = battleStatus.pendingSpell;
+        battleStatus.pendingSpell = null;
+        await appendBattleLog(
+          spellIconHTML(pending.def.id) + wrapLogText('🚦 Traffic clears — ' + pending.def.name + ' takes effect!'),
+          'player'
+        );
+        await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl);
+        if (enemy.hp <= 0) break;
+        if (player.hp <= 0) break;
       }
 
       if (!def) {
@@ -1036,16 +1024,10 @@ async function runAutoBattle(dungeonId) {
           await appendBattleLog('Drowned ink seeps into the spell circle — ' + def.name + ' dissolves into black water.', 'warn');
 
         } else if (_trafficJam) {
-          // Queue damage — fires next turn with +15% bonus
-          let baseDmgNow = Math.max(1, spellPower(def, player, spellLvl) - enemy.def);
-          if (battleStatus.smokeStackCount > 0 && enemyTemplate.smokeStacks) {
-            baseDmgNow = Math.floor(baseDmgNow * (1 - battleStatus.smokeStackCount * enemyTemplate.smokeAtkReduction));
-          }
-          const toStore = Math.floor(baseDmgNow * _trafficJam.releaseMultiplier);
-          battleStatus.trafficJamStored += toStore;
-          updateCombatHud(player, enemy, enemyTemplate);
+          // Queue entire spell — fires next turn
+          battleStatus.pendingSpell = { def, spellLvl };
           await appendBattleLog(
-            spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ' — stuck in traffic. Stored: ' + toStore + ' dmg'),
+            spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ' — stuck in traffic.'),
             'warn'
           );
 
@@ -1054,24 +1036,15 @@ async function runAutoBattle(dungeonId) {
         }
       }
 
-      // Final turn: flush any remaining queued damage
-      if (turn === 10 && _trafficJam && battleStatus.trafficJamStored > 0) {
-        let fd = battleStatus.trafficJamStored;
-        battleStatus.trafficJamStored = 0;
-        if (battleStatus.voidShieldRemaining > 0 && !battleStatus.voidShieldBroken) {
-          const abs = Math.min(battleStatus.voidShieldRemaining, fd);
-          battleStatus.voidShieldRemaining -= abs;
-          fd -= abs;
-          if (battleStatus.voidShieldRemaining <= 0) {
-            battleStatus.voidShieldBroken = true;
-            await appendBattleLog('Void Shield shattered!', 'system');
-          }
-        }
-        if (fd > 0) {
-          enemy.hp = Math.max(0, enemy.hp - fd);
-          updateCombatHud(player, enemy, enemyTemplate);
-          await appendBattleLog('🚦 Battle ends — final queued spell arrives for ' + fd + ' damage.', 'player');
-        }
+      // Final turn: flush any pending spell
+      if (turn === 10 && _trafficJam && battleStatus.pendingSpell) {
+        const pending = battleStatus.pendingSpell;
+        battleStatus.pendingSpell = null;
+        await appendBattleLog(
+          spellIconHTML(pending.def.id) + wrapLogText('🚦 Battle ends — ' + pending.def.name + ' arrives at last.'),
+          'player'
+        );
+        await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl);
       }
     }
 
