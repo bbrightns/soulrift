@@ -279,8 +279,8 @@ const ENEMIES_DATA = [
     def: 8,
     exp: 120,
     gold: 175,
-    // Weaves through traffic — 25% chance to dodge player physical/basic attacks
     dodgeChance: 0.25,
+    trafficJamDelay: { min: 1, max: 2 },
     opener: 'A dozen motorbikes appear from every direction, threading gaps that shouldn\'t exist.',
     dropTable: [],
   },
@@ -297,7 +297,7 @@ const ENEMIES_DATA = [
     exp: 210,
     gold: 420,
     regenPerTurn: 12,
-    // Honks every 5 turns — stuns the player (skips their spell cast)
+    trafficJamDelay: { min: 2, max: 3 },
     hornStun: true,
     hornInterval: 5,
     opener: 'A black limousine with tinted windows rolls to a stop, blocking the entire road. The window slides down exactly one centimeter.',

@@ -705,7 +705,7 @@ async function runAutoBattle(dungeonId) {
     _vsBreakLogged: false,
     smokeStackCount: 0,
     playerStunned: false,
-    pendingSpell: null,   // { def, spellLvl } — queued by traffic jam
+    pendingQueue: [],     // [{ def, spellLvl, turnsLeft }] — queued by traffic jam
     realityFractureActive: false,
   };
 
@@ -984,15 +984,20 @@ async function runAutoBattle(dungeonId) {
     } else {
       const _trafficJam = getPerk('traffic_jam');
 
-      // Release pending spell from previous turn
-      if (_trafficJam && battleStatus.pendingSpell) {
-        const pending = battleStatus.pendingSpell;
-        battleStatus.pendingSpell = null;
-        await appendBattleLog(
-          spellIconHTML(pending.def.id) + wrapLogText('🚦 Traffic clears — ' + pending.def.name + ' takes effect!'),
-          'player'
-        );
-        await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl);
+      // Tick down pending spells and fire any that are ready
+      if (_trafficJam && battleStatus.pendingQueue.length > 0) {
+        battleStatus.pendingQueue.forEach(p => p.turnsLeft--);
+        const ready = battleStatus.pendingQueue.filter(p => p.turnsLeft <= 0);
+        battleStatus.pendingQueue = battleStatus.pendingQueue.filter(p => p.turnsLeft > 0);
+        for (const pending of ready) {
+          await appendBattleLog(
+            spellIconHTML(pending.def.id) + wrapLogText('🚦 Traffic clears — ' + pending.def.name + ' takes effect!'),
+            'player'
+          );
+          await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl);
+          if (enemy.hp <= 0) break;
+          if (player.hp <= 0) break;
+        }
         if (enemy.hp <= 0) break;
         if (player.hp <= 0) break;
       }
@@ -1024,10 +1029,15 @@ async function runAutoBattle(dungeonId) {
           await appendBattleLog('Drowned ink seeps into the spell circle — ' + def.name + ' dissolves into black water.', 'warn');
 
         } else if (_trafficJam) {
-          // Queue entire spell — fires next turn
-          battleStatus.pendingSpell = { def, spellLvl };
+          // Roll delay from enemy override or dungeon default (1 turn)
+          const delayRange = enemyTemplate.trafficJamDelay || { min: 1, max: 1 };
+          const turnsLeft = delayRange.min + Math.floor(Math.random() * (delayRange.max - delayRange.min + 1));
+          battleStatus.pendingQueue.push({ def, spellLvl, turnsLeft });
+          const delayLabel = delayRange.min === delayRange.max
+            ? turnsLeft + ' turn'
+            : turnsLeft + ' turns';
           await appendBattleLog(
-            spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ' — stuck in traffic.'),
+            spellIconHTML(def.id) + wrapLogText(logName() + ' casts ' + def.name + ' — stuck in traffic for ' + delayLabel + '.'),
             'warn'
           );
 
@@ -1036,15 +1046,17 @@ async function runAutoBattle(dungeonId) {
         }
       }
 
-      // Final turn: flush any pending spell
-      if (turn === 10 && _trafficJam && battleStatus.pendingSpell) {
-        const pending = battleStatus.pendingSpell;
-        battleStatus.pendingSpell = null;
-        await appendBattleLog(
-          spellIconHTML(pending.def.id) + wrapLogText('🚦 Battle ends — ' + pending.def.name + ' arrives at last.'),
-          'player'
-        );
-        await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl);
+      // Final turn: flush all remaining queued spells
+      if (turn === 10 && _trafficJam && battleStatus.pendingQueue.length > 0) {
+        for (const pending of battleStatus.pendingQueue) {
+          await appendBattleLog(
+            spellIconHTML(pending.def.id) + wrapLogText('🚦 Battle ends — ' + pending.def.name + ' arrives at last.'),
+            'player'
+          );
+          await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl);
+          if (enemy.hp <= 0) break;
+        }
+        battleStatus.pendingQueue = [];
       }
     }
 
