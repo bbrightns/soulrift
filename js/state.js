@@ -233,8 +233,8 @@ function spendSkillPoint(stat) {
   }
 
   saveState();
-  if (typeof syncHeader   === 'function') syncHeader();
-  if (typeof syncProfile  === 'function') syncProfile();
+  if (typeof syncHeader         === 'function') syncHeader();
+  if (typeof renderProfilePanel === 'function') renderProfilePanel();
 }
 window.spendSkillPoint = spendSkillPoint;
 

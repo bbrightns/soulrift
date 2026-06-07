@@ -289,6 +289,7 @@ function renderProfilePanel() {
   const avatarEl = document.getElementById('prof-avatar');
   if (avatarEl) avatarEl.style.boxShadow = towerGlowToken[s.tower] || 'none';
 }
+window.renderProfilePanel = renderProfilePanel;
 
 /* ── Level Up overlay ────────────────────────────────────── */
 function showLevelUpOverlay(level) {

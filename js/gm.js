@@ -94,6 +94,18 @@
     if (profPanel && profPanel.classList.contains('is-open')) renderProfilePanel();
   }
 
+  function gmSetSkillPoints() {
+    var val = parseInt(document.getElementById('gm-sp-input').value, 10);
+    if (isNaN(val) || val < 0) return;
+    var state = getState();
+    state.player.skillPoints = val;
+    saveState();
+    syncHeader();
+    var profPanel = document.getElementById('profile-panel');
+    if (profPanel && profPanel.classList.contains('is-open')) renderProfilePanel();
+  }
+  window.gmSetSkillPoints = gmSetSkillPoints;
+
   function gmSetExp() {
     var val = parseInt(document.getElementById('gm-exp-input').value, 10);
     if (isNaN(val) || val < 0) return;

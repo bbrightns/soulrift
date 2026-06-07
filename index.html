@@ -376,7 +376,8 @@
           <div id="fusion-spell-list" class="fusion-stone-grid"></div>
 
           <!-- Result Modal -->
-          <div id="fusion-result-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-label="Fusion Result" onclick="closeFusionResult()">
+          <div id="fusion-result-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true"
+            aria-label="Fusion Result" onclick="closeFusionResult()">
             <div class="modal-card" onclick="event.stopPropagation()">
               <div id="fusion-result-body"></div>
               <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4)"
@@ -440,7 +441,8 @@
 
 
     <!-- ── Profile Panel (slide-up overlay) ──────────────── -->
-    <div id="profile-panel" role="dialog" aria-modal="true" aria-label="Player Profile" onclick="if(event.target===this)closeProfilePanel()">
+    <div id="profile-panel" role="dialog" aria-modal="true" aria-label="Player Profile"
+      onclick="if(event.target===this)closeProfilePanel()">
       <div class="profile-sheet">
         <div class="profile-sheet-topbar">
           <div class="profile-handle"></div>
@@ -454,8 +456,8 @@
           <div>
             <div class="profile-hero__name-row">
               <div class="profile-hero__name" id="prof-name">Arcane Wanderer</div>
-              <button class="prof-name-edit-btn" id="prof-name-edit-btn"
-                onclick="startEditName()" aria-label="Edit name" type="button">✎</button>
+              <button class="prof-name-edit-btn" id="prof-name-edit-btn" onclick="startEditName()"
+                aria-label="Edit name" type="button">✎</button>
             </div>
             <div class="profile-hero__sub">
               <span id="prof-tower-badge" class="badge badge--gold">--</span>
@@ -511,22 +513,26 @@
           <div class="prof-chip">
             <span class="prof-chip__key">💪 Str</span>
             <span class="prof-chip__val" id="prof-str">8</span>
-            <button class="skill-up-btn is-hidden" id="skill-up-str" onclick="spendSkillPoint('str')" aria-label="Increase Str">+</button>
+            <button class="skill-up-btn is-hidden" id="skill-up-str" onclick="spendSkillPoint('str')"
+              aria-label="Increase Str">+</button>
           </div>
           <div class="prof-chip">
             <span class="prof-chip__key">🧠 Int</span>
             <span class="prof-chip__val" id="prof-int">8</span>
-            <button class="skill-up-btn is-hidden" id="skill-up-int" onclick="spendSkillPoint('int')" aria-label="Increase Int">+</button>
+            <button class="skill-up-btn is-hidden" id="skill-up-int" onclick="spendSkillPoint('int')"
+              aria-label="Increase Int">+</button>
           </div>
           <div class="prof-chip">
             <span class="prof-chip__key">⚔ Atk</span>
             <span class="prof-chip__val" id="prof-atk">10</span>
-            <button class="skill-up-btn is-hidden" id="skill-up-atk" onclick="spendSkillPoint('atk')" aria-label="Increase Atk">+</button>
+            <button class="skill-up-btn is-hidden" id="skill-up-atk" onclick="spendSkillPoint('atk')"
+              aria-label="Increase Atk">+</button>
           </div>
           <div class="prof-chip">
             <span class="prof-chip__key">🛡 Def</span>
             <span class="prof-chip__val" id="prof-def">5</span>
-            <button class="skill-up-btn is-hidden" id="skill-up-def" onclick="spendSkillPoint('def')" aria-label="Increase Def">+</button>
+            <button class="skill-up-btn is-hidden" id="skill-up-def" onclick="spendSkillPoint('def')"
+              aria-label="Increase Def">+</button>
           </div>
 
         </div>
@@ -561,7 +567,8 @@
     </div><!-- /profile-panel -->
 
     <!-- Shop confirm modal -->
-    <div id="shop-confirm-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-label="Confirm" onclick="closeShopConfirm()">
+    <div id="shop-confirm-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-label="Confirm"
+      onclick="closeShopConfirm()">
       <div class="modal-card" onclick="event.stopPropagation()">
         <div id="shop-confirm-body"></div>
         <div style="display:flex;gap:var(--sp-3);margin-top:var(--sp-5)">
@@ -572,7 +579,8 @@
     </div>
 
     <!-- Spell Picker Bottomsheet -->
-    <div id="spell-picker-panel" role="dialog" aria-modal="true" aria-label="Select Spell" onclick="if(event.target===this)closeSpellPicker()">
+    <div id="spell-picker-panel" role="dialog" aria-modal="true" aria-label="Select Spell"
+      onclick="if(event.target===this)closeSpellPicker()">
       <div class="profile-sheet">
         <div class="profile-handle"></div>
         <div id="spell-picker-panel-header" class="spell-picker-header"></div>
@@ -592,7 +600,8 @@
     </div>
 
     <!-- ── GM Dev Panel ──────────────────────────────────────── -->
-    <div id="gm-panel" role="dialog" aria-modal="true" aria-label="GM Mode" onclick="if(event.target===this)closeGMPanel()">
+    <div id="gm-panel" role="dialog" aria-modal="true" aria-label="GM Mode"
+      onclick="if(event.target===this)closeGMPanel()">
       <div class="gm-sheet">
 
         <div class="gm-sheet__header">
@@ -642,13 +651,32 @@
           </div>
         </div>
 
+        <!-- 3b. Skill Points -->
+        <div class="gm-section">
+          <div class="section-label">Set Skill Points</div>
+          <div class="gm-row">
+            <input type="number" id="gm-sp-input" class="gm-input" min="0" placeholder="Points">
+            <button class="btn btn--primary gm-btn" onclick="gmSetSkillPoints()">Set</button>
+          </div>
+        </div>
+
+        <!-- 3b. Skill Points -->
+        <div class="gm-section">
+          <div class="section-label">Set Skill Points</div>
+          <div class="gm-row">
+            <input type="number" id="gm-sp-input" class="gm-input" min="0" placeholder="Points">
+            <button class="btn btn--primary gm-btn" onclick="gmSetSkillPoints()">Set</button>
+          </div>
+        </div>
+
         <!-- 4. Battle Speed -->
         <div class="gm-section">
           <div class="section-label">Battle Speed</div>
           <div class="gm-row">
-            <button class="btn btn--ghost gm-speed-btn" data-speed="slow"   onclick="gmSetSpeed('slow')">Slow</button>
-            <button class="btn btn--ghost gm-speed-btn" data-speed="normal" onclick="gmSetSpeed('normal')">Normal</button>
-            <button class="btn btn--ghost gm-speed-btn" data-speed="fast"   onclick="gmSetSpeed('fast')">Fast</button>
+            <button class="btn btn--ghost gm-speed-btn" data-speed="slow" onclick="gmSetSpeed('slow')">Slow</button>
+            <button class="btn btn--ghost gm-speed-btn" data-speed="normal"
+              onclick="gmSetSpeed('normal')">Normal</button>
+            <button class="btn btn--ghost gm-speed-btn" data-speed="fast" onclick="gmSetSpeed('fast')">Fast</button>
           </div>
         </div>
 
