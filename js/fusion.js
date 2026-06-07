@@ -374,6 +374,9 @@ function showFusionResult(success, spellName, spellId, toLvl, failType, downgrad
 
   modal.setAttribute('aria-labelledby', 'modal-result-title');
   modal.classList.remove('is-hidden');
+  /* delight: toggle success animation class */
+  modal.classList.toggle('is-success', !!success);
+  if (typeof SFX !== 'undefined') SFX.fusion(success);
   if (typeof _openModal === 'function') _openModal(modal);
 }
 

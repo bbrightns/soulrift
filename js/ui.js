@@ -277,6 +277,19 @@ function renderProfilePanel() {
   if (avatarEl) avatarEl.style.boxShadow = towerGlowToken[s.tower] || 'none';
 }
 
+/* ── Level Up overlay ────────────────────────────────────── */
+function showLevelUpOverlay(level) {
+  const ov = document.getElementById('levelup-overlay');
+  if (!ov) return;
+  const numEl = ov.querySelector('.levelup-number');
+  if (numEl) numEl.textContent = level;
+  ov.classList.remove('is-active');
+  void ov.offsetWidth; // force reflow so animation replays
+  ov.classList.add('is-active');
+  setTimeout(() => ov.classList.remove('is-active'), 2700);
+}
+window.showLevelUpOverlay = showLevelUpOverlay;
+
 /* ── Toast ───────────────────────────────────────────────── */
 function toast(msg, type = '', ms = 2600) {
   const wrap = document.getElementById('toast-wrap');

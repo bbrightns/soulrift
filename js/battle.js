@@ -81,10 +81,12 @@ const TOWER_GROWTH = {
 function gainExp(amount) {
   const s = getState();
   s.player.exp += amount;
+  let _leveled = false;
   while (s.player.exp >= s.player.expNext) {
     s.player.exp -= s.player.expNext;
     s.player.level += 1;
     s.player.expNext = Math.floor(s.player.expNext * 1.25);
+    _leveled = true;
     if (typeof SFX !== 'undefined') SFX.levelUp();
 
     const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
@@ -106,6 +108,9 @@ function gainExp(amount) {
       s.player.agi += 2;
       if (typeof toast === 'function') toast('Power Surge! Level ' + s.player.level + ' milestone reached!', 'gold');
     }
+  }
+  if (_leveled && typeof showLevelUpOverlay === 'function') {
+    showLevelUpOverlay(s.player.level);
   }
   saveState();
 }
