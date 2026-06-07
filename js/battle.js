@@ -1158,7 +1158,7 @@ function wrapLogText(html) {
 
 async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl) {
   // ── Base damage ──────────────────────────────────────────
-  let baseDmg = Math.max(1, spellPower(def, player, spellLvl) - enemy.def);
+  let baseDmg = spellPower(def, player, spellLvl);
 
   // Spell Fatigue: spells below Lv.9 deal only 40% damage in Rift's End
   const spellFatiguePerk = getPerk('spell_fatigue');
@@ -1209,6 +1209,8 @@ async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus
     );
     return;
   }
+
+  baseDmg = Math.max(1, baseDmg - enemy.def);
 
   // Void Shield absorption
   if (battleStatus.voidShieldRemaining > 0 && !battleStatus.voidShieldBroken) {

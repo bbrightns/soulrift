@@ -86,9 +86,10 @@ async function checkMotorbikeDodge(ctx) {
 }
 
 // Master helper: apply dmg to enemy with all dungeon modifiers, log, reflect
-async function dealDamage(ctx, rawDmg, logLine) {
+async function dealDamage(ctx, rawDmg, logLine, pierceDef = false) {
   if (await checkMotorbikeDodge(ctx)) return 0;
-  let dmg = smokeReduce(ctx, rawDmg);
+  let dmg = pierceDef ? Math.max(1, rawDmg) : Math.max(1, rawDmg - ctx.enemy.def);
+  dmg = smokeReduce(ctx, dmg);
   dmg = voidShieldAbsorb(ctx, dmg);
   ctx.enemy.hp = Math.max(0, ctx.enemy.hp - dmg);
   ctx.updateHud();
@@ -277,21 +278,13 @@ registerHandler('night_raid', async (ctx) => {
 });
 
 registerHandler('dark_rift', async (ctx) => {
-  // True damage — skip enemy.def entirely, but still check Void Shield
-  const trueDmg = Math.max(1, Math.floor(
+  const trueDmg = Math.floor(
     (ctx.player.atk + ctx.player.int) * 0.75 * lvlDmgMult(ctx.spellLvl)
-  ));
-  if (await checkMotorbikeDodge(ctx)) return;
-  const afterShield = voidShieldAbsorb(ctx, trueDmg);
-  ctx.enemy.hp = Math.max(0, ctx.enemy.hp - afterShield);
-  ctx.updateHud();
-  await logVoidShieldBreak(ctx);
-  await ctx.log(
-    ctx.spellIconHTML + wrapLogText(
-      ctxGoldenName(ctx) + ' opens Dark Rift for ' + afterShield + ' TRUE damage.'
-    ), 'player'
   );
-  await applyReflect(ctx, afterShield);
+  await dealDamage(ctx, trueDmg,
+    ctxGoldenName(ctx) + ' opens Dark Rift for ' + trueDmg + ' TRUE damage. (Ignores DEF)',
+    true
+  );
 });
 
 registerHandler('demon_summoning', async (ctx) => {
@@ -406,10 +399,12 @@ registerHandler('phoenix_blood', async (ctx) => {
 });
 
 registerHandler('wyvern_kamikaze', async (ctx) => {
-  const defIgnore = Math.floor(ctx.enemy.def * 0.20);
-  const total = Math.max(1, ctx.baseDmg + defIgnore);
+  // Ignores 20% of DEF: pass pierceDef=true, manually apply 80% of DEF instead
+  const partialDef = Math.floor(ctx.enemy.def * 0.80);
+  const total = Math.max(1, ctx.baseDmg - partialDef);
   await dealDamage(ctx, total,
-    ctxGoldenName(ctx) + ' commands Wyvern Kamikaze for ' + total + ' physical fire damage!'
+    ctxGoldenName(ctx) + ' commands Wyvern Kamikaze for ' + total + ' physical fire damage! (Pierces 20% DEF)',
+    true
   );
 });
 
