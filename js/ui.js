@@ -187,6 +187,13 @@ function saveEditName() {
   saveState();
   syncHeader();
   renderProfilePanel();
+  /* reset button back to edit mode */
+  const editBtn = document.getElementById('prof-name-edit-btn');
+  if (editBtn) {
+    editBtn.textContent = '✎';
+    editBtn.setAttribute('aria-label', 'Edit name');
+    editBtn.onclick = startEditName;
+  }
 }
 
 /* ── Profile panel ───────────────────────────────────────── */
