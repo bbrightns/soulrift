@@ -493,39 +493,40 @@
 
         <!-- Stats (includes vitals) -->
         <div class="prof-inline-label"><span>Combat Stats</span></div>
+        <div class="skill-pts-row is-hidden" id="skill-pts-badge">
+          <span>✦ Points Available</span>
+          <span id="prof-skill-points">0</span>
+        </div>
         <div class="prof-stats-grid" style="margin-bottom:var(--sp-5);">
 
-          <div class="prof-chip-vitals">
-            <div class="prof-chip-hp">
-              <span class="prof-chip__key">❤ HP</span>
-              <span class="prof-chip__val prof-chip__val--red" id="prof-hp">80</span>
-            </div>
-            <div class="prof-chip-sp">
-              <span class="prof-chip__key">💧 SP</span>
-              <span class="prof-chip__val prof-chip__val--blue" id="prof-sp">40</span>
-            </div>
+          <div class="prof-chip prof-chip--hp">
+            <span class="prof-chip__key">❤ HP</span>
+            <span class="prof-chip__val prof-chip__val--red" id="prof-hp">80</span>
           </div>
+          <div class="prof-chip prof-chip--sp">
+            <span class="prof-chip__key">💧 SP</span>
+            <span class="prof-chip__val prof-chip__val--blue" id="prof-sp">40</span>
+          </div>
+
           <div class="prof-chip">
             <span class="prof-chip__key">💪 Str</span>
             <span class="prof-chip__val" id="prof-str">8</span>
+            <button class="skill-up-btn is-hidden" id="skill-up-str" onclick="spendSkillPoint('str')" aria-label="Increase Str">+</button>
           </div>
-
           <div class="prof-chip">
             <span class="prof-chip__key">🧠 Int</span>
             <span class="prof-chip__val" id="prof-int">8</span>
+            <button class="skill-up-btn is-hidden" id="skill-up-int" onclick="spendSkillPoint('int')" aria-label="Increase Int">+</button>
           </div>
           <div class="prof-chip">
             <span class="prof-chip__key">⚔ Atk</span>
             <span class="prof-chip__val" id="prof-atk">10</span>
-          </div>
-
-          <div class="prof-chip">
-            <span class="prof-chip__key">⚡ Agi</span>
-            <span class="prof-chip__val" id="prof-agi">6</span>
+            <button class="skill-up-btn is-hidden" id="skill-up-atk" onclick="spendSkillPoint('atk')" aria-label="Increase Atk">+</button>
           </div>
           <div class="prof-chip">
             <span class="prof-chip__key">🛡 Def</span>
             <span class="prof-chip__val" id="prof-def">5</span>
+            <button class="skill-up-btn is-hidden" id="skill-up-def" onclick="spendSkillPoint('def')" aria-label="Increase Def">+</button>
           </div>
 
         </div>

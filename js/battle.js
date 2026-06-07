@@ -93,15 +93,22 @@ function enemyStrike(enemy, player, turn) {
   return Math.max(2, raw - Math.floor(player.def * 0.45));
 }
 
+/* STR → bonus hpMax (HP_PER_STR per point spent via skill points)
+   INT → bonus spMax (SP_PER_INT per point spent via skill points)
+   Auto-growth per level still applies separately via TOWER_GROWTH below */
+const HP_PER_STR = 5;
+const SP_PER_INT = 4;
+const SKILL_POINTS_PER_LEVEL = 3;
+
 const TOWER_GROWTH = {
-  // Light: เติบโต HP และ DEF เร็วสุด
-  light: { hpMax: 10, spMax: 4, atk: 1, def: 3, str: 0, int: 2, agi: 0 },
-  // Dark: เติบโต ATK เร็วสุด HP ช้าสุด
-  dark:  { hpMax: 3,  spMax: 3, atk: 3, def: 0, str: 0, int: 1, agi: 2 },
-  // Fire: เติบโต HP และ ATK+STR สมดุล
-  fire:  { hpMax: 7,  spMax: 2, atk: 2, def: 1, str: 2, int: 0, agi: 1 },
-  // Ice: เติบโต SP เร็วสุด HP ช้าสุด INT สูง
-  ice:   { hpMax: 2,  spMax: 7, atk: 1, def: 1, str: 0, int: 2, agi: 1 },
+  // Light: DEF เติบโตเร็วสุด, INT สูง
+  light: { hpMax: 6, spMax: 3, atk: 1, def: 3, str: 1, int: 2 },
+  // Dark: ATK เติบโตเร็วสุด HP ช้าสุด
+  dark:  { hpMax: 2, spMax: 2, atk: 3, def: 0, str: 1, int: 1 },
+  // Fire: STR + ATK เติบโตสม่ำเสมอ
+  fire:  { hpMax: 4, spMax: 1, atk: 2, def: 1, str: 3, int: 0 },
+  // Ice: INT เติบโตเร็วสุด SP เร็ว HP ช้าสุด
+  ice:   { hpMax: 1, spMax: 4, atk: 1, def: 1, str: 0, int: 3 },
 };
 
 function gainExp(amount) {
@@ -118,23 +125,23 @@ function gainExp(amount) {
     if (typeof SFX !== 'undefined') SFX.levelUp();
 
     const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
-    p.hpMax += g.hpMax;
-    p.spMax += g.spMax;
-    p.atk += g.atk;
-    p.def += g.def;
-    p.str += g.str;
-    p.int += g.int;
-    p.agi += g.agi;
+    s.player.hpMax += g.hpMax;
+    s.player.spMax += g.spMax;
+    s.player.atk += g.atk;
+    s.player.def += g.def;
+    s.player.str += g.str;
+    s.player.int += g.int;
+    s.player.skillPoints = (s.player.skillPoints || 0) + SKILL_POINTS_PER_LEVEL;
 
-    if (p.level % 5 === 0) {
-      p.hpMax += 10;
-      p.spMax += 5;
-      p.atk += 2;
-      p.def += 2;
-      p.str += 2;
-      p.int += 2;
-      p.agi += 2;
-      if (typeof toast === 'function') toast('Power Surge! Level ' + p.level + ' milestone reached!', 'gold');
+    if (s.player.level % 5 === 0) {
+      s.player.hpMax += 8;
+      s.player.spMax += 4;
+      s.player.atk  += 2;
+      s.player.def  += 2;
+      s.player.str  += 2;
+      s.player.int  += 2;
+      s.player.skillPoints += 2;   /* bonus points at milestone */
+      if (typeof toast === 'function') toast('Power Surge! Level ' + s.player.level + ' milestone reached!', 'gold');
     }
   }
 

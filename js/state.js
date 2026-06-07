@@ -26,8 +26,8 @@ const DEFAULTS = {
     atk:          10,
     def:          5,
     int:          8,
-    agi:          6,
     str:          8,
+    skillPoints:  0,   /* unspent stat points from level-ups */
   },
 
   /* Resources */
@@ -209,26 +209,52 @@ function removeSpell(id, lvl, qty = 1) {
 }
 window.removeSpell = removeSpell;
 
+/* ── Skill Point Allocation ──────────────────────────────── */
+/* HP_PER_STR and SP_PER_INT are defined in battle.js         */
+function spendSkillPoint(stat) {
+  const s = getState();
+  if (!s.player.skillPoints || s.player.skillPoints < 1) return;
+  const validStats = ['str', 'int', 'atk', 'def'];
+  if (!validStats.includes(stat)) return;
+
+  s.player.skillPoints--;
+  s.player[stat] = (s.player[stat] || 0) + 1;
+
+  /* derived stats */
+  if (stat === 'str') {
+    const bonus = (typeof HP_PER_STR !== 'undefined') ? HP_PER_STR : 5;
+    s.player.hpMax += bonus;
+    s.player.hp    += bonus; /* heal by the same amount */
+  }
+  if (stat === 'int') {
+    const bonus = (typeof SP_PER_INT !== 'undefined') ? SP_PER_INT : 4;
+    s.player.spMax += bonus;
+    s.player.sp    += bonus;
+  }
+
+  saveState();
+  if (typeof syncHeader   === 'function') syncHeader();
+  if (typeof syncProfile  === 'function') syncProfile();
+}
+window.spendSkillPoint = spendSkillPoint;
+
 const TOWER_STARTERS = {
   // Light: ทนสูงสุด DEF สูงสุด INT เป็น primary damage stat
   light: {
     spellId: 'light_shot',
-    player: { hp: 110, hpMax: 110, sp: 58, spMax: 58, atk: 7,  def: 16, int: 12, agi: 5,  str: 5  },
+    player: { hp: 110, hpMax: 110, sp: 58, spMax: 58, atk: 7,  def: 16, int: 12, str: 5,  skillPoints: 0 },
   },
-  // Dark: glass cannon — ATK สูงสุด HP/DEF ต่ำสุด AGI สูง
   dark: {
     spellId: 'dark_shot',
-    player: { hp: 55,  hpMax: 55,  sp: 44, spMax: 44, atk: 15, def: 3,  int: 7,  agi: 13, str: 6  },
+    player: { hp: 55,  hpMax: 55,  sp: 44, spMax: 44, atk: 15, def: 3,  int: 7,  str: 6,  skillPoints: 0 },
   },
-  // Fire: ATK สูง HP ปานกลาง SP น้อย STR สูง
   fire: {
     spellId: 'fire_shot',
-    player: { hp: 85,  hpMax: 85,  sp: 30, spMax: 30, atk: 13, def: 6,  int: 5,  agi: 6,  str: 13 },
+    player: { hp: 85,  hpMax: 85,  sp: 30, spMax: 30, atk: 13, def: 6,  int: 5,  str: 13, skillPoints: 0 },
   },
-  // Ice: SP สูงสุด HP ต่ำสุด INT เป็น primary damage stat DEF ปานกลาง
   ice: {
     spellId: 'ice_shot',
-    player: { hp: 50,  hpMax: 50,  sp: 74, spMax: 74, atk: 8,  def: 8,  int: 14, agi: 7,  str: 4  },
+    player: { hp: 50,  hpMax: 50,  sp: 74, spMax: 74, atk: 8,  def: 8,  int: 14, str: 4,  skillPoints: 0 },
   },
 };
 

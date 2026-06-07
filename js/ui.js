@@ -134,8 +134,11 @@ function syncHeader() {
   const s = getState();
   const goldEl = document.getElementById('hud-gold-val');
   const levelEl = document.getElementById('hud-level');
-  if (goldEl) goldEl.textContent = s.gold.toLocaleString();
-  if (levelEl) levelEl.textContent = 'LV ' + s.player.level;
+  if (goldEl)  goldEl.textContent  = s.gold.toLocaleString();
+  if (levelEl) {
+    levelEl.textContent = 'LV ' + s.player.level;
+    levelEl.classList.toggle('has-points', (s.player.skillPoints || 0) > 0);
+  }
 
   /* tower color theme on root */
   const app = document.getElementById('app');
@@ -235,17 +238,27 @@ function renderProfilePanel() {
 
   fill('prof-name', s.playerName || 'Arcane Wanderer');
   fill('prof-avatar', towerAvatars[s.tower] || '✦');
-  fill('prof-tower', towerNames[s.tower] || '—');
-  fill('prof-level', p.level);
-  fill('prof-exp', p.exp + ' / ' + p.expNext);
-  fill('prof-hp', p.hpMax);
-  fill('prof-sp', p.spMax);
-  fill('prof-gold', s.gold.toLocaleString());
-  fill('prof-str', p.str);
-  fill('prof-atk', p.atk);
-  fill('prof-int', p.int);
-  fill('prof-agi', p.agi);
-  fill('prof-def', p.def);
+  fill('prof-tower',  towerNames[s.tower] || '—');
+  fill('prof-level',  p.level);
+  fill('prof-exp',    p.exp + ' / ' + p.expNext);
+  fill('prof-hp',     p.hpMax);
+  fill('prof-sp',     p.spMax);
+  fill('prof-gold',   s.gold.toLocaleString());
+  fill('prof-str',    p.str);
+  fill('prof-int',    p.int);
+  fill('prof-atk',    p.atk);
+  fill('prof-def',    p.def);
+
+  /* skill points — badge + inline buttons */
+  const pts = p.skillPoints || 0;
+  const ptsBadge = document.getElementById('skill-pts-badge');
+  const ptsCount = document.getElementById('prof-skill-points');
+  if (ptsBadge) ptsBadge.classList.toggle('is-hidden', pts === 0);
+  if (ptsCount) ptsCount.textContent = pts;
+  ['str','int','atk','def'].forEach(stat => {
+    const btn = document.getElementById('skill-up-' + stat);
+    if (btn) btn.classList.toggle('is-hidden', pts === 0);
+  });
 
   /* tower badge color */
   const badgeEl = document.getElementById('prof-tower-badge');

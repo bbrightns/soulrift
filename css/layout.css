@@ -835,13 +835,9 @@
   font-size: 12px;
   color: var(--c-text-2);
   letter-spacing: .02em;
+  flex: 1;
 }
 
-.prof-chip-hp .prof-chip__key,
-.prof-chip-sp .prof-chip__key {
-  font-size: 12px;
-  color: var(--c-text-2);
-}
 
 .prof-chip__val {
   font-size: 16px;
@@ -862,29 +858,63 @@
   color: #5a9ae0;
 }
 
-.prof-chip-vitals {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-radius: var(--r-md);
-  overflow: hidden;
-  border: 0.5px solid rgba(255, 255, 255, 0.09);
-}
+.prof-chip--hp { background: rgba(192, 48, 48, 0.07); }
+.prof-chip--sp { background: rgba(60, 80, 200, 0.08); }
 
-.prof-chip-hp {
+/* ── Skill Points row (above stat grid) ──────────────────── */
+.skill-pts-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 8px;
-  background: rgba(192, 48, 48, 0.07);
-  border-right: 0.5px solid rgba(255, 255, 255, 0.08);
+  padding: 6px var(--sp-3);
+  margin-bottom: var(--sp-2);
+  background: rgba(197,160,89,.08);
+  border: 1px solid var(--c-gold-dim);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-family: var(--f-head);
+  letter-spacing: .05em;
+  color: var(--c-gold);
 }
 
-.prof-chip-sp {
+/* ── Inline + button inside each stat chip ───────────────── */
+.skill-up-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--c-gold-dim);
+  background: rgba(197,160,89,.08);
+  color: var(--c-gold);
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 7px 8px;
-  background: rgba(60, 80, 200, 0.08);
+  justify-content: center;
+  transition: background .15s, border-color .15s, transform .1s;
+  margin-left: var(--sp-2);
+}
+
+.skill-up-btn:hover  { background: rgba(197,160,89,.20); border-color: var(--c-gold); }
+.skill-up-btn:active { transform: scale(.92); }
+
+/* ── HUD level badge glow when points pending ────────────── */
+.hud-level.has-points {
+  position: relative;
+  color: var(--c-gold);
+  box-shadow: 0 0 0 2px var(--c-gold-dim);
+  animation: pts-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pts-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--c-gold-dim); }
+  50%       { box-shadow: 0 0 0 3px rgba(197,160,89,.5), 0 0 10px rgba(197,160,89,.25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-level.has-points { animation: none; box-shadow: 0 0 0 2px var(--c-gold); }
 }
 
 /* Data block — clean rows inside the panel, no nested card border */
