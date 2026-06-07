@@ -207,6 +207,30 @@ function clearBlueprintAndRender() {
   renderBlueprint();
 }
 
+function autoFillBlueprint() {
+  const stones = getSpells();
+  if (!stones.length) { toast('No spell stones owned.', 'gold'); return; }
+
+  /* score each owned spell — use spellPower if battle.js is loaded */
+  const player = getPlayer();
+  const scored = stones.map(stone => {
+    const def = window.getSpellDef ? getSpellDef(stone.id) : null;
+    if (!def) return null;
+    const power = (typeof spellPower === 'function')
+      ? spellPower(def, player, stone.lvl || 1)
+      : (stone.lvl || 1) * 10 + def.spCost;
+    return { id: stone.id, lvl: stone.lvl || 1, power };
+  }).filter(Boolean).sort((a, b) => b.power - a.power);
+
+  if (!scored.length) { toast('No valid spells found.', 'bad'); return; }
+
+  const best = scored[0];
+  const val = best.id + '|' + best.lvl;
+  getBlueprint().forEach((_, i) => setBlueprintSlot(i, val));
+  renderBlueprint();
+  toast('Blueprint filled with ' + (getSpellDef(best.id) || {}).name + '.', 'ok');
+}
+
 function showClearConfirm() {
   const bp = getState().blueprint;
   const filled = bp.filter(s => !!s).length;

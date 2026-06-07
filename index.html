@@ -259,9 +259,12 @@
           <div class="section-label">Battle Blueprint</div>
           <div id="blueprint-summary" style="margin-bottom:var(--sp-1);"></div>
           <div id="blueprint-grid" class="blueprint-grid"></div>
-          <div style="margin-top:var(--sp-2);padding-bottom:var(--sp-3);">
-            <button class="btn btn--ghost btn--full" onclick="showClearConfirm();">
-              Clear All Slots
+          <div style="margin-top:var(--sp-2);padding-bottom:var(--sp-3);display:flex;gap:var(--sp-2);">
+            <button class="btn btn--primary" style="flex:1;" onclick="autoFillBlueprint();" type="button">
+              Auto Fill
+            </button>
+            <button class="btn btn--ghost" style="flex:1;" onclick="showClearConfirm();" type="button">
+              Clear All
             </button>
           </div>
         </div>
@@ -630,6 +633,7 @@
   <script src="js/shop.js?v=phase1-1"></script>
   <script src="js/inventory.js?v=phase1-1"></script>
   <script src="js/spellHandlers.js?v=phase1-1"></script>
+  <script src="js/sfx.js?v=phase1-1"></script>
   <script src="js/battle.js?v=phase1-1"></script>
   <script src="js/fusion.js?v=phase1-1"></script>
   <script src="js/app.js?v=phase1-1"></script>

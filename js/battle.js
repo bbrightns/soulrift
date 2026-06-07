@@ -85,6 +85,7 @@ function gainExp(amount) {
     s.player.exp -= s.player.expNext;
     s.player.level += 1;
     s.player.expNext = Math.floor(s.player.expNext * 1.25);
+    if (typeof SFX !== 'undefined') SFX.levelUp();
 
     const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
     s.player.hpMax += g.hpMax;
@@ -745,6 +746,7 @@ async function runAutoBattle(dungeonId) {
             await appendBattleLog('Divine Reflection mirrors ' + reflected + ' damage back at ' + enemy.name + '!', 'player');
           }
           player.hp = Math.max(0, player.hp - hit);
+          if (typeof SFX !== 'undefined') SFX.enemyHit();
           updateCombatHud(player, enemy, enemyTemplate);
           await appendBattleLog(enemy.name + ' strikes for ' + hit + ' damage.', 'enemy');
           if (timePressure && turn === timePressure.startTurn) {
@@ -781,6 +783,7 @@ async function runAutoBattle(dungeonId) {
           'warn'
         );
       } else {
+        if (typeof SFX !== 'undefined') SFX.playerHit();
         await castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl);
         updateCombatHud(player, enemy, enemyTemplate);
       }
@@ -822,9 +825,11 @@ async function runAutoBattle(dungeonId) {
       await appendBattleLog('✦ Drop: ' + drop.name, 'reward');
     }
 
+    if (typeof SFX !== 'undefined') SFX.victory();
     showBattleOutcome({ won: true, goldReward, expReward, drops });
     setBattleResult('<span class="c-ok">Victory recorded</span>');
   } else {
+    if (typeof SFX !== 'undefined') SFX.defeat();
     await appendBattleLog('Defeat. The tower recalls ' + logName() + ' before the Rift closes.', 'warn');
     showBattleOutcome({ won: false, goldReward: 0, expReward: 0 });
     setBattleResult('<span class="c-bad">Battle failed</span>');

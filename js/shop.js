@@ -22,11 +22,12 @@ function renderMarket() {
 
   const marketFooter =
     '<div class="market-footer-hint">'
-    + '◆ Harder dungeons drop rarer spell stones and catalysts'
+    + 'Rare spells &amp; catalysts drop from dungeons only'
     + '</div>';
 
   wrap.innerHTML = spells.map(spell => (
-    '<div class="card card--raised spell-shop-card" style="margin-bottom:var(--sp-2);">'
+    '<div class="card card--raised spell-shop-card" data-spell-id="' + spell.id + '"'
+    + ' onclick="_toggleSpellExpand(this,\'' + spell.id + '\')">'
     + '<div class="shop-card-top">'
     + '<img src="/asset/spell_icons/' + spell.id + '.png" class="shop-spell-icon" alt="">'
     + '<div class="shop-card-info">'
@@ -39,7 +40,12 @@ function renderMarket() {
     + '<span class="badge badge--' + spell.tower + '">' + spell.tower + '</span>'
     + '</div>'
     + '</div>'
-    + '<div class="shop-buy-row">'
+    + '<div class="spell-expand-panel">'
+    + '<div class="spell-expand-row"><span>Effect</span><span class="spell-expand-val">' + (spell.effect || spell.desc) + '</span></div>'
+    + '<div class="spell-expand-row"><span>Est. Damage (Lv.1)</span><span class="spell-expand-dmg" id="spell-dmg-' + spell.id + '">—</span></div>'
+    + '<div class="spell-expand-row"><span>Rarity</span><span class="badge badge--' + spell.rarity + '">' + spell.rarity + '</span></div>'
+    + '</div>'
+    + '<div class="shop-buy-row" onclick="event.stopPropagation()">'
     + '<button class="shop-buy-btn" onclick="buyShopSpell(\'' + spell.id + '\',1)">Buy ×1</button>'
     + '<button class="shop-buy-btn shop-buy-btn--right" onclick="buyShopSpell(\'' + spell.id + '\',10)">Buy ×10</button>'
     + '<button class="shop-buy-btn shop-buy-btn--right" onclick="buyShopSpell(\'' + spell.id + '\',100)">Buy ×100</button>'
@@ -49,6 +55,35 @@ function renderMarket() {
 }
 
 let _shopPending = null;  // { spellId, qty }
+
+function _toggleSpellExpand(cardEl, spellId) {
+  const isOpen = cardEl.classList.contains('is-expanded');
+  /* close all others */
+  document.querySelectorAll('.spell-shop-card.is-expanded')
+    .forEach(el => el.classList.remove('is-expanded'));
+  if (isOpen) return;
+  cardEl.classList.add('is-expanded');
+  /* compute estimated damage using spellPower if available */
+  const dmgEl = document.getElementById('spell-dmg-' + spellId);
+  if (!dmgEl) return;
+  if (typeof spellPower === 'function') {
+    const def = window.getSpellDef ? getSpellDef(spellId) : null;
+    const player = getPlayer();
+    if (def && player) {
+      const isDamage = def.role && !def.role.toLowerCase().includes('buff')
+        && !def.role.toLowerCase().includes('survival')
+        && !def.role.toLowerCase().includes('support');
+      if (isDamage) {
+        const dmg = spellPower(def, player, 1);
+        dmgEl.textContent = '~' + dmg;
+        dmgEl.className = 'spell-expand-dmg c-ok';
+      } else {
+        dmgEl.textContent = 'Support / Buff';
+        dmgEl.className = 'spell-expand-dmg';
+      }
+    }
+  }
+}
 
 function buyShopSpell(spellId, qty = 1) {
   const def = window.getSpellDef ? getSpellDef(spellId) : null;
@@ -96,6 +131,7 @@ function confirmShopBuy() {
   }
 
   for (let i = 0; i < qty; i++) giveSpell(def.id, 1);
+  if (typeof SFX !== 'undefined') SFX.buy();
   syncHeader();
   renderMarket();
   if (typeof renderInventory === 'function') renderInventory();
