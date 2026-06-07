@@ -8,6 +8,26 @@
    (after wrapLogText / ctxGoldenName / lvl helpers):
    ============================================================ */
 
+/* ── Handler registry ────────────────────────────────────── */
+const _handlers = {};
+function registerHandler(id, fn) { _handlers[id] = fn; }
+function getSpellHandler(id) { return _handlers[id] || null; }
+window.getSpellHandler = getSpellHandler;
+
+/* ── Per-handler scaling helpers ─────────────────────────── */
+function lvlFlat(base, perLvl, lvl) {
+  return base + Math.floor((lvl - 1) * perLvl);
+}
+function lvlChance(base, perLvl, cap, lvl) {
+  return Math.min(cap, base + (lvl - 1) * perLvl);
+}
+function lvlDmgMult(lvl) {
+  return 1 + (lvl - 1) * 0.12;
+}
+function ctxGoldenName(ctx) {
+  return '<span class="log-name">' + ctx.playerName + '</span>';
+}
+
 /* ── Dungeon ability helpers (called inside every handler) ── */
 
 // Absorbs dmg into Void Shield first; returns remaining damage

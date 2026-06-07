@@ -5,10 +5,6 @@
 
 'use strict';
 
-function battlePlayerName() {
-  return getPlayerName();
-}
-
 function resetGame() {
   if (!confirm('Reset all progress? This cannot be undone.')) return;
   closeProfilePanel();
