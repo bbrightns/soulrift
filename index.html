@@ -641,7 +641,17 @@
           </div>
         </div>
 
-        <!-- 4. Reset -->
+        <!-- 4. Battle Speed -->
+        <div class="gm-section">
+          <div class="section-label">Battle Speed</div>
+          <div class="gm-row">
+            <button class="btn btn--ghost gm-speed-btn" data-speed="slow"   onclick="gmSetSpeed('slow')">Slow</button>
+            <button class="btn btn--ghost gm-speed-btn" data-speed="normal" onclick="gmSetSpeed('normal')">Normal</button>
+            <button class="btn btn--ghost gm-speed-btn" data-speed="fast"   onclick="gmSetSpeed('fast')">Fast</button>
+          </div>
+        </div>
+
+        <!-- 5. Reset -->
         <div class="gm-section">
           <button class="btn btn--danger btn--full" onclick="gmResetAll()">Reset All Data</button>
         </div>

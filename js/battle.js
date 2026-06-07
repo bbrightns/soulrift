@@ -15,7 +15,15 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function randDelay(min, max) {
+const BATTLE_SPEED = {
+  slow:   { min: 1800, max: 2200 },
+  normal: { min: 1200, max: 1500 },
+  fast:   { min: 280,  max: 420  },
+};
+
+function randDelay() {
+  const speed = (getState().settings && getState().settings.battleSpeed) || 'normal';
+  const { min, max } = BATTLE_SPEED[speed] || BATTLE_SPEED.normal;
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
@@ -369,7 +377,7 @@ async function appendBattleLog(line, type = '') {
   entry.innerHTML = line;
   logWrap.appendChild(entry);
   if (!_userScrolledLog) logWrap.scrollTop = logWrap.scrollHeight;
-  await sleep(randDelay(1200, 1500));
+  await sleep(randDelay());
 }
 
 document.addEventListener('DOMContentLoaded', () => {

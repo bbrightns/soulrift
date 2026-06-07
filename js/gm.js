@@ -42,6 +42,10 @@
     var state = getState();
     document.getElementById('gm-gold-input').value = state.gold != null ? state.gold : 0;
     document.getElementById('gm-level-input').value = (state.player && state.player.level) ? state.player.level : 1;
+    var currentSpeed = (state.settings && state.settings.battleSpeed) || 'normal';
+    document.querySelectorAll('.gm-speed-btn').forEach(function(b) {
+      b.classList.toggle('is-active', b.dataset.speed === currentSpeed);
+    });
     document.getElementById('gm-panel').classList.add('is-open');
   }
 
@@ -89,6 +93,17 @@
     if (profPanel && profPanel.classList.contains('is-open')) renderProfilePanel();
   }
 
+  function gmSetSpeed(speed) {
+    var state = getState();
+    if (!state.settings) state.settings = {};
+    state.settings.battleSpeed = speed;
+    saveState();
+    var btns = document.querySelectorAll('.gm-speed-btn');
+    btns.forEach(function(b) {
+      b.classList.toggle('is-active', b.dataset.speed === speed);
+    });
+  }
+
   function gmResetAll() {
     if (window.confirm('Reset ALL game data? This cannot be undone.')) {
       localStorage.clear();
@@ -103,6 +118,7 @@
   document.addEventListener('DOMContentLoaded', _initLongPress);
 
   window.openGMPanel      = openGMPanel;
+  window.gmSetSpeed       = gmSetSpeed;
   window.closeGMPanel     = closeGMPanel;
   window.gmSetGold        = gmSetGold;
   window.gmAddSpellStone  = gmAddSpellStone;

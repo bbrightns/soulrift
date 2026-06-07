@@ -133,6 +133,12 @@
   flex-shrink: 0;
 }
 
+.gm-speed-btn.is-active {
+  border-color: var(--c-border-hi);
+  color: var(--c-gold-text);
+  background: rgba(197, 160, 89, 0.08);
+}
+
 .gm-footer {
   margin-top: var(--sp-6);
   padding-top: var(--sp-4);
