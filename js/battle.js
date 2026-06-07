@@ -81,12 +81,10 @@ const TOWER_GROWTH = {
 function gainExp(amount) {
   const s = getState();
   s.player.exp += amount;
-  let _leveled = false;
   while (s.player.exp >= s.player.expNext) {
     s.player.exp -= s.player.expNext;
     s.player.level += 1;
     s.player.expNext = Math.floor(s.player.expNext * 1.25);
-    _leveled = true;
     if (typeof SFX !== 'undefined') SFX.levelUp();
 
     const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
@@ -109,10 +107,8 @@ function gainExp(amount) {
       if (typeof toast === 'function') toast('Power Surge! Level ' + s.player.level + ' milestone reached!', 'gold');
     }
   }
-  if (_leveled && typeof showLevelUpOverlay === 'function') {
-    showLevelUpOverlay(s.player.level);
-  }
   saveState();
+  return s.player.level;
 }
 
 function battlePlayerName() {
@@ -815,7 +811,9 @@ async function runAutoBattle(dungeonId) {
     const expReward = enemy.exp;
     s.gold += goldReward;
     s.stats.goldEarned += goldReward;
-    gainExp(expReward);
+    const _levelBefore = s.player.level;
+    const _levelAfter = gainExp(expReward);
+    const _didLevelUp = _levelAfter > _levelBefore;
 
     const drops = rollDrops(enemyTemplate);
     saveState();
@@ -832,6 +830,9 @@ async function runAutoBattle(dungeonId) {
 
     if (typeof SFX !== 'undefined') SFX.victory();
     showBattleOutcome({ won: true, goldReward, expReward, drops });
+    if (_didLevelUp && typeof showLevelUpOverlay === 'function') {
+      setTimeout(() => showLevelUpOverlay(_levelAfter), 800);
+    }
     setBattleResult('<span class="c-ok">Victory recorded</span>');
   } else {
     if (typeof SFX !== 'undefined') SFX.defeat();
