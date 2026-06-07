@@ -94,10 +94,14 @@ function enemyStrike(enemy, player, turn) {
 }
 
 const TOWER_GROWTH = {
-  light: { hpMax: 8, spMax: 4, atk: 1, def: 2, str: 0, int: 2, agi: 0 },
-  dark: { hpMax: 4, spMax: 3, atk: 2, def: 0, str: 0, int: 1, agi: 2 },
-  fire: { hpMax: 10, spMax: 2, atk: 2, def: 1, str: 2, int: 0, agi: 1 },
-  ice: { hpMax: 3, spMax: 6, atk: 1, def: 1, str: 1, int: 2, agi: 1 },
+  // Light: เติบโต HP และ DEF เร็วสุด
+  light: { hpMax: 10, spMax: 4, atk: 1, def: 3, str: 0, int: 2, agi: 0 },
+  // Dark: เติบโต ATK เร็วสุด HP ช้าสุด
+  dark:  { hpMax: 3,  spMax: 3, atk: 3, def: 0, str: 0, int: 1, agi: 2 },
+  // Fire: เติบโต HP และ ATK+STR สมดุล
+  fire:  { hpMax: 7,  spMax: 2, atk: 2, def: 1, str: 2, int: 0, agi: 1 },
+  // Ice: เติบโต SP เร็วสุด HP ช้าสุด INT สูง
+  ice:   { hpMax: 2,  spMax: 7, atk: 1, def: 1, str: 0, int: 2, agi: 1 },
 };
 
 function gainExp(amount) {

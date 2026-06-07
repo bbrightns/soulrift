@@ -210,21 +210,25 @@ function removeSpell(id, lvl, qty = 1) {
 window.removeSpell = removeSpell;
 
 const TOWER_STARTERS = {
+  // Light: ทนสูงสุด DEF สูงสุด INT เป็น primary damage stat
   light: {
     spellId: 'light_shot',
-    player: { hp: 92,  hpMax: 92,  sp: 56, spMax: 56, atk: 7,  def: 8, int: 10, agi: 6,  str: 6  },
+    player: { hp: 110, hpMax: 110, sp: 58, spMax: 58, atk: 7,  def: 16, int: 12, agi: 5,  str: 5  },
   },
+  // Dark: glass cannon — ATK สูงสุด HP/DEF ต่ำสุด AGI สูง
   dark: {
     spellId: 'dark_shot',
-    player: { hp: 60,  hpMax: 60,  sp: 44, spMax: 44, atk: 13, def: 3, int: 8,  agi: 11, str: 6  },
+    player: { hp: 55,  hpMax: 55,  sp: 44, spMax: 44, atk: 15, def: 3,  int: 7,  agi: 13, str: 6  },
   },
+  // Fire: ATK สูง HP ปานกลาง SP น้อย STR สูง
   fire: {
     spellId: 'fire_shot',
-    player: { hp: 104, hpMax: 104, sp: 32, spMax: 32, atk: 12, def: 7, int: 6,  agi: 6,  str: 11 },
+    player: { hp: 85,  hpMax: 85,  sp: 30, spMax: 30, atk: 13, def: 6,  int: 5,  agi: 6,  str: 13 },
   },
+  // Ice: SP สูงสุด HP ต่ำสุด INT เป็น primary damage stat DEF ปานกลาง
   ice: {
     spellId: 'ice_shot',
-    player: { hp: 56,  hpMax: 56,  sp: 68, spMax: 68, atk: 8,  def: 4, int: 13, agi: 7,  str: 5  },
+    player: { hp: 50,  hpMax: 50,  sp: 74, spMax: 74, atk: 8,  def: 8,  int: 14, agi: 7,  str: 4  },
   },
 };
 
