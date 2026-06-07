@@ -3,6 +3,7 @@
    Spell Library screen styles.
    ============================================================ */
 
+/* ── Filter row ──────────────────────────────────────────── */
 .filter-row {
   display: flex;
   gap: var(--sp-2);
@@ -10,126 +11,90 @@
   margin-bottom: var(--sp-2);
 }
 
-/* Compact spell card */
+.filter-btn {
+  padding: 0 var(--sp-3);
+  min-height: 32px;
+  font-size: 12px;
+  font-family: var(--f-head);
+  letter-spacing: .06em;
+  background: transparent;
+  border: 1px solid var(--c-border-md);
+  border-radius: var(--r-sm);
+  color: var(--c-text-2);
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.filter-btn:hover {
+  color: var(--c-text);
+  border-color: var(--c-border-hi);
+}
+.filter-btn.is-active {
+  color: var(--c-gold);
+  border-color: var(--c-gold-dim);
+  background: rgba(197,160,89,.08);
+}
+
+/* ── Library list layout ─────────────────────────────────── */
+#library-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding-bottom: var(--sp-4);
+}
+
+/* ── Library card (reuses market shop-card-top structure) ─── */
 .lib-spell-card {
-  margin-bottom: var(--sp-2);
+  padding: 0;
+  overflow: hidden;
+}
+
+/* give the top section its own padding so icon isn't flush with card border */
+.lib-spell-card .shop-card-top {
   padding: var(--sp-3);
 }
 
-.lib-card-head {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  margin-bottom: 8px;
+/* detail panel always visible below the top row — reuses expand-row system */
+.lib-detail-panel {
+  border-top: 1px solid var(--c-border);
+  background: rgba(0,0,0,.15);
+  padding: 0 var(--sp-3) var(--sp-2);
 }
 
-.lib-spell-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--r-md);
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.lib-card-head-text {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  flex: 1;
-  min-width: 0;
-}
-
-.lib-card-head-badges {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--sp-1);
-  flex-shrink: 0;
-}
-
-/* move tagline out of its own block since it's now inside head-text */
-.lib-card-tagline {
-  font-size: 11px;
-  color: var(--c-text-2);
-  font-style: italic;
-  line-height: 1.4;
-  margin-bottom: 0;
-}
-
-.lib-card-tagline {
-  font-size: 12px;
-  color: var(--c-text-2);
-  font-style: italic;
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
-
-.lib-spell-name {
-  font-family: var(--f-head);
-  font-size: 13px;
-  color: var(--c-text);
-  flex: 1;
-  min-width: 0;
-}
-
-.lib-card-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  color: var(--c-text-2);
-  margin-bottom: 5px;
-}
-
-.lib-role {
-  font-style: italic;
-}
-
-.lib-sp {
-  font-family: var(--f-head);
-  font-size: 11px;
-  color: var(--c-text-2);
-  white-space: nowrap;
-}
-
-.lib-card-effect {
-  font-size: 11px;
-  color: var(--c-text-2);
-  line-height: 1.45;
-  margin-bottom: 6px;
-}
-
-.lib-card-foot {
-  display: flex;
-  justify-content: flex-end;
-}
-
+/* ── Obtain badge ────────────────────────────────────────── */
 .lib-obtain {
   font-size: 10px;
   font-family: var(--f-head);
-  letter-spacing: .04em;
-  padding: 2px 7px;
+  letter-spacing: .06em;
+  padding: 3px 8px;
   border-radius: var(--r-sm);
+  text-transform: uppercase;
 }
 
 .lib-obtain--shop {
-  color: var(--c-uncommon);
-  background: rgba(42,152,88,.10);
-  border: 1px solid rgba(42,152,88,.22);
+  color: #4caf50;
+  background: rgba(76,175,80,.10);
+  border: 1px solid rgba(76,175,80,.28);
 }
 
 .lib-obtain--drop {
-  color: var(--c-text-2);
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--c-border);
+  color: var(--c-gold);
+  background: rgba(197,160,89,.08);
+  border: 1px solid var(--c-gold-dim);
 }
 
 .lib-obtain--boss {
-  color: var(--c-ultimate);
-  background: rgba(200,112,16,.10);
-  border: 1px solid rgba(200,112,16,.25);
+  color: #e07040;
+  background: rgba(224,112,64,.10);
+  border: 1px solid rgba(224,112,64,.30);
 }
 
+/* ── Owned tag ───────────────────────────────────────────── */
+.lib-owned-tag {
+  font-size: 11px;
+  font-family: var(--f-head);
+  color: var(--c-gold);
+  letter-spacing: .04em;
+}
 
 /* ── Fusion stone icon ───────────────────────────────────── */
 .fusion-stone-icon {

@@ -22,7 +22,7 @@ function _openModal(el) {
     const nodes = _focusableEls(el);
     if (nodes.length) nodes[0].focus();
   });
-  el._modalTrap = function(e) {
+  el._modalTrap = function (e) {
     if (e.key === 'Escape') {
       const closeBtn = el.querySelector('[onclick*="close"],[onclick*="Close"]');
       if (closeBtn) closeBtn.click();
@@ -41,7 +41,7 @@ function _openModal(el) {
 function _closeModal(el) {
   if (!el) return;
   if (el._modalTrap) { el.removeEventListener('keydown', el._modalTrap); el._modalTrap = null; }
-  if (_prevFocusEl) { try { _prevFocusEl.focus(); } catch (_) {} _prevFocusEl = null; }
+  if (_prevFocusEl) { try { _prevFocusEl.focus(); } catch (_) { } _prevFocusEl = null; }
 }
 
 /* ── Screen map: key → HTML id ───────────────────────────── */
@@ -160,7 +160,7 @@ function syncHeader() {
 
 /* ── Profile name edit ───────────────────────────────────── */
 function startEditName() {
-  const nameEl  = document.getElementById('prof-name');
+  const nameEl = document.getElementById('prof-name');
   const editBtn = document.getElementById('prof-name-edit-btn');
   if (!nameEl || !editBtn) return;
   const current = getState().playerName || '';
@@ -263,10 +263,10 @@ function renderProfilePanel() {
 
   /* lifetime stats */
   const st = s.stats || {};
-  fill('prof-stat-battles', (st.battles  || 0).toLocaleString());
-  fill('prof-stat-wins',    (st.wins     || 0).toLocaleString());
-  fill('prof-stat-kills',   (st.kills    || 0).toLocaleString());
-  fill('prof-stat-gold',    (st.goldEarned || 0).toLocaleString());
+  fill('prof-stat-battles', (st.battles || 0).toLocaleString());
+  fill('prof-stat-wins', (st.wins || 0).toLocaleString());
+  fill('prof-stat-kills', (st.kills || 0).toLocaleString());
+  fill('prof-stat-gold', (st.goldEarned || 0).toLocaleString());
 
   /* avatar tower glow — use design tokens */
   const towerGlowToken = {
@@ -342,10 +342,10 @@ function _renderLibFilters() {
   const allTowers = ['all', ...towers];
   const tAllLabels = { all: 'All', ...tLabels };
 
-  towerEl.innerHTML = allTowers.map(t => {
+  towerEl.innerHTML = towers.map(t => {
     const on = t === _libTower;
-    return `<button class="btn btn--ghost" style="opacity:${on ? '1' : '0.45'};padding:0 var(--sp-3);min-height:32px;font-size:12px;"
-      onclick="_libTower='${t}';renderLibrary();">${tAllLabels[t]}</button>`;
+    return `<button class="filter-btn${on ? ' is-active' : ''}"
+      onclick="_libTower='${t}';renderLibrary();">${tLabels[t]}</button>`;
   }).join('');
 
   const rarities = ['all', 'common', 'uncommon', 'rare', 'ultimate'];
@@ -353,7 +353,7 @@ function _renderLibFilters() {
 
   rarityEl.innerHTML = rarities.map(r => {
     const on = r === _libRarity;
-    return `<button class="btn btn--ghost" style="opacity:${on ? '1' : '0.45'};padding:0 var(--sp-3);min-height:32px;font-size:12px;"
+    return `<button class="filter-btn${on ? ' is-active' : ''}"
       onclick="_libRarity='${r}';renderLibrary();">${rLabels[r]}</button>`;
   }).join('');
 }
@@ -363,7 +363,7 @@ function _renderLibCards() {
   if (!list) return;
 
   let spells = getAllSpells();
-  if (_libTower !== 'all') spells = spells.filter(s => s.tower === _libTower);
+  if (_libTower) spells = spells.filter(s => s.tower === _libTower);
   if (_libRarity !== 'all') spells = spells.filter(s => s.rarity === _libRarity);
 
   if (!spells.length) {
@@ -378,6 +378,8 @@ function _renderLibCards() {
 
   const playerTower = getTower();
 
+  const cap = str => str.charAt(0).toUpperCase() + str.slice(1);
+
   const obtainBadge = s => {
     if (s.obtain === 'shop') {
       if (s.tower === playerTower) {
@@ -389,33 +391,60 @@ function _renderLibCards() {
     return `<span class="lib-obtain lib-obtain--drop">Drop Only</span>`;
   };
 
-  const cap = str => str.charAt(0).toUpperCase() + str.slice(1);
+  /* damage estimate — same NON_DAMAGE logic as market */
+  const NON_DAMAGE = [
+    'buff', 'survival', 'support', 'recovery', 'regeneration',
+    'cleanse', 'shield', 'defense', 'evasion', 'tempo',
+    'summon', 'build', 'setup',
+  ];
+  const dmgRow = s => {
+    const roleLower = (s.role || '').toLowerCase();
+    const isDmg = s.role && !NON_DAMAGE.some(kw => roleLower.includes(kw));
+    if (isDmg && typeof spellPower === 'function') {
+      const player = getPlayer();
+      if (player) {
+        const dmg = spellPower(s, player, 1);
+        return `<span class="spell-expand-dmg c-ok">~${dmg}</span>`;
+      }
+    }
+    return `<span class="spell-expand-dmg" style="color:var(--c-text-2)">No direct damage</span>`;
+  };
 
-  list.innerHTML = spells.map(s => `
+  /* check if player owns any of this spell */
+  const ownedMap = {};
+  (getState().spells || []).forEach(sp => {
+    ownedMap[sp.id] = (ownedMap[sp.id] || 0) + sp.qty;
+  });
+
+  list.innerHTML = spells.map(s => {
+    const owned = ownedMap[s.id] || 0;
+    const ownedSuffix = owned > 0 ? ` <span class="lib-owned-tag">×${owned}</span>` : '';
+    return `
     <div class="card card--raised lib-spell-card">
-      <div class="lib-card-head">
-        <img src="/asset/spell_icons/${s.id}.png" class="lib-spell-icon" alt="">
-        <div class="lib-card-head-text">
-          <span class="lib-spell-name">${s.name}</span>
-          <div class="lib-card-tagline">${s.desc}</div>
+      <div class="shop-card-top">
+        <img src="/asset/spell_icons/${s.id}.png" class="shop-spell-icon" alt="">
+        <div class="shop-card-info">
+          <div class="spell-card__name">${s.name}</div>
+          <div class="spell-card__meta">${s.role} · SP ${s.spCost}</div>
+          <div class="spell-card__desc">${s.desc}</div>
         </div>
-        <div class="lib-card-head-badges">
+        <div class="shop-card-badges">
           <span class="badge badge--${s.rarity}">${cap(s.rarity)}</span>
-          <span class="badge badge--${s.tower}">${s.element}</span>
+          <span class="badge badge--${s.tower}">${s.element || cap(s.tower)}</span>
         </div>
       </div>
-      <div class="lib-card-meta">
-        <span class="lib-role">${s.role}</span>
-        <span class="lib-sp">SP ${s.spCost}</span>
+      <div class="lib-detail-panel">
+        <div class="spell-expand-row"><span>Effect</span><span class="spell-expand-val">${s.effect || s.desc}</span></div>
+        <div class="spell-expand-row"><span>Est. Damage (Lv.1)</span>${dmgRow(s)}</div>
+        <div class="spell-expand-row"><span>Rarity</span><span class="badge badge--${s.rarity}">${cap(s.rarity)}</span></div>
+        <div class="spell-expand-row" style="border-bottom:none"><span>Where to Find</span><span>${obtainBadge(s)}${ownedSuffix}</span></div>
       </div>
-      <div class="lib-card-effect">${s.effect}</div>
-      <div class="lib-card-foot">${obtainBadge(s)}</div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 onScreen('library', () => {
-  _libTower = getTower() || 'all';
+  _libTower = 'all';
   _libRarity = 'all';
   renderLibrary();
 });
