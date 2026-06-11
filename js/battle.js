@@ -1026,7 +1026,8 @@ async function runAutoBattle(dungeonId) {
         } else if (_trafficJam) {
           // Roll delay from enemy override or dungeon default (1 turn)
           const delayRange = enemyTemplate.trafficJamDelay || { min: 1, max: 1 };
-          const turnsLeft = delayRange.min + Math.floor(Math.random() * (delayRange.max - delayRange.min + 1)); 
+          const { min, max } = delayRange;
+          const turnsLeft = min + Math.floor(Math.random() * (max - min + 1)); 
           const turnsLeftForPush = turnsLeft + 1; //  +1 because the first turn counts down immediately
           battleStatus.pendingQueue.push({ def, spellLvl, turnsLeft: turnsLeftForPush });
           const delayLabel = delayRange.min === delayRange.max
