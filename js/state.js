@@ -89,7 +89,7 @@ function _clone(obj) {
 function _mergeDeep(base, saved) {
   const out = { ...base };
   for (const k of Object.keys(base)) {
-    if (saved[k] === undefined) continue;
+    if (saved[k] === undefined || saved[k] === null) continue;
     const bv = base[k], sv = saved[k];
     if (
       bv !== null && typeof bv === 'object' && !Array.isArray(bv) &&
@@ -110,12 +110,32 @@ function _hydrate(saved) {
 
 /* ── Public API ──────────────────────────────────────────── */
 
-/** Return live state, loading from localStorage if needed. */
+function _sanitize(s) {
+  // Top-level numeric fields
+  const numericTop = ['gold'];
+  numericTop.forEach(k => {
+    if (typeof s[k] !== 'number' || !isFinite(s[k])) s[k] = DEFAULTS[k];
+  });
+  // Player numeric fields
+  const numericPlayer = ['level','exp','expNext','hp','hpMax','sp','spMax',
+                         'atk','def','int','str','skillPoints'];
+  numericPlayer.forEach(k => {
+    const v = s.player[k];
+    if (typeof v !== 'number' || !isFinite(v)) s.player[k] = DEFAULTS.player[k];
+  });
+  // Blueprint must be a 10-element array
+  if (!Array.isArray(s.blueprint) || s.blueprint.length !== 10) {
+    s.blueprint = Array(10).fill(null);
+  }
+  return s;
+}
+
 function getState() {
   if (_state) return _state;
   try {
     const raw = localStorage.getItem(SAVE_KEY);
     _state = raw ? _hydrate(JSON.parse(raw)) : _clone(DEFAULTS);
+    _sanitize(_state);
     if (!_state.createdAt) _state.createdAt = Date.now();
   } catch (e) {
     console.warn('[state] Load failed, resetting.', e);
