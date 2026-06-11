@@ -28,6 +28,7 @@ const DEFAULTS = {
     int:          8,
     str:          8,
     skillPoints:  0,   /* unspent stat points from level-ups */
+    spentPoints:  { str: 0, int: 0, atk: 0, def: 0 },
   },
 
   /* Resources */
@@ -123,6 +124,9 @@ function _sanitize(s) {
     const v = s.player[k];
     if (typeof v !== 'number' || !isFinite(v)) s.player[k] = DEFAULTS.player[k];
   });
+  if (!s.player.spentPoints) {
+    s.player.spentPoints = { str: 0, int: 0, atk: 0, def: 0 };
+  }
   // Blueprint must be a 10-element array
   if (!Array.isArray(s.blueprint) || s.blueprint.length !== 10) {
     s.blueprint = Array(10).fill(null);
@@ -136,6 +140,9 @@ function getState() {
     const raw = localStorage.getItem(SAVE_KEY);
     _state = raw ? _hydrate(JSON.parse(raw)) : _clone(DEFAULTS);
     _sanitize(_state);
+    if (_state.towerChosen) {
+      recalculatePlayerStats();
+    }
     if (!_state.createdAt) _state.createdAt = Date.now();
   } catch (e) {
     console.warn('[state] Load failed, resetting.', e);
@@ -237,46 +244,100 @@ function spendSkillPoint(stat) {
   const validStats = ['str', 'int', 'atk', 'def'];
   if (!validStats.includes(stat)) return;
 
-  s.player.skillPoints--;
-  s.player[stat] = (s.player[stat] || 0) + 1;
-
-  /* derived stats */
-  if (stat === 'str') {
-    const bonus = (typeof HP_PER_STR !== 'undefined') ? HP_PER_STR : 5;
-    s.player.hpMax += bonus;
-    s.player.hp    += bonus; /* heal by the same amount */
+  if (!s.player.spentPoints) {
+    s.player.spentPoints = { str: 0, int: 0, atk: 0, def: 0 };
   }
-  if (stat === 'int') {
-    const bonus = (typeof SP_PER_INT !== 'undefined') ? SP_PER_INT : 4;
-    s.player.spMax += bonus;
-    s.player.sp    += bonus;
-  }
+  s.player.spentPoints[stat]++;
 
+  recalculatePlayerStats();
   saveState();
   if (typeof syncHeader         === 'function') syncHeader();
   if (typeof renderProfilePanel === 'function') renderProfilePanel();
 }
 window.spendSkillPoint = spendSkillPoint;
 
+const TOWER_GROWTH = {
+  light: { str: 1, int: 1, atk: 0, def: 4 },
+  dark:  { str: 1, int: 0, atk: 4, def: 1 },
+  fire:  { str: 3, int: 0, atk: 3, def: 0 },
+  ice:   { str: 1, int: 3, atk: 1, def: 1 },
+};
+window.TOWER_GROWTH = TOWER_GROWTH;
+
 const TOWER_STARTERS = {
-  // Light: ทนสูงสุด DEF สูงสุด INT เป็น primary damage stat
   light: {
     spellId: 'light_shot',
-    player: { hp: 110, hpMax: 110, sp: 58, spMax: 58, atk: 7,  def: 16, int: 12, str: 5,  skillPoints: 0 },
+    player: { hp: 110, hpMax: 110, sp: 60, spMax: 60, atk: 7,  def: 16, int: 12, str: 11, skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
   },
   dark: {
     spellId: 'dark_shot',
-    player: { hp: 55,  hpMax: 55,  sp: 44, spMax: 44, atk: 15, def: 3,  int: 7,  str: 6,  skillPoints: 0 },
+    player: { hp: 60,  hpMax: 60,  sp: 45, spMax: 45, atk: 15, def: 3,  int: 9,  str: 6,  skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
   },
   fire: {
     spellId: 'fire_shot',
-    player: { hp: 85,  hpMax: 85,  sp: 30, spMax: 30, atk: 13, def: 6,  int: 5,  str: 13, skillPoints: 0 },
+    player: { hp: 90,  hpMax: 90,  sp: 30, spMax: 30, atk: 13, def: 6,  int: 6,  str: 9,  skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
   },
   ice: {
     spellId: 'ice_shot',
-    player: { hp: 50,  hpMax: 50,  sp: 74, spMax: 74, atk: 8,  def: 8,  int: 14, str: 4,  skillPoints: 0 },
+    player: { hp: 50,  hpMax: 50,  sp: 75, spMax: 75, atk: 8,  def: 8,  int: 15, str: 5,  skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
   },
 };
+
+function recalculatePlayerStats() {
+  const s = getState();
+  if (!s.towerChosen || !s.tower) return;
+  const starters = TOWER_STARTERS[s.tower];
+  if (!starters) return;
+
+  const g = TOWER_GROWTH[s.tower];
+  const L = s.player.level;
+  const levelsGained = L - 1;
+
+  if (!s.player.spentPoints) {
+    s.player.spentPoints = { str: 0, int: 0, atk: 0, def: 0 };
+  }
+  const spent = s.player.spentPoints;
+
+  // Starter base + auto-growth per level + spent points
+  let str = starters.player.str + levelsGained * g.str + spent.str;
+  let int = starters.player.int + levelsGained * g.int + spent.int;
+  let atk = starters.player.atk + levelsGained * g.atk + spent.atk;
+  let def = starters.player.def + levelsGained * g.def + spent.def;
+
+  // Milestone bonuses for every 5 levels
+  const milestones = Math.floor(L / 5);
+  str += milestones * 2;
+  int += milestones * 2;
+  atk += milestones * 2;
+  def += milestones * 2;
+
+  // Derive Max HP and Max SP from STR and INT
+  let hpMax = str * 10;
+  let spMax = int * 5;
+
+  // Additional milestone direct HP/SP bonuses
+  hpMax += milestones * 8;
+  spMax += milestones * 4;
+
+  s.player.str = str;
+  s.player.int = int;
+  s.player.atk = atk;
+  s.player.def = def;
+  s.player.hpMax = hpMax;
+  s.player.spMax = spMax;
+
+  // Clamp current values
+  s.player.hp = Math.min(s.player.hpMax, Math.max(0, s.player.hp));
+  s.player.sp = Math.min(s.player.spMax, Math.max(0, s.player.sp));
+
+  // Pre-calculate remaining skill points
+  // 3 points per level gained (starting from level 1, which starts with 3 points)
+  // Plus 2 points per milestone reached
+  const totalEarnedSkillPoints = L * 3 + milestones * 2;
+  const totalSpentSkillPoints = spent.str + spent.int + spent.atk + spent.def;
+  s.player.skillPoints = Math.max(0, totalEarnedSkillPoints - totalSpentSkillPoints);
+}
+window.recalculatePlayerStats = recalculatePlayerStats;
 
 function applyTowerStart(tower, playerName) {
   const config = TOWER_STARTERS[tower];
@@ -295,6 +356,7 @@ function applyTowerStart(tower, playerName) {
   }
 
   s.blueprint = Array(10).fill(null);
+  recalculatePlayerStats();
   saveState();
   return true;
 }

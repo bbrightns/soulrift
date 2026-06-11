@@ -7,13 +7,16 @@
     if (!logo) return;
 
     logo.addEventListener('pointerdown', function () {
-      _pressTimer = setTimeout(openGMPanel, 2000);
+      _pressTimer = setTimeout(openGMPanel, 1200);
     });
     logo.addEventListener('pointerup', function () {
       clearTimeout(_pressTimer);
     });
     logo.addEventListener('pointerleave', function () {
       clearTimeout(_pressTimer);
+    });
+    logo.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
     });
   }
 
@@ -61,6 +64,8 @@
     state.gold = val;
     saveState();
     syncHeader();
+    if (window.SFX) SFX.buy();
+    if (typeof toast === 'function') toast('Gold set to ' + val.toLocaleString(), 'gold');
   }
 
   function gmAddSpellStone() {
@@ -73,25 +78,27 @@
     }
     renderInventory();
     renderItems();
+    var sel = document.getElementById('gm-spell-select');
+    var spellName = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : spellId;
+    if (window.SFX) SFX.buy();
+    if (typeof toast === 'function') toast('Added ' + qty + 'x ' + spellName + ' (Lv.' + level + ')', 'ok');
   }
 
   function gmSetLevel() {
     var val = parseInt(document.getElementById('gm-level-input').value, 10);
     if (isNaN(val) || val < 1 || val > 99) return;
     var state = getState();
-    var delta = val - state.player.level;
     state.player.level  = val;
-    state.player.hpMax = Math.max(10, state.player.hpMax + delta * 6);
-    state.player.spMax = Math.max(10, state.player.spMax + delta * 3);
-    state.player.atk   = Math.max(1, state.player.atk + delta);
-    state.player.def   = Math.max(0, state.player.def + delta);
     state.player.expNext = Math.floor(100 * Math.pow(1.25, val - 1));
-    state.player.hp = Math.min(state.player.hpMax, Math.max(0, state.player.hp));
-    state.player.sp = Math.min(state.player.spMax, Math.max(0, state.player.sp));
+    if (typeof recalculatePlayerStats === 'function') recalculatePlayerStats();
+    state.player.hp = state.player.hpMax;
+    state.player.sp = state.player.spMax;
     saveState();
     syncHeader();
     var profPanel = document.getElementById('profile-panel');
     if (profPanel && profPanel.classList.contains('is-open')) renderProfilePanel();
+    if (window.SFX) SFX.buy();
+    if (typeof toast === 'function') toast('Level set to ' + val, 'ok');
   }
 
   function gmSetSkillPoints() {
@@ -103,6 +110,8 @@
     syncHeader();
     var profPanel = document.getElementById('profile-panel');
     if (profPanel && profPanel.classList.contains('is-open')) renderProfilePanel();
+    if (window.SFX) SFX.buy();
+    if (typeof toast === 'function') toast('Skill points set to ' + val, 'ok');
   }
   window.gmSetSkillPoints = gmSetSkillPoints;
 
@@ -123,6 +132,8 @@
     if (profPanel && profPanel.classList.contains('is-open')) renderProfilePanel();
     /* refresh displayed value to reflect actual exp after level-ups */
     document.getElementById('gm-exp-input').value = getState().player.exp;
+    if (window.SFX) SFX.buy();
+    if (typeof toast === 'function') toast('EXP set to ' + val, 'ok');
   }
 
   function gmSetSpeed(speed) {
@@ -134,6 +145,8 @@
     btns.forEach(function(b) {
       b.classList.toggle('is-active', b.dataset.speed === speed);
     });
+    if (window.SFX) SFX.buy();
+    if (typeof toast === 'function') toast('Battle speed set to ' + speed.toUpperCase(), 'ok');
   }
 
   function gmResetAll() {

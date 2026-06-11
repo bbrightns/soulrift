@@ -72,7 +72,7 @@ function spellPower(def, player, spellLvl) {
   const tower = getTower();
   let statBase;
   if (tower === 'light') statBase = Math.floor(player.int * 1.1 + player.def * 0.4);
-  else if (tower === 'dark') statBase = Math.floor(player.atk * 0.9 + player.agi * 0.4);
+  else if (tower === 'dark') statBase = Math.floor(player.atk * 1.3);
   else if (tower === 'fire') statBase = Math.floor(player.atk * 0.8 + player.str * 0.5);
   else if (tower === 'ice') statBase = Math.floor(player.int * 0.9 + player.sp * 0.15);
   else statBase = Math.floor((player.atk + player.int) * 0.75);
@@ -93,23 +93,9 @@ function enemyStrike(enemy, player, turn) {
   return Math.max(2, raw - Math.floor(player.def * 0.45));
 }
 
-/* STR → bonus hpMax (HP_PER_STR per point spent via skill points)
-   INT → bonus spMax (SP_PER_INT per point spent via skill points)
-   Auto-growth per level still applies separately via TOWER_GROWTH below */
-const HP_PER_STR = 5;
-const SP_PER_INT = 4;
+const HP_PER_STR = 10;
+const SP_PER_INT = 5;
 const SKILL_POINTS_PER_LEVEL = 3;
-
-const TOWER_GROWTH = {
-  // Light: DEF เติบโตเร็วสุด, INT สูง
-  light: { hpMax: 6, spMax: 3, atk: 1, def: 3, str: 1, int: 2 },
-  // Dark: ATK เติบโตเร็วสุด HP ช้าสุด
-  dark:  { hpMax: 2, spMax: 2, atk: 3, def: 0, str: 1, int: 1 },
-  // Fire: STR + ATK เติบโตสม่ำเสมอ
-  fire:  { hpMax: 4, spMax: 1, atk: 2, def: 1, str: 3, int: 0 },
-  // Ice: INT เติบโตเร็วสุด SP เร็ว HP ช้าสุด
-  ice:   { hpMax: 1, spMax: 4, atk: 1, def: 1, str: 0, int: 3 },
-};
 
 function gainExp(amount) {
   const s = getState();
@@ -124,29 +110,21 @@ function gainExp(amount) {
     leveled = true;
     if (typeof SFX !== 'undefined') SFX.levelUp();
 
-    const g = TOWER_GROWTH[s.tower] || TOWER_GROWTH.light;
-    s.player.hpMax += g.hpMax;
-    s.player.spMax += g.spMax;
-    s.player.atk += g.atk;
-    s.player.def += g.def;
-    s.player.str += g.str;
-    s.player.int += g.int;
-    s.player.skillPoints = (s.player.skillPoints || 0) + SKILL_POINTS_PER_LEVEL;
-
     if (s.player.level % 5 === 0) {
-      s.player.hpMax += 8;
-      s.player.spMax += 4;
-      s.player.atk  += 2;
-      s.player.def  += 2;
-      s.player.str  += 2;
-      s.player.int  += 2;
-      s.player.skillPoints += 2;   /* bonus points at milestone */
       if (typeof toast === 'function') toast('Power Surge! Level ' + s.player.level + ' milestone reached!', 'gold');
     }
   }
 
-  saveState();
-  if (leveled) syncHeader();
+  if (leveled) {
+    recalculatePlayerStats();
+    // Heal player to full on level up
+    s.player.hp = s.player.hpMax;
+    s.player.sp = s.player.spMax;
+    saveState();
+    syncHeader();
+  } else {
+    saveState();
+  }
 }
 
 function battlePlayerName() {

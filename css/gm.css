@@ -139,6 +139,14 @@
   background: rgba(197, 160, 89, 0.08);
 }
 
+.gm-sheet .btn:active,
+.gm-sheet .gm-close-btn:active,
+.gm-sheet .gm-speed-btn:active {
+  transform: scale(0.95);
+  filter: brightness(0.9);
+  transition: transform 50ms;
+}
+
 .gm-footer {
   margin-top: var(--sp-6);
   padding-top: var(--sp-4);

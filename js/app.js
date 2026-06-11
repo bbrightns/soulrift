@@ -26,20 +26,10 @@ function reconcilePlayerLevel() {
     s.player.exp -= s.player.expNext;
     s.player.level += 1;
     s.player.expNext = Math.max(1, Math.floor(s.player.expNext * 1.25));
-    const g = (typeof TOWER_GROWTH !== 'undefined' && TOWER_GROWTH[s.tower])
-      || { hpMax: 8, spMax: 4, atk: 1, def: 2, str: 0, int: 2, agi: 0 };
-    s.player.hpMax += g.hpMax;
-    s.player.spMax += g.spMax;
-    s.player.atk   += g.atk;
-    s.player.def   += g.def;
-    s.player.str    = (s.player.str || 0) + g.str;
-    s.player.int   += g.int;
-    s.player.agi   += g.agi;
     changed = true;
   }
   if (changed) {
-    s.player.hp = Math.min(s.player.hpMax, Math.max(0, s.player.hp));
-    s.player.sp = Math.min(s.player.spMax, Math.max(0, s.player.sp));
+    recalculatePlayerStats();
     saveState();
     if (typeof syncHeader === 'function') syncHeader();
   }
