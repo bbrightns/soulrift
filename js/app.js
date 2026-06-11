@@ -12,6 +12,20 @@ function resetGame() {
   location.reload();
 }
 
+function resetSpentStats() {
+  if (!confirm('Reset all allocated stats and refund skill points?')) return;
+  const s = getState();
+  s.player.spentPoints = { str: 0, int: 0, atk: 0, def: 0 };
+  recalculatePlayerStats();
+  s.player.hp = s.player.hpMax;
+  s.player.sp = s.player.spMax;
+  saveState();
+  if (typeof syncHeader === 'function') syncHeader();
+  if (typeof renderProfilePanel === 'function') renderProfilePanel();
+  if (window.SFX) SFX.buy();
+  if (typeof toast === 'function') toast('Allocated stats reset and refunded', 'ok');
+}
+
 /* Silently fix EXP/level mismatch on load (no SFX, no overlay) */
 function reconcilePlayerLevel() {
   const s = getState();
