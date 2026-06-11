@@ -104,11 +104,11 @@ const TOWER_GROWTH = {
   // Light: DEF เติบโตเร็วสุด, INT สูง
   light: { hpMax: 6, spMax: 3, atk: 1, def: 3, str: 1, int: 2 },
   // Dark: ATK เติบโตเร็วสุด HP ช้าสุด
-  dark: { hpMax: 2, spMax: 2, atk: 3, def: 0, str: 1, int: 1 },
+  dark:  { hpMax: 2, spMax: 2, atk: 3, def: 0, str: 1, int: 1 },
   // Fire: STR + ATK เติบโตสม่ำเสมอ
-  fire: { hpMax: 4, spMax: 1, atk: 2, def: 1, str: 3, int: 0 },
+  fire:  { hpMax: 4, spMax: 1, atk: 2, def: 1, str: 3, int: 0 },
   // Ice: INT เติบโตเร็วสุด SP เร็ว HP ช้าสุด
-  ice: { hpMax: 1, spMax: 4, atk: 1, def: 1, str: 0, int: 3 },
+  ice:   { hpMax: 1, spMax: 4, atk: 1, def: 1, str: 0, int: 3 },
 };
 
 function gainExp(amount) {
@@ -136,10 +136,10 @@ function gainExp(amount) {
     if (s.player.level % 5 === 0) {
       s.player.hpMax += 8;
       s.player.spMax += 4;
-      s.player.atk += 2;
-      s.player.def += 2;
-      s.player.str += 2;
-      s.player.int += 2;
+      s.player.atk  += 2;
+      s.player.def  += 2;
+      s.player.str  += 2;
+      s.player.int  += 2;
       s.player.skillPoints += 2;   /* bonus points at milestone */
       if (typeof toast === 'function') toast('Power Surge! Level ' + s.player.level + ' milestone reached!', 'gold');
     }
@@ -269,7 +269,7 @@ let _pendingDungeonId = null;
 
 function _showAllEmptyConfirm() {
   const modal = document.getElementById('shop-confirm-modal');
-  const body = document.getElementById('shop-confirm-body');
+  const body  = document.getElementById('shop-confirm-body');
   if (!modal || !body) return;
 
   body.innerHTML =
@@ -279,7 +279,7 @@ function _showAllEmptyConfirm() {
     + '<div class="modal-hint">All 10 turns will use Struggle (weak fallback attack). Visit Order to assign spells first.</div>';
 
   const confirmBtn = modal.querySelector('.btn--primary');
-  const cancelBtn = modal.querySelector('.btn--ghost');
+  const cancelBtn  = modal.querySelector('.btn--ghost');
   if (confirmBtn) {
     confirmBtn.disabled = false;
     confirmBtn.textContent = 'Enter Anyway';
@@ -1048,8 +1048,9 @@ async function runAutoBattle(dungeonId) {
         } else if (_trafficJam) {
           // Roll delay from enemy override or dungeon default (1 turn)
           const delayRange = enemyTemplate.trafficJamDelay || { min: 1, max: 1 };
-          const turnsLeft = delayRange.min + Math.floor(Math.random() * (delayRange.max - delayRange.min + 1));
-          battleStatus.pendingQueue.push({ def, spellLvl, turnsLeft });
+          const turnsLeft = delayRange.min + Math.floor(Math.random() * (delayRange.max - delayRange.min + 1)); 
+          const turnsLeftForPush = turnsLeft + 1; //  +1 because the first turn counts down immediately
+          battleStatus.pendingQueue.push({ def, spellLvl, turnsLeft: turnsLeftForPush });
           const delayLabel = delayRange.min === delayRange.max
             ? turnsLeft + ' turn'
             : turnsLeft + ' turns';
@@ -1068,7 +1069,8 @@ async function runAutoBattle(dungeonId) {
         }
       }
 
-      // Pending queue releases AFTER this turn's cast
+      // Pending releases always fire — stun does not block them
+      console.log('Pending queue at end of turn ' + turn + ':', battleStatus.pendingQueue);
       if (_trafficJam && battleStatus.pendingQueue.length > 0) {
         battleStatus.pendingQueue.forEach(p => p.turnsLeft--);
         const ready = battleStatus.pendingQueue.filter(p => p.turnsLeft <= 0);
@@ -1082,7 +1084,7 @@ async function runAutoBattle(dungeonId) {
             ), 'system'
           );
           for (const pending of ready) {
-            await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl);
+            await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl, true);
             if (enemy.hp <= 0) break;
             if (player.hp <= 0) break;
           }
@@ -1091,18 +1093,17 @@ async function runAutoBattle(dungeonId) {
         if (player.hp <= 0) break;
       }
 
-      // Final turn: force-flush all remaining queued spells at 50% effect
+      // Final turn: flush all remaining queued spells
       if (turn === 10 && _trafficJam && battleStatus.pendingQueue.length > 0) {
         const finalCount = battleStatus.pendingQueue.length;
         await appendBattleLog(
           '🚦 ' + wrapLogText(
             finalCount > 1
-              ? 'Battle ends — ' + finalCount + ' spells finally crawl through at half power!'
-              : 'Battle ends — your spell crawls through at half power!'
+              ? 'Battle ends — ' + finalCount + ' spells finally arrive through the gridlock!'
+              : 'Battle ends — your spell finally crawls through.'
           ), 'system'
         );
         for (const pending of battleStatus.pendingQueue) {
-          pending.def = { ...pending.def, _forcedFlush: true };
           await castPreparedSpell(pending.def, player, enemy, enemyTemplate, battleStatus, pending.spellLvl, true);
           if (enemy.hp <= 0) break;
         }
@@ -1212,11 +1213,6 @@ async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus
   const spellFatiguePerk = getPerk('spell_fatigue');
   if (spellFatiguePerk && spellLvl < spellFatiguePerk.minSpellLevel) {
     baseDmg = Math.floor(baseDmg * spellFatiguePerk.lowLevelPenalty);
-  }
-
-  // Forced flush on turn 10 (Bangkok Nightmare traffic): 50% effect
-  if (def._forcedFlush) {
-    baseDmg = Math.floor(baseDmg * 0.50);
   }
 
   // Reality Fracture: halves damage this turn
