@@ -611,79 +611,86 @@
           <button class="gm-close-btn" onclick="closeGMPanel()" aria-label="Close GM panel">✕</button>
         </div>
 
-        <!-- 1. Gold Adjust -->
-        <div class="gm-section">
-          <div class="section-label">Set Gold</div>
-          <div class="gm-row">
-            <input type="number" id="gm-gold-input" class="gm-input" min="0" placeholder="Gold amount">
-            <button class="btn btn--primary gm-btn" onclick="gmSetGold()">Set</button>
+        <div class="gm-sheet__content">
+          <!-- 1. Player Section -->
+          <div class="gm-section">
+            <div class="section-label">Player</div>
+            <div class="gm-col">
+              <div class="gm-compact-row">
+                <span class="gm-compact-label">Gold</span>
+                <input type="number" id="gm-gold-input" class="gm-input" min="0" placeholder="Gold amount">
+                <button class="btn btn--primary gm-btn" onclick="gmSetGold()">Set</button>
+              </div>
+              <div class="gm-compact-row">
+                <span class="gm-compact-label">Level</span>
+                <input type="number" id="gm-level-input" class="gm-input" min="1" max="99" placeholder="Level 1–99">
+                <button class="btn btn--primary gm-btn" onclick="gmSetLevel()">Set</button>
+              </div>
+              <div class="gm-compact-row">
+                <span class="gm-compact-label">EXP</span>
+                <input type="number" id="gm-exp-input" class="gm-input" min="0" placeholder="EXP amount">
+                <button class="btn btn--primary gm-btn" onclick="gmSetExp()">Set</button>
+              </div>
+              <div class="gm-compact-row">
+                <span class="gm-compact-label">Skill Pts</span>
+                <input type="number" id="gm-sp-input" class="gm-input" min="0" placeholder="Points">
+                <button class="btn btn--primary gm-btn" onclick="gmSetSkillPoints()">Set</button>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- 2. Spell Stone -->
-        <div class="gm-section">
-          <div class="section-label">Add Spell Stone</div>
-          <div class="gm-col">
-            <select id="gm-spell-select" class="gm-select"></select>
-            <select id="gm-spell-level" class="gm-select">
-              <option value="1">Level 1</option>
-              <option value="2">Level 2</option>
-              <option value="3">Level 3</option>
-              <option value="4">Level 4</option>
-              <option value="5">Level 5</option>
-              <option value="6">Level 6</option>
-              <option value="7">Level 7</option>
-              <option value="8">Level 8</option>
-              <option value="9">Level 9</option>
-              <option value="10">Level 10</option>
-              <option value="11">Level 11</option>
-            </select>
-            <input type="number" id="gm-spell-qty" class="gm-input" min="1" value="1" placeholder="Quantity">
-            <button class="btn btn--primary btn--full" onclick="gmAddSpellStone()">Add Stone</button>
+          <!-- 2. Spell Stone Section -->
+          <div class="gm-section">
+            <div class="section-label">Spell Stone</div>
+            <div class="gm-col">
+              <select id="gm-spell-select" class="gm-select"></select>
+              <div class="gm-compact-row">
+                <select id="gm-spell-level" class="gm-select">
+                  <option value="1">Level 1</option>
+                  <option value="2">Level 2</option>
+                  <option value="3">Level 3</option>
+                  <option value="4">Level 4</option>
+                  <option value="5">Level 5</option>
+                  <option value="6">Level 6</option>
+                  <option value="7">Level 7</option>
+                  <option value="8">Level 8</option>
+                  <option value="9">Level 9</option>
+                  <option value="10">Level 10</option>
+                  <option value="11">Level 11</option>
+                </select>
+                <input type="number" id="gm-spell-qty" class="gm-input" min="1" value="1" placeholder="Qty" style="max-width: 80px;">
+                <button class="btn btn--primary" onclick="gmAddSpellStone()">Add Stone</button>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- 3. Player Level -->
-        <div class="gm-section">
-          <div class="section-label">Set Player Level</div>
-          <div class="gm-row">
-            <input type="number" id="gm-level-input" class="gm-input" min="1" max="99" placeholder="Level 1–99">
-            <button class="btn btn--primary gm-btn" onclick="gmSetLevel()">Set Level</button>
+          <!-- 3. Battle Speed Section -->
+          <div class="gm-section">
+            <div class="section-label">Battle Speed</div>
+            <div class="gm-speed-row">
+              <button class="btn btn--ghost gm-speed-btn" data-speed="slow" onclick="gmSetSpeed('slow')">Slow</button>
+              <button class="btn btn--ghost gm-speed-btn" data-speed="normal" onclick="gmSetSpeed('normal')">Normal</button>
+              <button class="btn btn--ghost gm-speed-btn" data-speed="fast" onclick="gmSetSpeed('fast')">Fast</button>
+              <button class="btn btn--ghost gm-speed-btn" data-speed="instant" onclick="gmSetSpeed('instant')">Instant</button>
+            </div>
           </div>
-        </div>
 
-        <!-- 3b. Skill Points -->
-        <div class="gm-section">
-          <div class="section-label">Set Skill Points</div>
-          <div class="gm-row">
-            <input type="number" id="gm-sp-input" class="gm-input" min="0" placeholder="Points">
-            <button class="btn btn--primary gm-btn" onclick="gmSetSkillPoints()">Set</button>
+          <!-- 4. Quick Actions Section -->
+          <div class="gm-section">
+            <div class="section-label">Quick Actions</div>
+            <div class="gm-grid">
+              <button class="btn btn--ghost" onclick="gmQuickAddGold()">+1000 Gold</button>
+              <button class="btn btn--ghost" onclick="gmQuickAddLevels()">+10 Levels</button>
+              <button class="btn btn--ghost" onclick="gmQuickMaxStats()">Max Stats</button>
+              <button class="btn btn--ghost" onclick="gmQuickFullHeal()">Full Heal</button>
+              <button class="btn btn--ghost" onclick="gmQuickResetStats()">Reset Stats</button>
+            </div>
           </div>
-        </div>
 
-        <!-- 3c. EXP -->
-        <div class="gm-section">
-          <div class="section-label">Set EXP</div>
-          <div class="gm-row">
-            <input type="number" id="gm-exp-input" class="gm-input" min="0" placeholder="EXP amount">
-            <button class="btn btn--primary gm-btn" onclick="gmSetExp()">Set</button>
+          <!-- 5. Reset Section -->
+          <div class="gm-section">
+            <button class="btn btn--danger btn--full" onclick="gmResetAll()">Reset All Data</button>
           </div>
-        </div>
-
-        <!-- 4. Battle Speed -->
-        <div class="gm-section">
-          <div class="section-label">Battle Speed</div>
-          <div class="gm-row">
-            <button class="btn btn--ghost gm-speed-btn" data-speed="slow" onclick="gmSetSpeed('slow')">Slow</button>
-            <button class="btn btn--ghost gm-speed-btn" data-speed="normal"
-              onclick="gmSetSpeed('normal')">Normal</button>
-            <button class="btn btn--ghost gm-speed-btn" data-speed="fast" onclick="gmSetSpeed('fast')">Fast</button>
-          </div>
-        </div>
-
-        <!-- 5. Reset -->
-        <div class="gm-section">
-          <button class="btn btn--danger btn--full" onclick="gmResetAll()">Reset All Data</button>
         </div>
 
         <div class="gm-footer">SOULRIFT · GM MODE</div>

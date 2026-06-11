@@ -19,6 +19,7 @@ const BATTLE_SPEED = {
   slow: { min: 1800, max: 2200 },
   normal: { min: 1200, max: 1500 },
   fast: { min: 280, max: 420 },
+  instant: { min: 0, max: 0 },
 };
 
 function randDelay() {

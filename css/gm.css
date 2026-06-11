@@ -23,7 +23,10 @@
 
 .gm-sheet {
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
   background: var(--c-raised);
   border: 1px solid var(--c-border-md);
   border-radius: var(--r-lg);
@@ -147,14 +150,68 @@
   transition: transform 50ms;
 }
 
+.gm-sheet__content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: var(--sp-2);
+}
+
+.gm-sheet__content::-webkit-scrollbar {
+  width: 6px;
+}
+.gm-sheet__content::-webkit-scrollbar-track {
+  background: var(--c-inset);
+  border-radius: var(--r-sm);
+}
+.gm-sheet__content::-webkit-scrollbar-thumb {
+  background: var(--c-border-bright);
+  border-radius: var(--r-sm);
+}
+
+.gm-compact-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.gm-compact-label {
+  font-family: var(--f-head);
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--c-text-secondary);
+  width: 100px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.gm-speed-row {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.gm-speed-row .btn {
+  flex: 1;
+}
+
+.gm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-2);
+}
+
+.gm-grid .btn {
+  font-size: 11px;
+  padding: 0 8px;
+}
+
 .gm-footer {
-  margin-top: var(--sp-6);
-  padding-top: var(--sp-4);
-  border-top: 1px solid var(--c-border);
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--c-border-md);
   text-align: center;
   font-family: var(--f-head);
   font-size: 9px;
   letter-spacing: .28em;
-  color: var(--c-text-3);
+  color: var(--c-text-muted);
   text-transform: uppercase;
 }
