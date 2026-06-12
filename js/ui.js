@@ -339,7 +339,7 @@ function bootApp() {
 
 /* ── Library ─────────────────────────────────────────────── */
 let _libTower = null;
-let _libRarity = 'all';
+let _libRarity = null;
 
 function renderLibrary() {
   _renderLibFilters();
@@ -351,10 +351,8 @@ function _renderLibFilters() {
   const rarityEl = document.getElementById('library-rarity-filter');
   if (!towerEl || !rarityEl) return;
 
-  const towers = ['light', 'dark', 'fire', 'ice'];
-  const tLabels = { light: 'Light', dark: 'Dark', fire: 'Fire', ice: 'Ice' };
-  const allTowers = ['all', ...towers];
-  const tAllLabels = { all: 'All', ...tLabels };
+  const towers = ['all', 'light', 'dark', 'fire', 'ice'];
+  const tLabels = { all: 'All', light: 'Light', dark: 'Dark', fire: 'Fire', ice: 'Ice' };
 
   towerEl.innerHTML = towers.map(t => {
     const on = t === _libTower;
@@ -377,7 +375,7 @@ function _renderLibCards() {
   if (!list) return;
 
   let spells = getAllSpells();
-  if (_libTower) spells = spells.filter(s => s.tower === _libTower);
+  if (_libTower !== 'all') spells = spells.filter(s => s.tower === _libTower);
   if (_libRarity !== 'all') spells = spells.filter(s => s.rarity === _libRarity);
 
   if (!spells.length) {
@@ -458,7 +456,11 @@ function _renderLibCards() {
 }
 
 onScreen('library', () => {
-  _libTower = 'all';
-  _libRarity = 'all';
+  if (_libTower === null) {
+    _libTower = getTower() || 'all';
+  }
+  if (_libRarity === null) {
+    _libRarity = 'all';
+  }
   renderLibrary();
 });
