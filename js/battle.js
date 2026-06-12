@@ -459,6 +459,9 @@ function updateCombatHud(player, enemy, enemyTemplate) {
   setText('player-combat-name', battlePlayerName());
   setText('enemy-combat-name', enemy.name);
 
+  const towerLabels = { light: 'Light Tower', dark: 'Dark Tower', fire: 'Fire Tower', ice: 'Ice Tower' };
+  setText('player-combat-tower', towerLabels[getTower()] || '');
+
   const playerAvatarEl = document.getElementById('player-combat-avatar');
   const playerPlaceholder = document.getElementById('player-avatar-placeholder');
   const playerTower = getTower();
@@ -499,9 +502,9 @@ function updateCombatHud(player, enemy, enemyTemplate) {
   if (playerSpFill) playerSpFill.style.transform = 'scaleX(' + playerSpPct + ')';
   if (enemyHpFill) enemyHpFill.style.transform = 'scaleX(' + enemyHpPct + ')';
 
-  setText('player-hp-text', 'HP ' + Math.max(0, player.hp) + ' / ' + Math.max(0, player.hpMax));
-  setText('player-sp-text', 'SP ' + Math.max(0, player.sp) + ' / ' + Math.max(0, player.spMax));
-  setText('enemy-hp-text', 'HP ' + enemy.hp + ' / ' + enemyTemplate.hp);
+  setText('player-hp-text', Math.max(0, player.hp) + ' / ' + Math.max(0, player.hpMax));
+  setText('player-sp-text', Math.max(0, player.sp) + ' / ' + Math.max(0, player.spMax));
+  setText('enemy-hp-text', enemy.hp + ' / ' + enemyTemplate.hp);
 }
 
 function prepareArena(dungeonId) {
@@ -528,7 +531,7 @@ function prepareArena(dungeonId) {
 
   const hiddenEnemy = { ..._preparedEnemyTemplate, name: '???' };
   updateCombatHud(player, hiddenEnemy, _preparedEnemyTemplate);
-  setText('enemy-hp-text', 'HP ?? / ??');
+  setText('enemy-hp-text', '?? / ??');
   setBattleResult('Ready for a 10-turn auto battle.');
   setBattleButton(false, 'Start Battle');
 }

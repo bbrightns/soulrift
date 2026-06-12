@@ -19,17 +19,10 @@
 }
 
 /* Hidden until battle starts */
-.combat-hud.hud--hidden-enemy .combat-side--enemy,
-.combat-hud.hud--hidden-enemy .combat-bar--enemy-hp,
-.combat-hud.hud--hidden-enemy #enemy-hp-text {
+.combat-hud.hud--hidden-enemy .combat-portrait--enemy {
   filter: blur(3px);
   opacity: 0.4;
   pointer-events: none;
-}
-
-.combat-hud.hud--hidden-enemy .combat-avatar-wrap--enemy {
-  filter: blur(3px);
-  opacity: 0.4;
 }
 
 /* Post-battle: hide entire HUD */
@@ -37,145 +30,34 @@
   display: none;
 }
 
-/* ── Row 1: HP bars ──────────────────────────────────────── */
-.combat-row--hp {
+/* ── Portrait row ─────────────────────────────────────────── */
+.combat-row--portraits {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 10px;
+  grid-template-columns: 1fr 32px 1fr;
+  align-items: center;
+  gap: 0 8px;
+  padding: 10px;
 }
 
-.combat-bar--player-hp,
-.combat-bar--enemy-hp {
-  height: 10px;
-  overflow: hidden;
-  background: rgba(0,0,0,.45);
-  box-shadow: var(--shadow-inset-md);
-  position: relative;
-}
-
-/* Player HP: fill from left, shrinks from right (last drop on left) */
-.combat-bar--player-hp {
-  border-right: 1px solid rgba(255,255,255,0.06);
-  margin-right: 20px;
-}
-.combat-bar--player-hp span {
-  display: block;
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #c03030, #5d1111);
-  transform-origin: left center;
-  transition: transform 0.3s ease;
-}
-
-/* Enemy HP: fill from right, shrinks from left (last drop on right) */
-.combat-bar--enemy-hp span {
-  display: block;
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #5d1111, #c03030);
-  transform-origin: right center;
-  transition: transform 0.3s ease;
-}
-
-.combat-bar--enemy-hp {
-  margin-left: 20px;    /* ← shortens enemy bar on the left side */
-}
-
-/* ── Row 2+: SP + Avatars + VS + Names ───────────────────── */
-.combat-row--main {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: stretch;
-  min-height: 52px;
-}
-
-/* ── Side panels ─────────────────────────────────────────── */
-.combat-side {
+.combat-portrait {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: 6px 8px;
-  gap: 0;
+  min-width: 0;
 }
 
-.combat-side--player {
+.combat-portrait--player {
   align-items: flex-start;
 }
 
-.combat-side--enemy {
+.combat-portrait--enemy {
   align-items: flex-end;
-  justify-content: center;
 }
 
-.combat-side--enemy .combat-name {
-  margin-top: auto;
-  margin-bottom: 2px;
-}
-
-.combat-name {
-  margin-top: auto;
-  margin-bottom: 2px;
-}
-
-.combat-stat {
-  font-size: 9px;
-  color: var(--c-text-3);
-  letter-spacing: .02em;
-  line-height: 1.4;
-}
-
-/* ── Player SP bar (shorter, flush left with HP bar) ─────── */
-.combat-bar--player-sp {
-  height: 6px;
-  width: 120%;
-  overflow: hidden;
-  background: rgba(0,0,0,.45);
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.05);
-  box-shadow: var(--shadow-inset-md);
-  align-self: flex-start;
-  margin-bottom: 4px;
-  margin-left: -7px;  /* ← extends SP bar to align with HP bar on the left */
-}
-
-.combat-bar--player-sp span {
-  display: block;
-  height: 100%;
+/* Avatar frame */
+.combat-portrait__frame {
   width: 100%;
-  background: linear-gradient(90deg, #66c7e8, #12345a);
-  transform-origin: left center;
-  transition: transform 0.3s ease;
-}
-
-/* ── Names ───────────────────────────────────────────────── */
-.combat-name {
-  font-family: var(--f-head);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--c-text-hi);
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  line-height: 1.2;
-  word-break: break-word;
-}
-
-.combat-stat {
-  font-size: 9px;
-  color: var(--c-text-3);
-  letter-spacing: .02em;
-}
-
-/* ── Center cluster: avatars + VS ────────────────────────── */
-.combat-center {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-}
-
-.combat-avatar-wrap {
-  width: 64px;
-  height: 64px;
+  aspect-ratio: 1 / 1;
+  max-height: 96px;
   border-radius: var(--r-md);
   background: var(--c-inset);
   border: 1px solid var(--c-border-md);
@@ -183,24 +65,118 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  font-size: 22px;
+  font-size: 28px;
+  margin-bottom: 6px;
 }
 
 .combat-avatar {
-  width: 64px;
-  height: 64px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
 }
 
 .combat-avatar-placeholder {
-  font-size: 22px;
+  font-size: 28px;
   color: var(--c-text-3);
   line-height: 1;
 }
 
-/* VS badge */
+/* Name / tag */
+.combat-portrait__name {
+  font-family: var(--f-head);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-text-hi);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  word-break: break-word;
+  width: 100%;
+}
+
+.combat-portrait--player .combat-portrait__name,
+.combat-portrait--player .combat-portrait__tag {
+  text-align: left;
+}
+
+.combat-portrait--enemy .combat-portrait__name {
+  text-align: right;
+}
+
+.combat-portrait__tag {
+  font-size: 10px;
+  color: var(--c-gold-dim);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-top: 1px;
+  margin-bottom: 4px;
+}
+
+/* ── HP / SP bars ─────────────────────────────────────────── */
+.combat-bar {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  margin-top: 4px;
+  border-radius: var(--r-sm);
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.05);
+  box-shadow: var(--shadow-inset-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.combat-bar span:first-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  border-radius: var(--r-sm);
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+
+.combat-bar--hp span:first-child {
+  background: linear-gradient(90deg, #c03030, #7a1f1f);
+}
+
+.combat-bar--sp span:first-child {
+  background: linear-gradient(90deg, #4a90d9, #1a4a8b);
+}
+
+.combat-bar__label {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-family: var(--f-head);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--c-text-hi);
+  padding-left: 6px;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+
+.combat-bar__val {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-family: var(--f-head);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--c-text-hi);
+  padding-right: 6px;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+
+/* ── VS badge ─────────────────────────────────────────────── */
 .combat-vs {
   width: 28px;
   height: 28px;
@@ -214,6 +190,7 @@
   font-family: var(--f-head);
   font-size: 9px;
   box-shadow: var(--shadow-inset-md);
+  justify-self: center;
 }
 
 /* ── Expanded battle log ─────────────────────────────────── */

@@ -207,46 +207,43 @@
 
           <div class="combat-hud" id="combat-hud">
 
-            <!-- Row 1: HP bars -->
-            <div class="combat-row combat-row--hp">
-              <div class="combat-bar combat-bar--hp combat-bar--player-hp">
-                <span id="player-hp-fill"></span>
-              </div>
-              <div class="combat-bar combat-bar--hp combat-bar--enemy-hp">
-                <span id="enemy-hp-fill"></span>
-              </div>
-            </div>
+            <div class="combat-row combat-row--portraits">
 
-            <!-- Row 2+: SP + Avatars + VS + Names -->
-            <div class="combat-row combat-row--main">
-
-              <!-- Left region: SP bar + Player name -->
-              <div class="combat-side combat-side--player">
-                <div class="combat-bar combat-bar--sp combat-bar--player-sp">
-                  <span id="player-sp-fill"></span>
-                </div>
-                <div class="combat-name" id="player-combat-name">Riftwalker</div>
-                <div class="combat-stat" id="player-hp-text">HP -- / --</div>
-                <div class="combat-stat" id="player-sp-text">SP -- / --</div>
-              </div>
-
-              <!-- Avatar + VS cluster -->
-              <div class="combat-center">
-                <div class="combat-avatar-wrap combat-avatar-wrap--player">
+              <!-- Player portrait -->
+              <div class="combat-portrait combat-portrait--player">
+                <div class="combat-portrait__frame">
                   <img id="player-combat-avatar" src="" alt="" class="combat-avatar" style="display:none;">
                   <div class="combat-avatar-placeholder" id="player-avatar-placeholder">☺</div>
                 </div>
-                <div class="combat-vs" id="combat-vs">VS</div>
-                <div class="combat-avatar-wrap combat-avatar-wrap--enemy">
-                  <img id="enemy-combat-avatar" src="" alt="" class="combat-avatar" style="display:none;">
-                  <div class="combat-avatar-placeholder" id="enemy-avatar-placeholder">☻</div>
+                <div class="combat-portrait__name" id="player-combat-name">Riftwalker</div>
+                <div class="combat-portrait__tag" id="player-combat-tower">Tower</div>
+                <div class="combat-bar combat-bar--hp" id="player-hp-bar">
+                  <span id="player-hp-fill"></span>
+                  <span class="combat-bar__label">HP</span>
+                  <span class="combat-bar__val" id="player-hp-text">-- / --</span>
+                </div>
+                <div class="combat-bar combat-bar--sp" id="player-sp-bar">
+                  <span id="player-sp-fill"></span>
+                  <span class="combat-bar__label">SP</span>
+                  <span class="combat-bar__val" id="player-sp-text">-- / --</span>
                 </div>
               </div>
 
-              <!-- Right region: Enemy name -->
-              <div class="combat-side combat-side--enemy">
-                <div class="combat-name" id="enemy-combat-name">Unknown</div>
-                <div class="combat-stat" id="enemy-hp-text">HP -- / --</div>
+              <!-- VS badge -->
+              <div class="combat-vs" id="combat-vs">VS</div>
+
+              <!-- Enemy portrait -->
+              <div class="combat-portrait combat-portrait--enemy">
+                <div class="combat-portrait__frame">
+                  <img id="enemy-combat-avatar" src="" alt="" class="combat-avatar" style="display:none;">
+                  <div class="combat-avatar-placeholder" id="enemy-avatar-placeholder">☻</div>
+                </div>
+                <div class="combat-portrait__name" id="enemy-combat-name">Unknown</div>
+                <div class="combat-bar combat-bar--hp" id="enemy-hp-bar">
+                  <span id="enemy-hp-fill"></span>
+                  <span class="combat-bar__label">HP</span>
+                  <span class="combat-bar__val" id="enemy-hp-text">-- / --</span>
+                </div>
               </div>
 
             </div>
