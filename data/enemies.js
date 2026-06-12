@@ -228,11 +228,11 @@ const ENEMIES_DATA = [
     opener: 'A battered Tuk Tuk revs its engine. The driver grins and holds out his hand before the fight even starts.',
     dropTable: [],
   },
-  { // Street Food Vendor
+  { // Street Food
     id: 'street_food_vendor',
     dungeonId: 'bangkok_nightmare',
     weight: 4,
-    name: 'Street Food Vendor',
+    name: 'Street Food',
     area: 'Bangkok Nightmare',
     hp: 280,
     atk: 52,

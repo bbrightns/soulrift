@@ -206,7 +206,7 @@ function showDungeonView() {
   if (dungeonView) dungeonView.classList.remove('is-hidden');
   if (arenaView) arenaView.classList.add('is-hidden');
   renderDungeonList();
-  document.querySelector('#screen-battle .screen-sub').style.display = '';
+  document.getElementById('screen-battle').classList.remove('arena-active');
 }
 
 function showArenaView(dungeonId) {
@@ -216,7 +216,7 @@ function showArenaView(dungeonId) {
   if (dungeonView) dungeonView.classList.add('is-hidden');
   if (arenaView) arenaView.classList.remove('is-hidden');
   setText('arena-dungeon-name', dungeon ? dungeon.name : 'Unknown Rift');
-  document.querySelector('#screen-battle .screen-sub').style.display = 'none';
+  document.getElementById('screen-battle').classList.add('arena-active');
 }
 
 function _hasEmptyFillableSlot() {
@@ -502,9 +502,9 @@ function updateCombatHud(player, enemy, enemyTemplate) {
   if (playerSpFill) playerSpFill.style.transform = 'scaleX(' + playerSpPct + ')';
   if (enemyHpFill) enemyHpFill.style.transform = 'scaleX(' + enemyHpPct + ')';
 
-  setText('player-hp-text', Math.max(0, player.hp) + ' / ' + Math.max(0, player.hpMax));
-  setText('player-sp-text', Math.max(0, player.sp) + ' / ' + Math.max(0, player.spMax));
-  setText('enemy-hp-text', enemy.hp + ' / ' + enemyTemplate.hp);
+  setText('player-hp-text', Math.max(0, player.hp));
+  setText('player-sp-text', Math.max(0, player.sp));
+  setText('enemy-hp-text', enemy.hp);
 }
 
 function prepareArena(dungeonId) {

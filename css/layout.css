@@ -3655,3 +3655,13 @@ input, select, textarea {
   .firefly                 { animation: none; opacity: 0.4; }
   *, *::before, *::after   { transition-duration: 0.01ms !important; }
 }
+
+/* ── Hide screen title/sub when arena is showing ─────────── */
+#screen-battle.arena-active > .screen-title,
+#screen-battle.arena-active > .screen-sub {
+  display: none;
+}
+
+#screen-battle.arena-active {
+  padding-top: 0;
+}
