@@ -46,16 +46,21 @@ const SFX = (() => {
 
   /* ── Individual sounds ─────────────────────────────────── */
 
-  /** Player spell connects — bright ping descending */
-  function playerHit() {
-    _tone(780, 420, 'sine',     0.22, 0.09);
-    _tone(390, 210, 'triangle', 0.10, 0.13, 30);
+  /** Player spell or strike connects — unified to Radiant Light Chime style */
+  function playerHit(type) {
+    // Radiant Lydian Chime Arpeggio (4-note ascending light chime)
+    _tone(1047, 1047, 'sine', 0.15, 0.30, 0);   // C6
+    _tone(1319, 1319, 'sine', 0.12, 0.25, 50);  // E6
+    _tone(1568, 1568, 'sine', 0.10, 0.22, 100); // G6
+    _tone(1976, 1976, 'sine', 0.08, 0.20, 150); // B6
+    _tone(2093, 2093, 'sine', 0.05, 0.40, 200); // C7 (resonance)
   }
 
-  /** Enemy strikes player — dull thud */
+  /** Enemy strikes player — heavy thud with balanced volume */
   function enemyHit() {
-    _tone(160, 60, 'triangle', 0.40, 0.14);
-    _tone(90,  40, 'sine',     0.20, 0.18, 20);
+    _tone(150, 50, 'triangle', 0.26, 0.20);
+    _tone(90, 30, 'sawtooth', 0.12, 0.16, 15);
+    _tone(70, 40, 'sine', 0.20, 0.25, 30);
   }
 
   /** Victory — ascending 4-note fanfare */

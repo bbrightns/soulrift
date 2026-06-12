@@ -999,6 +999,7 @@ async function runAutoBattle(dungeonId) {
         const dmg = struggleDamage(player, enemy);
         enemy.hp = Math.max(0, enemy.hp - dmg);
         updateCombatHud(player, enemy, enemyTemplate);
+        if (typeof SFX !== 'undefined') SFX.playerHit('struggle');
         await appendBattleLog(
           wrapLogText(logName() + ' has no spell and Struggles for ' + dmg + ' damage.'),
           'player'
@@ -1008,6 +1009,7 @@ async function runAutoBattle(dungeonId) {
         const dmg = struggleDamage(player, enemy);
         enemy.hp = Math.max(0, enemy.hp - dmg);
         updateCombatHud(player, enemy, enemyTemplate);
+        if (typeof SFX !== 'undefined') SFX.playerHit('struggle');
         await appendBattleLog(
           wrapLogText(logName() + ' tries ' + def.name + ' but only has ' + player.sp + '/' + def.spCost + ' SP. Struggle: ' + dmg + ' dmg.'),
           'warn'
@@ -1037,6 +1039,7 @@ async function runAutoBattle(dungeonId) {
           const delayLabel = delayRange.min === delayRange.max
             ? turnsLeft + ' turn'
             : turnsLeft + ' turns';
+          if (typeof SFX !== 'undefined') SFX.playerHit(def.tower);
           await appendBattleLog(
             spellIconHTML(def.id) + wrapLogText(
               '<span style="color:var(--c-text-3);">'
@@ -1189,6 +1192,9 @@ function wrapLogText(html) {
 }
 
 async function castPreparedSpell(def, player, enemy, enemyTemplate, battleStatus, spellLvl, fromQueue = false) {
+  // Play SFX for the spell cast
+  if (typeof SFX !== 'undefined') SFX.playerHit(def.tower);
+
   // ── Base damage ──────────────────────────────────────────
   let baseDmg = spellPower(def, player, spellLvl);
 
