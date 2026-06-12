@@ -249,7 +249,7 @@ const ENEMIES_DATA = [
   { // Public Bus (Black Smoke)
     id: 'public_bus',
     dungeonId: 'bangkok_nightmare',
-    weight: 3000,
+    weight: 3,
     name: 'Public Bus No. 8',
     area: 'Bangkok Nightmare',
     hp: 420,
