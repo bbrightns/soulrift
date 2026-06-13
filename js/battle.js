@@ -456,6 +456,16 @@ function showBattleOutcome(outcome) {
 }
 
 function updateCombatHud(player, enemy, enemyTemplate) {
+  // Move val labels inside bars on first call
+  ['player-hp', 'player-sp', 'enemy-hp'].forEach(prefix => {
+    const bar = document.getElementById(prefix + '-bar');
+    const val = document.getElementById(prefix + '-text');
+    if (bar && val && val.parentNode !== bar) {
+      val.className = 'combat-bar-row__val--overlay';
+      bar.appendChild(val);
+    }
+  });
+
   setText('player-combat-name', battlePlayerName());
   setText('enemy-combat-name', enemy.name);
 
@@ -502,9 +512,9 @@ function updateCombatHud(player, enemy, enemyTemplate) {
   if (playerSpFill) playerSpFill.style.transform = 'scaleX(' + playerSpPct + ')';
   if (enemyHpFill) enemyHpFill.style.transform = 'scaleX(' + enemyHpPct + ')';
 
-  setText('player-hp-text', Math.max(0, player.hp));
-  setText('player-sp-text', Math.max(0, player.sp));
-  setText('enemy-hp-text', enemy.hp);
+  setText('player-hp-text', Math.max(0, player.hp) + '/' + player.hpMax);
+  setText('player-sp-text', Math.max(0, player.sp) + '/' + player.spMax);
+  setText('enemy-hp-text', enemy.hp + '/' + enemyTemplate.hp);
 }
 
 function prepareArena(dungeonId) {
@@ -1053,7 +1063,6 @@ async function runAutoBattle(dungeonId) {
       }
 
       // Pending releases always fire — stun does not block them
-      console.log('Pending queue at end of turn ' + turn + ':', battleStatus.pendingQueue);
       if (_trafficJam && battleStatus.pendingQueue.length > 0) {
         battleStatus.pendingQueue.forEach(p => p.turnsLeft--);
         const ready = battleStatus.pendingQueue.filter(p => p.turnsLeft <= 0);

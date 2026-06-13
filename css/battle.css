@@ -18,7 +18,7 @@
 .arena-dungeon-strip {
   flex: 0 0 auto;
   text-align: center;
-  padding: 0 0 var(--sp-1);
+  padding: var(--sp-2) 0 var(--sp-1);
   position: relative;
 }
 .arena-dungeon-strip::before,
@@ -42,13 +42,9 @@
 /* ── Outer HUD wrapper ───────────────────────────────────── */
 .combat-hud {
   flex: 0 0 auto;
-  border: 1px solid var(--c-border-md);
-  border-radius: var(--r-md);
-  background:
-    linear-gradient(145deg, rgba(255,255,255,.025), transparent 65%),
-    var(--c-raised);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   transition: opacity 0.3s ease;
 }
 
@@ -60,22 +56,36 @@
 
 .combat-hud.hud--post-battle {
   display: none;
+  background: transparent;
 }
 
 /* ── Portrait row ────────────────────────────────────────── */
 .combat-row--portraits {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--c-border-md);
+  grid-template-columns: 1fr 20px 1fr;
+  gap: 0;
+  background: transparent;
+  align-items: stretch;
 }
 
 /* ── Individual portrait card ────────────────────────────── */
 .combat-portrait {
   display: flex;
   flex-direction: column;
-  background: var(--c-raised);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.025), transparent 65%),
+    var(--c-raised);
+  border: 1px solid var(--c-border-md);
   min-width: 0;
+  overflow: hidden;
+}
+
+.combat-portrait--player {
+  border-radius: var(--r-md) 0 0 var(--r-md);
+}
+
+.combat-portrait--enemy {
+  border-radius: 0 var(--r-md) var(--r-md) 0;
 }
 
 /* ── Portrait image frame ────────────────────────────────── */
@@ -170,26 +180,89 @@
   text-align: left;
 }
 
-.combat-bar-row__val {
+.combat-bar-row__val:not(.combat-bar-row__val--overlay) {
+  display: none;
+}
+
+.combat-bar-row {
+  position: relative;
+}
+
+.combat-bar-row__val--overlay {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   font-family: var(--f-head);
-  font-size: 8px;
-  font-weight: 600;
-  color: var(--c-text-2);
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.9);
+  pointer-events: none;
   white-space: nowrap;
-  flex: 0 0 auto;
-  min-width: 36px;
-  text-align: right;
+  z-index: 5;
+  line-height: 18px;
+  letter-spacing: .03em;
+}
+
+/* ── VS badge column ────────────────────────────────────── */
+.combat-vs-col {
+  position: relative;
+  display: flex;
+  /* anchor badge to top of column = top of avatar frame */
+  align-items: flex-start;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  z-index: 10;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.combat-vs-badge {
+  position: absolute;
+  /* The avatar frame is aspect-ratio:1 and takes full column width.
+     Each portrait col = (total_width - 28px) / 2.
+     At 480px container: (480 - 28) / 2 = 226px frame height.
+     Center of frame = 113px from top.
+     We use 50% of the portrait frame which = 50% of col width.
+     Since both portrait cols are 1fr and vs-col is 28px,
+     frame height ≈ portrait col width.
+     top: calc(50% of frame - half badge) can't reference sibling width in CSS.
+     Best reliable approach: use aspect-ratio padding trick via ::before on parent,
+     OR simply use top: 37% which empirically centers on the avatar across sizes. */
+  top: 37%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--c-bg);
+  border: 1.5px solid var(--c-border-hi);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-head);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--c-gold-text);
+  letter-spacing: .06em;
+  box-shadow: 0 0 12px rgba(197,160,89,0.25), var(--shadow-md);
 }
 
 /* ── HP / SP bars ────────────────────────────────────────── */
 .combat-bar {
   position: relative;
   flex: 1 1 0;
-  height: 8px;
-  border-radius: 99px;
+  height: 18px;
+  border-radius: 4px;
   background: rgba(0,0,0,.55);
   border: 1px solid rgba(255,255,255,.06);
   overflow: hidden;
+  isolation: isolate;
 }
 
 .combat-bar span:first-child {
@@ -344,7 +417,31 @@
   flex: 0 0 auto;
   display: flex;
   gap: var(--sp-2);
-  padding: var(--sp-1) 0 var(--sp-2);
+  padding: var(--sp-1) 0 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+  min-width: 0;
+}
+
+.arena-action-row > * {
+  min-width: 0;
+}
+
+.arena-retreat-btn {
+  flex: 0 0 72px;
+  min-width: 0;
+}
+
+.arena-auto-btn {
+  flex: 0 0 64px;
+  min-width: 0;
+  padding: 0 var(--sp-2);
+}
+
+.arena-action-row .btn--primary {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .arena-retreat-btn {

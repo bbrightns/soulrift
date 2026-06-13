@@ -2241,7 +2241,7 @@ input, select, textarea {
   margin-bottom: 7px;
 }
 
-.combat-bar span {
+.combat-bar span:not(.combat-bar-row__val--overlay) {
   display: block;
   width: 0;
   height: 100%;
