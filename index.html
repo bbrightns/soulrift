@@ -4,7 +4,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#14141a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -221,15 +222,15 @@
                     <span class="combat-bar-row__label">HP</span>
                     <div class="combat-bar combat-bar--hp" id="player-hp-bar">
                       <span id="player-hp-fill"></span>
+                      <span class="combat-bar-row__val--overlay" id="player-hp-text">--</span>
                     </div>
-                    <span class="combat-bar-row__val" id="player-hp-text">--</span>
                   </div>
                   <div class="combat-bar-row">
                     <span class="combat-bar-row__label">SP</span>
                     <div class="combat-bar combat-bar--sp" id="player-sp-bar">
                       <span id="player-sp-fill"></span>
+                      <span class="combat-bar-row__val--overlay" id="player-sp-text">--</span>
                     </div>
-                    <span class="combat-bar-row__val" id="player-sp-text">--</span>
                   </div>
                 </div>
               </div>
@@ -253,8 +254,8 @@
                     <span class="combat-bar-row__label">HP</span>
                     <div class="combat-bar combat-bar--hp" id="enemy-hp-bar">
                       <span id="enemy-hp-fill"></span>
+                      <span class="combat-bar-row__val--overlay" id="enemy-hp-text">--</span>
                     </div>
-                    <span class="combat-bar-row__val" id="enemy-hp-text">--</span>
                   </div>
                 </div>
               </div>
@@ -678,7 +679,8 @@
                   <option value="10">Level 10</option>
                   <option value="11">Level 11</option>
                 </select>
-                <input type="number" id="gm-spell-qty" class="gm-input" min="1" value="1" placeholder="Qty" style="max-width: 80px;">
+                <input type="number" id="gm-spell-qty" class="gm-input" min="1" value="1" placeholder="Qty"
+                  style="max-width: 80px;">
                 <button class="btn btn--primary" onclick="gmAddSpellStone()">Add Stone</button>
               </div>
             </div>
@@ -689,9 +691,11 @@
             <div class="section-label">Battle Speed</div>
             <div class="gm-speed-row">
               <button class="btn btn--ghost gm-speed-btn" data-speed="slow" onclick="gmSetSpeed('slow')">Slow</button>
-              <button class="btn btn--ghost gm-speed-btn" data-speed="normal" onclick="gmSetSpeed('normal')">Normal</button>
+              <button class="btn btn--ghost gm-speed-btn" data-speed="normal"
+                onclick="gmSetSpeed('normal')">Normal</button>
               <button class="btn btn--ghost gm-speed-btn" data-speed="fast" onclick="gmSetSpeed('fast')">Fast</button>
-              <button class="btn btn--ghost gm-speed-btn" data-speed="instant" onclick="gmSetSpeed('instant')">Instant</button>
+              <button class="btn btn--ghost gm-speed-btn" data-speed="instant"
+                onclick="gmSetSpeed('instant')">Instant</button>
             </div>
           </div>
 

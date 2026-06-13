@@ -248,7 +248,7 @@ let _pendingDungeonId = null;
 
 function _showAllEmptyConfirm() {
   const modal = document.getElementById('shop-confirm-modal');
-  const body  = document.getElementById('shop-confirm-body');
+  const body = document.getElementById('shop-confirm-body');
   if (!modal || !body) return;
 
   body.innerHTML =
@@ -258,7 +258,7 @@ function _showAllEmptyConfirm() {
     + '<div class="modal-hint">All 10 turns will use Struggle (weak fallback attack). Visit Order to assign spells first.</div>';
 
   const confirmBtn = modal.querySelector('.btn--primary');
-  const cancelBtn  = modal.querySelector('.btn--ghost');
+  const cancelBtn = modal.querySelector('.btn--ghost');
   if (confirmBtn) {
     confirmBtn.disabled = false;
     confirmBtn.textContent = 'Enter Anyway';
@@ -456,16 +456,6 @@ function showBattleOutcome(outcome) {
 }
 
 function updateCombatHud(player, enemy, enemyTemplate) {
-  // Move val labels inside bars on first call
-  ['player-hp', 'player-sp', 'enemy-hp'].forEach(prefix => {
-    const bar = document.getElementById(prefix + '-bar');
-    const val = document.getElementById(prefix + '-text');
-    if (bar && val && val.parentNode !== bar) {
-      val.className = 'combat-bar-row__val--overlay';
-      bar.appendChild(val);
-    }
-  });
-
   setText('player-combat-name', battlePlayerName());
   setText('enemy-combat-name', enemy.name);
 
@@ -503,14 +493,16 @@ function updateCombatHud(player, enemy, enemyTemplate) {
   const playerHpPct = clampPct(player.hp, player.hpMax) / 100;
   const playerSpPct = clampPct(player.sp, player.spMax) / 100;
   const enemyHpPct = clampPct(enemy.hp, enemyTemplate.hp) / 100;
-
   const playerHpFill = document.getElementById('player-hp-fill');
   const playerSpFill = document.getElementById('player-sp-fill');
   const enemyHpFill = document.getElementById('enemy-hp-fill');
+  const hpBarW = document.getElementById('player-hp-bar').clientWidth;
+  const spBarW = document.getElementById('player-sp-bar').clientWidth;
+  const ehpBarW = document.getElementById('enemy-hp-bar').clientWidth;
 
-  if (playerHpFill) playerHpFill.style.transform = 'scaleX(' + playerHpPct + ')';
-  if (playerSpFill) playerSpFill.style.transform = 'scaleX(' + playerSpPct + ')';
-  if (enemyHpFill) enemyHpFill.style.transform = 'scaleX(' + enemyHpPct + ')';
+  if (playerHpFill) playerHpFill.style.width = Math.round(playerHpPct * hpBarW) + 'px';
+  if (playerSpFill) playerSpFill.style.width = Math.round(playerSpPct * spBarW) + 'px';
+  if (enemyHpFill) enemyHpFill.style.width = Math.round(enemyHpPct * ehpBarW) + 'px';
 
   setText('player-hp-text', Math.max(0, player.hp) + '/' + player.hpMax);
   setText('player-sp-text', Math.max(0, player.sp) + '/' + player.spMax);
@@ -1041,7 +1033,7 @@ async function runAutoBattle(dungeonId) {
           // Roll delay from enemy override or dungeon default (1 turn)
           const delayRange = enemyTemplate.trafficJamDelay || { min: 1, max: 1 };
           const { min, max } = delayRange;
-          const turnsLeft = min + Math.floor(Math.random() * (max - min + 1)); 
+          const turnsLeft = min + Math.floor(Math.random() * (max - min + 1));
           const turnsLeftForPush = turnsLeft + 1; //  +1 because the first turn counts down immediately
           battleStatus.pendingQueue.push({ def, spellLvl, turnsLeft: turnsLeftForPush });
           const delayLabel = delayRange.min === delayRange.max

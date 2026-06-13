@@ -2242,18 +2242,23 @@ input, select, textarea {
 }
 
 .combat-bar span:not(.combat-bar-row__val--overlay) {
-  display: block;
-  width: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
   height: 100%;
+  display: block;
   transition: width .22s ease;
 }
 
-.combat-bar--hp span {
+#player-hp-fill {
   background: linear-gradient(90deg, #5d1111, #c03030);
 }
-
-.combat-bar--sp span {
+#player-sp-fill {
   background: linear-gradient(90deg, #12345a, #66c7e8);
+}
+#enemy-hp-fill {
+  background: linear-gradient(90deg, #5d1111, #c03030);
 }
 
 .combat-bar--intent span {
