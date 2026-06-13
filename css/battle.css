@@ -88,6 +88,16 @@
 
 .combat-portrait--enemy {
   border-radius: 0 var(--r-md) var(--r-md) 0;
+  flex-direction: column;
+}
+
+.combat-portrait--enemy .combat-bar-row {
+  flex-direction: row-reverse;
+}
+
+.combat-portrait--enemy .combat-bar--hp span:first-child {
+  left: auto;
+  right: 0;
 }
 
 /* ── Portrait image frame ────────────────────────────────── */
@@ -549,3 +559,112 @@
 .log-spell-icon--enemy {
   align-self: stretch;
 }
+
+/* ── Combat Log toggle button ────────────────────────────── */
+.combat-log-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.combat-log-toggle {
+  background: transparent;
+  border: 1px solid var(--c-border-md);
+  border-radius: var(--r-sm);
+  color: var(--c-gold-dim);
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 6px;
+  cursor: pointer;
+  margin-left: auto;
+  transition: color var(--ease-fast), border-color var(--ease-fast);
+  flex-shrink: 0;
+}
+
+.combat-log-toggle:hover {
+  color: var(--c-gold-text);
+  border-color: var(--c-border-hi);
+}
+
+/* ── Expanded state ──────────────────────────────────────── */
+.log-expanded .combat-portrait {
+  flex-direction: row;
+  align-items: center;
+}
+
+.log-expanded .combat-portrait__frame {
+  aspect-ratio: unset !important;
+  width: 36px !important;
+  height: 36px !important;
+  flex-shrink: 0;
+}
+
+.log-expanded .combat-avatar {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.log-expanded .combat-avatar-placeholder {
+  font-size: 18px;
+}
+
+.log-expanded .combat-portrait__overlay {
+  display: none;
+}
+
+.log-expanded .combat-bars {
+  flex: 1;
+  padding: 3px var(--sp-2);
+  gap: 3px;
+}
+
+.log-expanded .combat-bar {
+  height: 4px !important;
+  border-radius: 2px;
+}
+
+.log-expanded .combat-bar-row__label {
+  display: none;
+}
+
+.log-expanded .combat-bar-row__val--overlay {
+  display: none;
+}
+
+/*.log-expanded .combat-portrait--player .combat-bar-row:last-child {
+  display: none;
+}*/
+
+.log-expanded .combat-vs-badge {
+  width: 22px;
+  height: 22px;
+  font-size: 8px;
+  top: 50%;
+}
+
+.log-expanded .arena-dungeon-strip {
+  padding: 2px 0;
+}
+
+.log-expanded .arena-dungeon-strip__name {
+  font-size: 9px;
+  letter-spacing: .12em;
+}
+
+/* Player: avatar left, bars right */
+.log-expanded .combat-portrait--player {
+  flex-direction: row;
+}
+
+/* Enemy: bars left, avatar right (mirror) */
+.log-expanded .combat-portrait--enemy {
+  flex-direction: row-reverse;
+}
+
+/* Enemy bar fill should grow from right to left */
+.log-expanded .combat-portrait--enemy .combat-bar--hp span:first-child {
+  left: auto;
+  right: 0;
+}
+
+/* Enemy name strip mirroring already handled by overlay--enemy text-align:right */

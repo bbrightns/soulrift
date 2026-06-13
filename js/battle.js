@@ -37,6 +37,15 @@ function scaleRewardByLevel(base, playerLevel, dungeonLevelReq) {
   return Math.max(1, Math.floor(base * mult));
 }
 
+function toggleCombatLog() {
+  const arena = document.getElementById('battle-arena-view');
+  const btn = document.getElementById('combat-log-toggle');
+  if (!arena || !btn) return;
+  const expanded = arena.classList.toggle('log-expanded');
+  btn.textContent = expanded ? '⤡' : '⤢';
+  btn.title = expanded ? 'Collapse log' : 'Expand log';
+}
+
 function enemyAvatarHTML(enemyTemplate) {
   return '<img src="/asset/enemy_avatars/' + enemyTemplate.id + '.png" '
     + 'class="log-spell-icon log-spell-icon--enemy" alt="">';
@@ -502,7 +511,12 @@ function updateCombatHud(player, enemy, enemyTemplate) {
 
   if (playerHpFill) playerHpFill.style.width = Math.round(playerHpPct * hpBarW) + 'px';
   if (playerSpFill) playerSpFill.style.width = Math.round(playerSpPct * spBarW) + 'px';
-  if (enemyHpFill) enemyHpFill.style.width = Math.round(enemyHpPct * ehpBarW) + 'px';
+  if (enemyHpFill) {
+    enemyHpFill.style.width = Math.round(enemyHpPct * ehpBarW) + 'px';
+    enemyHpFill.style.left = 'auto';
+    enemyHpFill.style.right = '0';
+    enemyHpFill.style.position = 'absolute';
+  }
 
   setText('player-hp-text', Math.max(0, player.hp) + '/' + player.hpMax);
   setText('player-sp-text', Math.max(0, player.sp) + '/' + player.spMax);
