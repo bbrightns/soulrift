@@ -579,6 +579,19 @@
   margin-left: auto;
   transition: color var(--ease-fast), border-color var(--ease-fast);
   flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.combat-log-toggle i,
+.combat-log-toggle svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.5;
 }
 
 .combat-log-toggle:hover {

@@ -42,8 +42,9 @@ function toggleCombatLog() {
   const btn = document.getElementById('combat-log-toggle');
   if (!arena || !btn) return;
   const expanded = arena.classList.toggle('log-expanded');
-  btn.textContent = expanded ? '⤡' : '⤢';
+  btn.innerHTML = expanded ? '<i data-lucide="minimize-2"></i>' : '<i data-lucide="maximize-2"></i>';
   btn.title = expanded ? 'Collapse log' : 'Expand log';
+  lucide.createIcons();
 }
 
 function enemyAvatarHTML(enemyTemplate) {
