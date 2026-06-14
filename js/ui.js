@@ -134,7 +134,7 @@ function syncHeader() {
   const s = getState();
   const goldEl = document.getElementById('hud-gold-val');
   const levelEl = document.getElementById('hud-level');
-  if (goldEl)  goldEl.textContent  = s.gold.toLocaleString();
+  if (goldEl) goldEl.textContent = s.gold.toLocaleString();
   if (levelEl) {
     levelEl.textContent = 'LV ' + s.player.level;
     levelEl.classList.toggle('has-points', (s.player.skillPoints || 0) > 0);
@@ -145,9 +145,9 @@ function syncHeader() {
   if (app && s.tower) app.dataset.tower = s.tower;
 
   /* tower icon */
-  const towerIcons = { fire: '🔥', dark: '🌑', ice: '❄️', light: '☀️' };
   const iconEl = document.getElementById('hud-tower-icon');
-  if (iconEl) iconEl.textContent = towerIcons[s.tower] || '';
+  if (iconEl && s.tower) iconEl.innerHTML = '<img src="/asset/tower_icons/' + s.tower + '.png" alt="" style="width:20px;height:20px;object-fit:cover;border-radius:50%;vertical-align:middle;">';
+  else if (iconEl) iconEl.innerHTML = '';
 
   /* EXP bar */
   const expEl = document.getElementById('hud-exp-fill');
@@ -250,16 +250,16 @@ function renderProfilePanel() {
 
   fill('prof-name', s.playerName || 'Arcane Wanderer');
   fill('prof-avatar', towerAvatars[s.tower] || '✦');
-  fill('prof-tower',  towerNames[s.tower] || '—');
-  fill('prof-level',  p.level);
-  fill('prof-exp',    p.exp + ' / ' + p.expNext);
-  fill('prof-hp',     p.hpMax);
-  fill('prof-sp',     p.spMax);
-  fill('prof-gold',   s.gold.toLocaleString());
-  fill('prof-str',    p.str);
-  fill('prof-int',    p.int);
-  fill('prof-atk',    p.atk);
-  fill('prof-def',    p.def);
+  fill('prof-tower', towerNames[s.tower] || '—');
+  fill('prof-level', p.level);
+  fill('prof-exp', p.exp + ' / ' + p.expNext);
+  fill('prof-hp', p.hpMax);
+  fill('prof-sp', p.spMax);
+  fill('prof-gold', s.gold.toLocaleString());
+  fill('prof-str', p.str);
+  fill('prof-int', p.int);
+  fill('prof-atk', p.atk);
+  fill('prof-def', p.def);
 
   /* skill points — badge + inline buttons */
   const pts = p.skillPoints || 0;
@@ -267,7 +267,7 @@ function renderProfilePanel() {
   const ptsCount = document.getElementById('prof-skill-points');
   if (ptsBadge) ptsBadge.classList.toggle('is-hidden', pts === 0);
   if (ptsCount) ptsCount.textContent = pts;
-  ['str','int','atk','def'].forEach(stat => {
+  ['str', 'int', 'atk', 'def'].forEach(stat => {
     const btn = document.getElementById('skill-up-' + stat);
     if (btn) btn.classList.toggle('is-hidden', pts === 0);
   });
