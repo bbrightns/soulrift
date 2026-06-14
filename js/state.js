@@ -275,19 +275,14 @@ function _openBulkAllocModal(stat) {
     + 'border-radius:var(--r-md);color:var(--c-gold-text);font-size:20px;padding:6px;outline:none;">'
     + '</div>'
     + '<div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-2);">'
-    + '<button class="btn btn--ghost" style="flex:1;font-size:11px;" onclick="_bulkAllocAdj(' + available + ')">ALL ' + available + '</button>'
+    + '<button class="btn btn--ghost btn--full" style="font-size:11px;" onclick="_bulkAllocAdj(' + available + ')">ALL ' + available + '</button>'
     + '</div>';
 
   const confirmBtn = modal.querySelector('.btn--primary');
-  const cancelBtn = modal.querySelector('.btn--ghost');
   if (confirmBtn) {
     confirmBtn.disabled = false;
     confirmBtn.textContent = 'Allocate';
     confirmBtn.onclick = () => _confirmBulkAlloc(stat);
-  }
-  if (cancelBtn) {
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.onclick = closeShopConfirm;
   }
 
   modal.dataset.allocStat = stat;
