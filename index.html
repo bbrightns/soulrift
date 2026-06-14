@@ -173,13 +173,28 @@
               autocomplete="off" spellcheck="false">
           </div>
 
-          <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4);" onclick="confirmStart()">
-            Enter the Rift
+          <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4);" onclick="confirmName()">
+            Choose Your Appearance
           </button>
           <button class="btn btn--ghost btn--full" style="margin-top:var(--sp-2);" onclick="backToTowerSelect()">
             Back — Change Tower
           </button>
         </div><!-- /intro-name-step -->
+
+        <!-- Step 3: Avatar picker -->
+        <div id="intro-avatar-step">
+          <div class="landing-name-head">
+            <div class="landing-name-copy">Choose your appearance.</div>
+          </div>
+          <div class="divider--gold divider"></div>
+          <div id="intro-avatar-grid" class="avatar-pick-grid"></div>
+          <button class="btn btn--primary btn--full" style="margin-top:var(--sp-4);" onclick="confirmStart()">
+            Enter the Rift
+          </button>
+          <button class="btn btn--ghost btn--full" style="margin-top:var(--sp-2);" onclick="backToNameStep()">
+            Back — Change Name
+          </button>
+        </div>
 
       </div>
     </div><!-- /screen-intro -->

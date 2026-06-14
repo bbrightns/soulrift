@@ -521,7 +521,8 @@ function updateCombatHud(player, enemy, enemyTemplate) {
   const playerTower = getTower();
   if (playerAvatarEl) {
     if (playerTower) {
-      playerAvatarEl.src = '/asset/player_avatars/' + playerTower + '.png';
+      const avatarKey = getState().playerAvatar || (playerTower + '_1');
+      playerAvatarEl.src = '/asset/player_avatars/' + avatarKey + '.png';
       playerAvatarEl.style.display = 'block';
       if (playerPlaceholder) playerPlaceholder.style.display = 'none';
     } else {

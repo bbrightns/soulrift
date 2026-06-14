@@ -249,7 +249,12 @@ function renderProfilePanel() {
   };
 
   fill('prof-name', s.playerName || 'Arcane Wanderer');
-  fill('prof-avatar', towerAvatars[s.tower] || '✦');
+  const profAvatarEl = document.getElementById('prof-avatar');
+  if (profAvatarEl) {
+    const avatarKey = s.playerAvatar || (s.tower + '_1');
+    profAvatarEl.innerHTML = '<img src="/asset/player_avatars/' + avatarKey + '.png" '
+      + 'style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">';
+  }
   fill('prof-tower', towerNames[s.tower] || '—');
   fill('prof-level', p.level);
   fill('prof-exp', p.exp + ' / ' + p.expNext);

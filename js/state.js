@@ -31,6 +31,9 @@ const DEFAULTS = {
     spentPoints: { str: 0, int: 0, atk: 0, def: 0 },
   },
 
+  /* Custom avatar URL (set during first-run name step) */
+  playerAvatar: null,
+
   /* Resources */
   gold: 1000,
 
@@ -351,6 +354,9 @@ const TOWER_STARTERS = {
   },
 };
 
+const TOWER_AVATARS = { count: 4 };
+window.TOWER_AVATARS = TOWER_AVATARS;
+
 function recalculatePlayerStats() {
   const s = getState();
   if (!s.towerChosen || !s.tower) return;
@@ -407,7 +413,7 @@ function recalculatePlayerStats() {
 }
 window.recalculatePlayerStats = recalculatePlayerStats;
 
-function applyTowerStart(tower, playerName) {
+function applyTowerStart(tower, playerName, playerAvatar) {
   const config = TOWER_STARTERS[tower];
   if (!config) return false;
 
@@ -415,6 +421,7 @@ function applyTowerStart(tower, playerName) {
   s.tower = tower;
   s.towerChosen = true;
   s.playerName = playerName || 'Arcane Wanderer';
+  s.playerAvatar = playerAvatar || (tower + '_1');
   s.player = { ...s.player, ...config.player };
 
   for (let i = 0; i < 3; i++) {
