@@ -37,13 +37,54 @@ function scaleRewardByLevel(base, playerLevel, dungeonLevelReq) {
   return Math.max(1, Math.floor(base * mult));
 }
 
-function toggleCombatLog() {
-  const arena = document.getElementById('battle-arena-view');
-  const btn = document.getElementById('combat-log-toggle');
-  if (!arena || !btn) return;
-  const expanded = arena.classList.toggle('log-expanded');
-  btn.innerHTML = expanded ? '<i data-lucide="minimize-2"></i>' : '<i data-lucide="maximize-2"></i>';
-  btn.title = expanded ? 'Collapse log' : 'Expand log';
+const HUD_SIZES = ['XS', 'S', 'L'];
+
+function getHudSize() {
+  const s = getState();
+  if (!s.settings) s.settings = {};
+  if (!HUD_SIZES.includes(s.settings.hudSize)) s.settings.hudSize = 'L';
+  return s.settings.hudSize;
+}
+
+function hudSizeDown() {
+  const idx = HUD_SIZES.indexOf(getHudSize());
+  return HUD_SIZES[Math.max(0, idx - 1)];
+}
+
+function hudSizeUp() {
+  const idx = HUD_SIZES.indexOf(getHudSize());
+  return HUD_SIZES[Math.min(HUD_SIZES.length - 1, idx + 1)];
+}
+
+function setHudSize(size) {
+  if (!HUD_SIZES.includes(size)) return;
+  const s = getState();
+  if (!s.settings) s.settings = {};
+  s.settings.hudSize = size;
+  saveState();
+  applyHudSize();
+}
+
+function applyHudSize() {
+  const hud = document.getElementById('combat-hud');
+  const collapseBtn = document.getElementById('hud-collapse-btn');
+  const expandBtn = document.getElementById('hud-expand-btn');
+  if (!hud) return;
+
+  const size = getHudSize();
+  hud.dataset.hudSize = size;
+
+  if (collapseBtn) collapseBtn.classList.toggle('is-hidden', size === 'XS');
+  if (expandBtn) expandBtn.classList.toggle('is-hidden', size === 'L');
+}
+
+function toggleCombatHud() {
+  const hud = document.getElementById('combat-hud');
+  const btn = document.getElementById('combat-hud-toggle');
+  if (!hud || !btn) return;
+  const collapsed = hud.classList.toggle('hud-collapsed');
+  btn.innerHTML = collapsed ? '<i data-lucide="rows-2"></i>' : '<i data-lucide="rows-3"></i>';
+  btn.title = collapsed ? 'Expand HUD' : 'Shrink HUD';
   lucide.createIcons();
 }
 
@@ -227,6 +268,7 @@ function showArenaView(dungeonId) {
   if (arenaView) arenaView.classList.remove('is-hidden');
   setText('arena-dungeon-name', dungeon ? dungeon.name : 'Unknown Rift');
   document.getElementById('screen-battle').classList.add('arena-active');
+  applyHudSize();
 }
 
 function _hasEmptyFillableSlot() {
@@ -468,6 +510,8 @@ function showBattleOutcome(outcome) {
 function updateCombatHud(player, enemy, enemyTemplate) {
   setText('player-combat-name', battlePlayerName());
   setText('enemy-combat-name', enemy.name);
+  setText('player-combat-caption', battlePlayerName());
+  setText('enemy-combat-caption', enemy.name);
 
   const towerLabels = { light: 'Light Tower', dark: 'Dark Tower', fire: 'Fire Tower', ice: 'Ice Tower' };
   setText('player-combat-tower', towerLabels[getTower()] || '');

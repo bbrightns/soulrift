@@ -70,6 +70,7 @@ const DEFAULTS = {
   /* Settings */
   settings: {
     battleSpeed: 'normal',  // 'slow' | 'normal' | 'fast'
+    hudSize: 'L',           // 'XS' | 'S' | 'L'
   },
 
   /* Meta */

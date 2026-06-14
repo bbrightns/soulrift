@@ -202,6 +202,10 @@
           <!-- Dungeon name strip (replaces topbar) -->
           <div class="arena-dungeon-strip">
             <span class="arena-dungeon-strip__name" id="arena-dungeon-name">Booby Forest</span>
+            <div class="hud-size-controls" id="hud-size-controls">
+              <button class="combat-log-toggle" id="hud-collapse-btn" onclick="setHudSize(hudSizeDown())" title="Shrink HUD"><i data-lucide="minimize-2"></i></button>
+              <button class="combat-log-toggle" id="hud-expand-btn" onclick="setHudSize(hudSizeUp())" title="Expand HUD"><i data-lucide="maximize-2"></i></button>
+            </div>
           </div>
 
           <!-- Combat HUD — two portrait cards -->
@@ -217,6 +221,7 @@
                     <div class="combat-portrait__name" id="player-combat-name">Riftwalker</div>
                   </div>
                 </div>
+                <div class="combat-portrait__caption" id="player-combat-caption">Riftwalker</div>
                 <div class="combat-bars">
                   <div class="combat-bar-row">
                     <span class="combat-bar-row__label">HP</span>
@@ -249,6 +254,7 @@
                     <div class="combat-portrait__name" id="enemy-combat-name">Unknown</div>
                   </div>
                 </div>
+                <div class="combat-portrait__caption" id="enemy-combat-caption">Unknown</div>
                 <div class="combat-bars">
                   <div class="combat-bar-row">
                     <span class="combat-bar-row__label">HP</span>
@@ -274,7 +280,6 @@
           <!-- Combat log -->
           <div class="section-label combat-log-label">
             Combat Log
-            <button class="combat-log-toggle" id="combat-log-toggle" onclick="toggleCombatLog()" title="Expand log"><i data-lucide="maximize-2"></i></button>
           </div>
           <div id="battle-log" class="battle-log"></div>
 

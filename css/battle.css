@@ -17,19 +17,11 @@
 /* ── Dungeon name strip ───────────────────────────────────── */
 .arena-dungeon-strip {
   flex: 0 0 auto;
-  text-align: center;
-  padding: var(--sp-2) 0 var(--sp-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-}
-
-.arena-dungeon-strip::before,
-.arena-dungeon-strip::after {
-  content: '◆';
-  font-size: 6px;
-  color: var(--c-gold-dim);
-  margin: 0 var(--sp-3);
-  vertical-align: middle;
-  opacity: .6;
+  padding: var(--sp-2) 0 var(--sp-1);
 }
 
 .arena-dungeon-strip__name {
@@ -39,6 +31,33 @@
   color: var(--c-gold-text);
   letter-spacing: .22em;
   text-transform: uppercase;
+}
+
+.arena-dungeon-strip__name::before,
+.arena-dungeon-strip__name::after {
+  content: '◆';
+  font-size: 6px;
+  color: var(--c-gold-dim);
+  margin: 0 var(--sp-3);
+  vertical-align: middle;
+  opacity: .6;
+}
+
+.hud-size-controls {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 4px;
+}
+
+.hud-size-controls .combat-log-toggle {
+  display: flex;
+}
+
+.hud-size-controls .combat-log-toggle.is-hidden {
+  display: none;
 }
 
 /* ── Outer HUD wrapper ───────────────────────────────────── */
@@ -164,6 +183,10 @@
   letter-spacing: .10em;
   text-transform: uppercase;
   margin-top: 2px;
+}
+
+.combat-portrait__caption {
+  display: none;
 }
 
 /* ── Bars area ───────────────────────────────────────────── */
@@ -681,3 +704,224 @@
 }
 
 /* Enemy name strip mirroring already handled by overlay--enemy text-align:right */
+
+#combat-hud.hud-collapsed .combat-portrait__overlay {
+  position: static;
+  background: none;
+  padding: 0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+#combat-hud.hud-collapsed .combat-portrait__name {
+  font-size: 10px;
+  white-space: nowrap;
+  text-shadow: none;
+}
+
+/* Player: name outer-left, then avatar, then bars */
+#combat-hud.hud-collapsed .combat-portrait--player {
+  flex-direction: row;
+}
+#combat-hud.hud-collapsed .combat-portrait--player .combat-portrait__overlay {
+  order: -1;
+  padding-right: 6px;
+}
+
+/* Enemy: bars, then avatar, then name outer-right */
+#combat-hud.hud-collapsed .combat-portrait--enemy {
+  flex-direction: row-reverse;
+}
+#combat-hud.hud-collapsed .combat-portrait--enemy .combat-portrait__overlay {
+  order: -1;
+  padding-left: 6px;
+}
+#combat-hud.hud-collapsed .combat-portrait__overlay--enemy .combat-portrait__name {
+  text-align: right;
+}
+
+/* ── Hide screen title/sub when arena is showing ─────────── */
+#screen-battle.arena-active > .screen-title,
+#screen-battle.arena-active > .screen-sub {
+  display: none;
+}
+
+#screen-battle.arena-active {
+  padding-top: 0;
+}
+
+/* ════════════════════════════════════════════════════════
+   HUD SIZE STATES — applied via #combat-hud[data-hud-size]
+   L = default (existing layout, no overrides needed)
+   S = compact row with bigger avatars + fat labeled bars
+   XS = tiny row, log gets max space (old "log-expanded")
+   ════════════════════════════════════════════════════════ */
+
+/* ── S size ───────────────────────────────────────────── */
+#combat-hud[data-hud-size="S"] .combat-row--portraits {
+  align-items: stretch;
+}
+
+#combat-hud[data-hud-size="S"] .combat-portrait {
+  flex-direction: column;
+  padding: 6px 8px;
+  gap: 4px;
+}
+
+#combat-hud[data-hud-size="S"] .combat-portrait__frame {
+  aspect-ratio: unset !important;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border-radius: var(--r-md);
+  align-self: center;
+}
+
+#combat-hud[data-hud-size="S"] .combat-avatar,
+#combat-hud[data-hud-size="S"] .combat-avatar-placeholder {
+  width: 56px;
+  height: 56px;
+}
+
+#combat-hud[data-hud-size="S"] .combat-avatar-placeholder {
+  font-size: 28px;
+}
+
+/* Hide the avatar overlay name — replaced by the caption below */
+#combat-hud[data-hud-size="S"] .combat-portrait__overlay {
+  display: none;
+}
+
+/* Name caption shown above the bars */
+#combat-hud[data-hud-size="S"] .combat-portrait__caption {
+  display: block;
+  font-family: var(--f-head);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--c-text-hi);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#combat-hud[data-hud-size="S"] .combat-bars {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  gap: 6px;
+  justify-content: center;
+}
+
+#combat-hud[data-hud-size="S"] .combat-bar {
+  height: 18px;
+  border-radius: 5px;
+}
+
+#combat-hud[data-hud-size="S"] .combat-bar-row {
+  position: relative;
+}
+
+#combat-hud[data-hud-size="S"] .combat-bar-row__label {
+  display: none;
+}
+
+#combat-hud[data-hud-size="S"] .combat-bar-row__val--overlay {
+  font-size: 11px;
+  line-height: 26px;
+}
+
+#combat-hud[data-hud-size="S"] .combat-portrait--enemy .combat-bar--hp span:first-child {
+  left: auto;
+  right: 0;
+}
+
+#combat-hud[data-hud-size="S"] .combat-vs-badge {
+  width: 28px;
+  height: 28px;
+  font-size: 9px;
+}
+
+/* ── XS size (old "log-expanded" hud rules) ─────────────── */
+#combat-hud[data-hud-size="XS"] .combat-portrait {
+  flex-direction: row;
+  align-items: center;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-portrait__frame {
+  aspect-ratio: unset !important;
+  width: 36px !important;
+  height: 36px !important;
+  flex-shrink: 0;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-avatar,
+#combat-hud[data-hud-size="XS"] .combat-avatar-placeholder {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-avatar-placeholder {
+  font-size: 18px;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-portrait__overlay {
+  display: none;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-portrait__caption {
+  display: none;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-bars {
+  flex: 1;
+  padding: 3px var(--sp-2);
+  gap: 3px;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-bar {
+  height: 4px !important;
+  border-radius: 2px;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-bar-row__label {
+  display: none;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-bar-row__val--overlay {
+  display: none;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-portrait--player {
+  flex-direction: row;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-portrait--enemy {
+  flex-direction: row-reverse;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-portrait--enemy .combat-bar--hp span:first-child {
+  left: auto;
+  right: 0;
+}
+
+#combat-hud[data-hud-size="XS"] .combat-vs-badge {
+  width: 22px;
+  height: 22px;
+  font-size: 8px;
+  top: 50%;
+}
+
+#combat-hud[data-hud-size="XS"] ~ .arena-dungeon-strip,
+.battle-arena-view:has(#combat-hud[data-hud-size="XS"]) .arena-dungeon-strip {
+  padding: 2px 0;
+}
+
+.battle-arena-view:has(#combat-hud[data-hud-size="XS"]) .arena-dungeon-strip__name {
+  font-size: 9px;
+  letter-spacing: .12em;
+}
