@@ -2797,9 +2797,10 @@ input, select, textarea {
 .tower-card__glyph img {
   width: 34px;
   height: 34px;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
   pointer-events: none;
+  border-radius: 50%;
 }
 
 #screen-intro .tower-card__glyph img {

@@ -91,7 +91,7 @@
             <button class="tower-card" data-tower="light" onclick="chooseTower('light')">
               <div class="card-glow light-glow"></div>
               <div class="tower-card__glyph">
-                <i data-lucide="sun"></i>
+                <img src="/asset/tower_icons/light.png" alt="Light Tower">
               </div>
               <div class="tower-card__name">Light Tower</div>
               <div class="tower-card__tagline color-light">Sol Radiance</div>
@@ -106,7 +106,7 @@
             <button class="tower-card" data-tower="dark" onclick="chooseTower('dark')">
               <div class="card-glow dark-glow"></div>
               <div class="tower-card__glyph">
-                <i data-lucide="moon"></i>
+                <img src="/asset/tower_icons/dark.png" alt="Dark Tower">
               </div>
               <div class="tower-card__name">Dark Tower</div>
               <div class="tower-card__tagline color-dark">Covenant of Shadows</div>
@@ -121,7 +121,7 @@
             <button class="tower-card" data-tower="fire" onclick="chooseTower('fire')">
               <div class="card-glow fire-glow"></div>
               <div class="tower-card__glyph">
-                <i data-lucide="flame"></i>
+                <img src="/asset/tower_icons/fire.png" alt="Fire Tower">
               </div>
               <div class="tower-card__name">Fire Tower</div>
               <div class="tower-card__tagline color-fire">Inferno Forge</div>
@@ -136,7 +136,7 @@
             <button class="tower-card" data-tower="ice" onclick="chooseTower('ice')">
               <div class="card-glow ice-glow"></div>
               <div class="tower-card__glyph">
-                <i data-lucide="diamond"></i>
+                <img src="/asset/tower_icons/ice.png" alt="Ice Tower">
               </div>
               <div class="tower-card__name">Ice Tower</div>
               <div class="tower-card__tagline color-ice">Glacial Singularity</div>
@@ -531,34 +531,40 @@
         <div class="prof-stats-grid" style="margin-bottom:var(--sp-5);">
 
           <div class="prof-chip prof-chip--hp">
-            <span class="prof-chip__key"><i data-lucide="heart" class="stat-icon stat-icon--hp"></i><span class="stat-badge stat-badge--hp">HP</span></span>
+            <span class="prof-chip__key"><i data-lucide="heart" class="stat-icon stat-icon--hp"></i><span
+                class="stat-badge stat-badge--hp">HP</span></span>
             <span class="prof-chip__val prof-chip__val--red" id="prof-hp">80</span>
           </div>
           <div class="prof-chip prof-chip--sp">
-            <span class="prof-chip__key"><i data-lucide="droplets" class="stat-icon stat-icon--sp"></i><span class="stat-badge stat-badge--sp">SP</span></span>
+            <span class="prof-chip__key"><i data-lucide="droplets" class="stat-icon stat-icon--sp"></i><span
+                class="stat-badge stat-badge--sp">SP</span></span>
             <span class="prof-chip__val prof-chip__val--blue" id="prof-sp">40</span>
           </div>
 
           <div class="prof-chip">
-            <span class="prof-chip__key"><i data-lucide="zap" class="stat-icon stat-icon--str"></i><span class="stat-badge stat-badge--str">STR</span></span>
+            <span class="prof-chip__key"><i data-lucide="zap" class="stat-icon stat-icon--str"></i><span
+                class="stat-badge stat-badge--str">STR</span></span>
             <span class="prof-chip__val" id="prof-str">8</span>
             <button class="skill-up-btn is-hidden" id="skill-up-str" onclick="spendSkillPoint('str')"
               aria-label="Increase Str">+</button>
           </div>
           <div class="prof-chip">
-            <span class="prof-chip__key"><i data-lucide="sparkles" class="stat-icon stat-icon--int"></i><span class="stat-badge stat-badge--int">INT</span></span>
+            <span class="prof-chip__key"><i data-lucide="sparkles" class="stat-icon stat-icon--int"></i><span
+                class="stat-badge stat-badge--int">INT</span></span>
             <span class="prof-chip__val" id="prof-int">8</span>
             <button class="skill-up-btn is-hidden" id="skill-up-int" onclick="spendSkillPoint('int')"
               aria-label="Increase Int">+</button>
           </div>
           <div class="prof-chip">
-            <span class="prof-chip__key"><i data-lucide="sword" class="stat-icon stat-icon--atk"></i><span class="stat-badge stat-badge--atk">ATK</span></span>
+            <span class="prof-chip__key"><i data-lucide="sword" class="stat-icon stat-icon--atk"></i><span
+                class="stat-badge stat-badge--atk">ATK</span></span>
             <span class="prof-chip__val" id="prof-atk">10</span>
             <button class="skill-up-btn is-hidden" id="skill-up-atk" onclick="spendSkillPoint('atk')"
               aria-label="Increase Atk">+</button>
           </div>
           <div class="prof-chip">
-            <span class="prof-chip__key"><i data-lucide="shield" class="stat-icon stat-icon--def"></i><span class="stat-badge stat-badge--def">DEF</span></span>
+            <span class="prof-chip__key"><i data-lucide="shield" class="stat-icon stat-icon--def"></i><span
+                class="stat-badge stat-badge--def">DEF</span></span>
             <span class="prof-chip__val" id="prof-def">5</span>
             <button class="skill-up-btn is-hidden" id="skill-up-def" onclick="spendSkillPoint('def')"
               aria-label="Increase Def">+</button>
