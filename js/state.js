@@ -240,19 +240,78 @@ window.removeSpell = removeSpell;
 /* ── Skill Point Allocation ──────────────────────────────── */
 /* HP_PER_STR and SP_PER_INT are defined in battle.js         */
 function spendSkillPoint(stat) {
+  _openBulkAllocModal(stat);
+}
+
+function _openBulkAllocModal(stat) {
   const s = getState();
-  if (!s.player.skillPoints || s.player.skillPoints < 1) return;
-  const validStats = ['str', 'int', 'atk', 'def'];
-  if (!validStats.includes(stat)) return;
+  const available = s.player.skillPoints || 0;
+  if (available < 1) return;
 
-  if (!s.player.spentPoints) {
-    s.player.spentPoints = { str: 0, int: 0, atk: 0, def: 0 };
+  const statLabels = { str: 'STR', int: 'INT', atk: 'ATK', def: 'DEF' };
+  const modal = document.getElementById('shop-confirm-modal');
+  const body  = document.getElementById('shop-confirm-body');
+  if (!modal || !body) return;
+
+  body.innerHTML =
+    '<div class="modal-title" id="modal-confirm-title">Allocate ' + statLabels[stat] + '</div>'
+    + '<div class="modal-body" style="margin-bottom:var(--sp-3)">Points available: <strong style="color:var(--c-gold-text)">' + available + '</strong></div>'
+    + '<div style="display:flex;align-items:center;gap:var(--sp-3);justify-content:center;margin-bottom:var(--sp-2);">'
+    + '<button class="btn btn--ghost" style="min-width:40px;font-size:18px;padding:0 12px;" onclick="_bulkAllocAdj(-1)">−</button>'
+    + '<input id="bulk-alloc-input" type="number" min="1" max="' + available + '" value="1"'
+    + ' style="width:80px;text-align:center;background:var(--c-inset);border:1px solid var(--c-border-hi);'
+    + 'border-radius:var(--r-md);color:var(--c-gold-text);font-family:var(--f-head);font-size:20px;padding:6px;outline:none;">'
+    + '<button class="btn btn--ghost" style="min-width:40px;font-size:18px;padding:0 12px;" onclick="_bulkAllocAdj(1)">+</button>'
+    + '</div>'
+    + '<div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-2);">'
+    + '<button class="btn btn--ghost" style="flex:1;font-size:11px;" onclick="_bulkAllocAdj(' + available + ')">ALL ' + available + '</button>'
+    + '</div>';
+
+  const confirmBtn = modal.querySelector('.btn--primary');
+  const cancelBtn  = modal.querySelector('.btn--ghost');
+  if (confirmBtn) {
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Allocate';
+    confirmBtn.onclick = () => _confirmBulkAlloc(stat);
   }
-  s.player.spentPoints[stat]++;
+  if (cancelBtn) {
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.onclick = closeShopConfirm;
+  }
 
+  modal.dataset.allocStat = stat;
+  modal.dataset.allocMax  = available;
+  modal.setAttribute('aria-labelledby', 'modal-confirm-title');
+  modal.classList.remove('is-hidden');
+  if (typeof _openModal === 'function') _openModal(modal);
+
+  requestAnimationFrame(() => {
+    const inp = document.getElementById('bulk-alloc-input');
+    if (inp) { inp.focus(); inp.select(); }
+  });
+}
+
+function _bulkAllocAdj(delta) {
+  const inp = document.getElementById('bulk-alloc-input');
+  if (!inp) return;
+  const modal = document.getElementById('shop-confirm-modal');
+  const max   = parseInt(modal.dataset.allocMax) || 1;
+  const cur   = parseInt(inp.value) || 1;
+  inp.value   = Math.max(1, Math.min(max, cur + delta));
+}
+
+function _confirmBulkAlloc(stat) {
+  const inp = document.getElementById('bulk-alloc-input');
+  const s   = getState();
+  const available = s.player.skillPoints || 0;
+  let amount = Math.max(1, Math.min(available, parseInt(inp ? inp.value : 1) || 1));
+
+  if (!s.player.spentPoints) s.player.spentPoints = { str: 0, int: 0, atk: 0, def: 0 };
+  s.player.spentPoints[stat] += amount;
   recalculatePlayerStats();
   saveState();
-  if (typeof syncHeader         === 'function') syncHeader();
+  closeShopConfirm();
+  if (typeof syncHeader === 'function') syncHeader();
   if (typeof renderProfilePanel === 'function') renderProfilePanel();
 }
 window.spendSkillPoint = spendSkillPoint;
