@@ -887,6 +887,16 @@ input, select, textarea {
   color: var(--c-gold);
 }
 
+@keyframes pts-attention {
+  0%   { box-shadow: 0 0 0px rgba(197,160,89,0), 0 0 0 1px var(--c-gold-dim); }
+  50%  { box-shadow: 0 0 10px rgba(197,160,89,0.35), 0 0 0 1px var(--c-gold); }
+  100% { box-shadow: 0 0 0px rgba(197,160,89,0), 0 0 0 1px var(--c-gold-dim); }
+}
+
+.skill-pts-row {
+  animation: pts-attention 2.2s ease-in-out infinite;
+}
+
 /* ── Inline + button inside each stat chip ───────────────── */
 .skill-up-btn {
   flex-shrink: 0;
@@ -905,6 +915,10 @@ input, select, textarea {
   justify-content: center;
   transition: background .15s, border-color .15s, transform .1s;
   margin-left: var(--sp-2);
+}
+
+.skill-up-btn {
+  animation: pts-attention 2.2s ease-in-out infinite;
 }
 
 .skill-up-btn:hover  { background: rgba(197,160,89,.20); border-color: var(--c-gold); }
