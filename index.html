@@ -743,6 +743,18 @@
 
   </div><!-- /app -->
 
+  <!-- Avatar Picker Bottomsheet -->
+  <div id="avatar-pick-panel" role="dialog" aria-modal="true" aria-label="Choose Avatar"
+    onclick="if(event.target===this)closeAvatarPicker()">
+    <div class="profile-sheet">
+      <div class="profile-handle"></div>
+      <div class="spell-picker-header">
+        <div class="section-label" style="margin:0;">Choose Avatar</div>
+      </div>
+      <div id="avatar-pick-panel-grid" class="avatar-pick-grid" style="padding:var(--sp-4);"></div>
+    </div>
+  </div>
+
   <!-- Shop confirm modal -->
   <div id="shop-confirm-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-label="Confirm"
     onclick="closeShopConfirm()">

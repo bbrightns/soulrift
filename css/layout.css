@@ -3728,3 +3728,27 @@ input, select, textarea {
   border-color: var(--c-gold);
   box-shadow: var(--glow-gold-sm);
 }
+
+/* ── Avatar Pick Panel ───────────────────────────────────── */
+#avatar-pick-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s;
+  backdrop-filter: blur(2px);
+}
+
+#avatar-pick-panel.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#avatar-pick-panel .profile-sheet {
+  min-height: 50svh;
+}

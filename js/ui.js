@@ -253,7 +253,8 @@ function renderProfilePanel() {
   if (profAvatarEl) {
     const avatarKey = s.playerAvatar || (s.tower + '_1');
     profAvatarEl.innerHTML = '<img src="/asset/player_avatars/' + avatarKey + '.png" '
-      + 'style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">';
+      + 'style="width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;" alt="">';
+    profAvatarEl.onclick = openAvatarPicker;
   }
   fill('prof-tower', towerNames[s.tower] || '—');
   fill('prof-level', p.level);
@@ -341,6 +342,51 @@ function toast(msg, type = '', ms = 2600) {
 /* ── Format helpers ──────────────────────────────────────── */
 function fmtNum(n) { return Number(n).toLocaleString(); }
 function fmtPct(n) { return Math.round(n * 100) + '%'; }
+
+/* ── Avatar Picker ───────────────────────────────────────── */
+function openAvatarPicker() {
+  _renderAvatarPickerBody();
+  const panel = document.getElementById('avatar-pick-panel');
+  panel.classList.add('is-open');
+  _openModal(panel);
+}
+
+function closeAvatarPicker() {
+  const panel = document.getElementById('avatar-pick-panel');
+  _closeModal(panel);
+  panel.classList.remove('is-open');
+}
+
+function _renderAvatarPickerBody() {
+  const s = getState();
+  const tower = s.tower;
+  const current = s.playerAvatar || (tower + '_1');
+  const count = window.TOWER_AVATARS ? TOWER_AVATARS.count : 4;
+  const grid = document.getElementById('avatar-pick-panel-grid');
+  if (!grid) return;
+
+  grid.innerHTML = Array.from({ length: count }, (_, i) => {
+    const key = tower + '_' + (i + 1);
+    const active = key === current;
+    return '<button class="avatar-pick-btn' + (active ? ' is-active' : '') + '"'
+      + ' onclick="selectProfileAvatar(\'' + key + '\')">'
+      + '<img src="/asset/player_avatars/' + key + '.png" alt="Avatar ' + (i + 1) + '">'
+      + '</button>';
+  }).join('');
+}
+
+function selectProfileAvatar(key) {
+  const s = getState();
+  if (s.playerAvatar === key) { closeAvatarPicker(); return; }
+  s.playerAvatar = key;
+  saveState();
+  renderProfilePanel();
+  closeAvatarPicker();
+}
+
+window.openAvatarPicker = openAvatarPicker;
+window.closeAvatarPicker = closeAvatarPicker;
+window.selectProfileAvatar = selectProfileAvatar;
 
 /* ── App boot ────────────────────────────────────────────── */
 function bootApp() {
