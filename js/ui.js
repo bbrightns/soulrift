@@ -300,6 +300,8 @@ function renderProfilePanel() {
   };
   const avatarEl = document.getElementById('prof-avatar');
   if (avatarEl) avatarEl.style.boxShadow = towerGlowToken[s.tower] || 'none';
+
+  lucide.createIcons({ nodes: [document.querySelector('.prof-stats-grid')] });
 }
 window.renderProfilePanel = renderProfilePanel;
 

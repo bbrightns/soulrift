@@ -843,6 +843,9 @@ input, select, textarea {
   color: var(--c-text-2);
   letter-spacing: .02em;
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 
