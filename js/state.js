@@ -15,20 +15,20 @@ const DEFAULTS = {
 
   /* Player */
   player: {
-    name:         'Riftwalker',
-    level:        1,
-    exp:          0,
-    expNext:      100,
-    hp:           80,
-    hpMax:        80,
-    sp:           40,
-    spMax:        40,
-    atk:          10,
-    def:          5,
-    int:          8,
-    str:          8,
-    skillPoints:  0,   /* unspent stat points from level-ups */
-    spentPoints:  { str: 0, int: 0, atk: 0, def: 0 },
+    name: 'Riftwalker',
+    level: 1,
+    exp: 0,
+    expNext: 100,
+    hp: 80,
+    hpMax: 80,
+    sp: 40,
+    spMax: 40,
+    atk: 10,
+    def: 5,
+    int: 8,
+    str: 8,
+    skillPoints: 0,   /* unspent stat points from level-ups */
+    spentPoints: { str: 0, int: 0, atk: 0, def: 0 },
   },
 
   /* Resources */
@@ -38,32 +38,32 @@ const DEFAULTS = {
   playerName: 'Arcane Wanderer',
 
   /* Tower */
-  tower:         null,    // 'light' | 'dark' | 'fire' | 'ice'
-  towerChosen:   false,
+  tower: null,    // 'light' | 'dark' | 'fire' | 'ice'
+  towerChosen: false,
 
   /* Spell inventory: [{ id, lvl, qty }] */
   spells: [],
 
   /* Other inventory */
-  items:       [],
-  equipment:   [],
-  relics:      [],
+  items: [],
+  equipment: [],
+  relics: [],
 
   /* Battle blueprint — 10 slots, each is spellId or null */
   blueprint: Array(10).fill(null),
 
   /* Dungeon */
   dungeon: {
-    active:    null,
-    unlocked:  ['booby_forest'],
-    history:   {},
+    active: null,
+    unlocked: ['booby_forest'],
+    history: {},
   },
 
   /* Lifetime stats */
   stats: {
-    battles:   0,
-    wins:      0,
-    kills:     0,
+    battles: 0,
+    wins: 0,
+    kills: 0,
     goldEarned: 0,
   },
 
@@ -75,7 +75,7 @@ const DEFAULTS = {
 
   /* Meta */
   createdAt: null,
-  savedAt:   null,
+  savedAt: null,
 };
 
 /* ── Live state ──────────────────────────────────────────── */
@@ -119,8 +119,8 @@ function _sanitize(s) {
     if (typeof s[k] !== 'number' || !isFinite(s[k])) s[k] = DEFAULTS[k];
   });
   // Player numeric fields
-  const numericPlayer = ['level','exp','expNext','hp','hpMax','sp','spMax',
-                         'atk','def','int','str','skillPoints'];
+  const numericPlayer = ['level', 'exp', 'expNext', 'hp', 'hpMax', 'sp', 'spMax',
+    'atk', 'def', 'int', 'str', 'skillPoints'];
   numericPlayer.forEach(k => {
     const v = s.player[k];
     if (typeof v !== 'number' || !isFinite(v)) s.player[k] = DEFAULTS.player[k];
@@ -170,7 +170,7 @@ function patchState(patch) {
   for (const k of Object.keys(patch)) {
     const sv = s[k], pv = patch[k];
     if (sv !== null && typeof sv === 'object' && !Array.isArray(sv)
-        && pv !== null && typeof pv === 'object' && !Array.isArray(pv)) {
+      && pv !== null && typeof pv === 'object' && !Array.isArray(pv)) {
       s[k] = { ...sv, ...pv };
     } else {
       s[k] = pv;
@@ -188,11 +188,11 @@ function resetState() {
 }
 
 /* ── Convenience accessors ───────────────────────────────── */
-function getPlayer()     { return getState().player; }
-function getGold()       { return getState().gold; }
-function getTower()      { return getState().tower; }
-function getBlueprint()  { return getState().blueprint; }
-function getSpells()     { return getState().spells; }
+function getPlayer() { return getState().player; }
+function getGold() { return getState().gold; }
+function getTower() { return getState().tower; }
+function getBlueprint() { return getState().blueprint; }
+function getSpells() { return getState().spells; }
 function getPlayerName() { return getState().playerName || 'Arcane Wanderer'; }
 
 /* ── Gold helpers ────────────────────────────────────────── */
@@ -219,7 +219,7 @@ function giveSpell(id, lvl = 1) {
   const list = getSpells();
   const found = list.find(s => s.id === id && s.lvl === lvl);
   if (found) { found.qty++; }
-  else       { list.push({ id, lvl, qty: 1 }); }
+  else { list.push({ id, lvl, qty: 1 }); }
   saveState();
 }
 
@@ -240,6 +240,18 @@ window.removeSpell = removeSpell;
 /* ── Skill Point Allocation ──────────────────────────────── */
 /* HP_PER_STR and SP_PER_INT are defined in battle.js         */
 function spendSkillPoint(stat) {
+  const s = getState();
+  const available = s.player.skillPoints || 0;
+  if (available < 1) return;
+  if (available < 5) {
+    if (!s.player.spentPoints) s.player.spentPoints = { str: 0, int: 0, atk: 0, def: 0 };
+    s.player.spentPoints[stat] += 1;
+    recalculatePlayerStats();
+    saveState();
+    if (typeof syncHeader === 'function') syncHeader();
+    if (typeof renderProfilePanel === 'function') renderProfilePanel();
+    return;
+  }
   _openBulkAllocModal(stat);
 }
 
@@ -250,25 +262,23 @@ function _openBulkAllocModal(stat) {
 
   const statLabels = { str: 'STR', int: 'INT', atk: 'ATK', def: 'DEF' };
   const modal = document.getElementById('shop-confirm-modal');
-  const body  = document.getElementById('shop-confirm-body');
+  const body = document.getElementById('shop-confirm-body');
   if (!modal || !body) return;
 
   body.innerHTML =
     '<div class="modal-title" id="modal-confirm-title">Allocate ' + statLabels[stat] + '</div>'
     + '<div class="modal-body" style="margin-bottom:var(--sp-3)">Points available: <strong style="color:var(--c-gold-text)">' + available + '</strong></div>'
-    + '<div style="display:flex;align-items:center;gap:var(--sp-3);justify-content:center;margin-bottom:var(--sp-2);">'
-    + '<button class="btn btn--ghost" style="min-width:40px;font-size:18px;padding:0 12px;" onclick="_bulkAllocAdj(-1)">−</button>'
+    + '<div style="display:flex;align-items:center;justify-content:center;margin-bottom:var(--sp-2);">'
     + '<input id="bulk-alloc-input" type="number" min="1" max="' + available + '" value="1"'
-    + ' style="width:80px;text-align:center;background:var(--c-inset);border:1px solid var(--c-border-hi);'
-    + 'border-radius:var(--r-md);color:var(--c-gold-text);font-family:var(--f-head);font-size:20px;padding:6px;outline:none;">'
-    + '<button class="btn btn--ghost" style="min-width:40px;font-size:18px;padding:0 12px;" onclick="_bulkAllocAdj(1)">+</button>'
+    + ' style="width:100px;text-align:center;background:var(--c-inset);border:1px solid var(--c-border-hi);'
+    + 'border-radius:var(--r-md);color:var(--c-gold-text);font-size:20px;padding:6px;outline:none;">'
     + '</div>'
     + '<div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-2);">'
     + '<button class="btn btn--ghost" style="flex:1;font-size:11px;" onclick="_bulkAllocAdj(' + available + ')">ALL ' + available + '</button>'
     + '</div>';
 
   const confirmBtn = modal.querySelector('.btn--primary');
-  const cancelBtn  = modal.querySelector('.btn--ghost');
+  const cancelBtn = modal.querySelector('.btn--ghost');
   if (confirmBtn) {
     confirmBtn.disabled = false;
     confirmBtn.textContent = 'Allocate';
@@ -280,7 +290,7 @@ function _openBulkAllocModal(stat) {
   }
 
   modal.dataset.allocStat = stat;
-  modal.dataset.allocMax  = available;
+  modal.dataset.allocMax = available;
   modal.setAttribute('aria-labelledby', 'modal-confirm-title');
   modal.classList.remove('is-hidden');
   if (typeof _openModal === 'function') _openModal(modal);
@@ -295,14 +305,14 @@ function _bulkAllocAdj(delta) {
   const inp = document.getElementById('bulk-alloc-input');
   if (!inp) return;
   const modal = document.getElementById('shop-confirm-modal');
-  const max   = parseInt(modal.dataset.allocMax) || 1;
-  const cur   = parseInt(inp.value) || 1;
-  inp.value   = Math.max(1, Math.min(max, cur + delta));
+  const max = parseInt(modal.dataset.allocMax) || 1;
+  const cur = parseInt(inp.value) || 1;
+  inp.value = Math.max(1, Math.min(max, cur + delta));
 }
 
 function _confirmBulkAlloc(stat) {
   const inp = document.getElementById('bulk-alloc-input');
-  const s   = getState();
+  const s = getState();
   const available = s.player.skillPoints || 0;
   let amount = Math.max(1, Math.min(available, parseInt(inp ? inp.value : 1) || 1));
 
@@ -318,28 +328,28 @@ window.spendSkillPoint = spendSkillPoint;
 
 const TOWER_GROWTH = {
   light: { str: 1, int: 1, atk: 0, def: 4 },
-  dark:  { str: 1, int: 0, atk: 4, def: 1 },
-  fire:  { str: 3, int: 0, atk: 3, def: 0 },
-  ice:   { str: 1, int: 3, atk: 1, def: 1 },
+  dark: { str: 1, int: 0, atk: 4, def: 1 },
+  fire: { str: 3, int: 0, atk: 3, def: 0 },
+  ice: { str: 1, int: 3, atk: 1, def: 1 },
 };
 window.TOWER_GROWTH = TOWER_GROWTH;
 
 const TOWER_STARTERS = {
   light: {
     spellId: 'light_shot',
-    player: { hp: 110, hpMax: 110, sp: 60, spMax: 60, atk: 7,  def: 16, int: 12, str: 11, skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
+    player: { hp: 110, hpMax: 110, sp: 60, spMax: 60, atk: 7, def: 16, int: 12, str: 11, skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
   },
   dark: {
     spellId: 'dark_shot',
-    player: { hp: 60,  hpMax: 60,  sp: 45, spMax: 45, atk: 15, def: 3,  int: 9,  str: 6,  skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
+    player: { hp: 60, hpMax: 60, sp: 45, spMax: 45, atk: 15, def: 3, int: 9, str: 6, skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
   },
   fire: {
     spellId: 'fire_shot',
-    player: { hp: 90,  hpMax: 90,  sp: 30, spMax: 30, atk: 13, def: 6,  int: 6,  str: 9,  skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
+    player: { hp: 90, hpMax: 90, sp: 30, spMax: 30, atk: 13, def: 6, int: 6, str: 9, skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
   },
   ice: {
     spellId: 'ice_shot',
-    player: { hp: 50,  hpMax: 50,  sp: 75, spMax: 75, atk: 8,  def: 8,  int: 15, str: 5,  skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
+    player: { hp: 50, hpMax: 50, sp: 75, spMax: 75, atk: 8, def: 8, int: 15, str: 5, skillPoints: 3, spentPoints: { str: 0, int: 0, atk: 0, def: 0 } },
   },
 };
 

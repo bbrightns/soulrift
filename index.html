@@ -598,18 +598,6 @@
       </div>
     </div><!-- /profile-panel -->
 
-    <!-- Shop confirm modal -->
-    <div id="shop-confirm-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-label="Confirm"
-      onclick="closeShopConfirm()">
-      <div class="modal-card" onclick="event.stopPropagation()">
-        <div id="shop-confirm-body"></div>
-        <div style="display:flex;gap:var(--sp-3);margin-top:var(--sp-5)">
-          <button class="btn btn--ghost btn--full" onclick="closeShopConfirm()">Cancel</button>
-          <button class="btn btn--primary btn--full" onclick="confirmShopBuy()">Confirm</button>
-        </div>
-      </div>
-    </div>
-
     <!-- Spell Picker Bottomsheet -->
     <div id="spell-picker-panel" role="dialog" aria-modal="true" aria-label="Select Spell"
       onclick="if(event.target===this)closeSpellPicker()">
@@ -733,6 +721,18 @@
     </div><!-- /gm-panel -->
 
   </div><!-- /app -->
+
+  <!-- Shop confirm modal -->
+  <div id="shop-confirm-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-label="Confirm"
+    onclick="closeShopConfirm()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div id="shop-confirm-body"></div>
+      <div style="display:flex;gap:var(--sp-3);margin-top:var(--sp-5)">
+        <button class="btn btn--ghost btn--full" onclick="closeShopConfirm()">Cancel</button>
+        <button class="btn btn--primary btn--full" onclick="confirmShopBuy()">Confirm</button>
+      </div>
+    </div>
+  </div>
 
 
   <!-- Scripts — load order matters -->

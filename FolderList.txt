@@ -1,0 +1,34 @@
+Folder PATH listing for volume PegB
+Volume serial number is AE12-9F70
+C:.
+?ÄÄÄ.claude
+³   ÀÄÄÄskills
+³       ÀÄÄÄimpeccable
+³           ?ÄÄÄreference
+³           ÀÄÄÄscripts
+³               ÀÄÄÄdetector
+³                   ?ÄÄÄbrowser
+³                   ³   ÀÄÄÄinjected
+³                   ?ÄÄÄcli
+³                   ?ÄÄÄengines
+³                   ³   ?ÄÄÄbrowser
+³                   ³   ?ÄÄÄregex
+³                   ³   ?ÄÄÄstatic-html
+³                   ³   ÀÄÄÄvisual
+³                   ?ÄÄÄnode
+³                   ?ÄÄÄprofile
+³                   ?ÄÄÄregistry
+³                   ?ÄÄÄrules
+³                   ÀÄÄÄshared
+?ÄÄÄ.impeccable
+³   ÀÄÄÄcritique
+?ÄÄÄasset
+³   ?ÄÄÄcatalyst_icons
+³   ?ÄÄÄdungeon_scene
+³   ?ÄÄÄenemy_avatars
+³   ?ÄÄÄplayer_avatars
+³   ÀÄÄÄspell_icons
+?ÄÄÄcss
+?ÄÄÄdata
+?ÄÄÄdocs
+ÀÄÄÄjs

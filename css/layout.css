@@ -3663,3 +3663,9 @@ input, select, textarea {
   .firefly                 { animation: none; opacity: 0.4; }
   *, *::before, *::after   { transition-duration: 0.01ms !important; }
 }
+
+/* Modals outside #app need explicit positioning */
+#shop-confirm-modal {
+  position: fixed;
+  z-index: 999;
+}
