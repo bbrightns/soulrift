@@ -209,9 +209,21 @@ function openProfilePanel() {
 }
 
 function closeProfilePanel() {
+  _cancelEditNameIfActive();
   const panel = document.getElementById('profile-panel');
   _closeModal(panel);
   panel.classList.remove('is-open');
+}
+
+function _cancelEditNameIfActive() {
+  const editBtn = document.getElementById('prof-name-edit-btn');
+  if (!editBtn || editBtn.textContent !== '✓') return;
+  // Restore display name from state (discard unsaved input)
+  const nameEl = document.getElementById('prof-name');
+  if (nameEl) nameEl.textContent = getState().playerName || 'Arcane Wanderer';
+  editBtn.textContent = '✎';
+  editBtn.setAttribute('aria-label', 'Edit name');
+  editBtn.onclick = startEditName;
 }
 
 function renderProfilePanel() {
