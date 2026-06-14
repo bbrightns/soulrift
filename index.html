@@ -203,8 +203,10 @@
           <div class="arena-dungeon-strip">
             <span class="arena-dungeon-strip__name" id="arena-dungeon-name">Booby Forest</span>
             <div class="hud-size-controls" id="hud-size-controls">
-              <button class="combat-log-toggle" id="hud-collapse-btn" onclick="setHudSize(hudSizeDown())" title="Shrink HUD"><i data-lucide="minimize-2"></i></button>
-              <button class="combat-log-toggle" id="hud-expand-btn" onclick="setHudSize(hudSizeUp())" title="Expand HUD"><i data-lucide="maximize-2"></i></button>
+              <button class="combat-log-toggle" id="hud-collapse-btn" onclick="setHudSize(hudSizeDown())"
+                title="Shrink HUD"><i data-lucide="minimize-2"></i></button>
+              <button class="combat-log-toggle" id="hud-expand-btn" onclick="setHudSize(hudSizeUp())"
+                title="Expand HUD"><i data-lucide="maximize-2"></i></button>
             </div>
           </div>
 
@@ -529,34 +531,34 @@
         <div class="prof-stats-grid" style="margin-bottom:var(--sp-5);">
 
           <div class="prof-chip prof-chip--hp">
-            <span class="prof-chip__key">❤ HP</span>
+            <span class="prof-chip__key"><span class="stat-glyph hp-glyph">HP</span></span>
             <span class="prof-chip__val prof-chip__val--red" id="prof-hp">80</span>
           </div>
           <div class="prof-chip prof-chip--sp">
-            <span class="prof-chip__key">💧 SP</span>
+            <span class="prof-chip__key"><span class="stat-glyph sp-glyph">SP</span></span>
             <span class="prof-chip__val prof-chip__val--blue" id="prof-sp">40</span>
           </div>
 
           <div class="prof-chip">
-            <span class="prof-chip__key">💪 Str</span>
+            <span class="prof-chip__key"><span class="stat-glyph str-glyph">STR</span></span>
             <span class="prof-chip__val" id="prof-str">8</span>
             <button class="skill-up-btn is-hidden" id="skill-up-str" onclick="spendSkillPoint('str')"
               aria-label="Increase Str">+</button>
           </div>
           <div class="prof-chip">
-            <span class="prof-chip__key">🧠 Int</span>
+            <span class="prof-chip__key"><span class="stat-glyph int-glyph">INT</span></span>
             <span class="prof-chip__val" id="prof-int">8</span>
             <button class="skill-up-btn is-hidden" id="skill-up-int" onclick="spendSkillPoint('int')"
               aria-label="Increase Int">+</button>
           </div>
           <div class="prof-chip">
-            <span class="prof-chip__key">⚔ Atk</span>
+            <span class="prof-chip__key"><span class="stat-glyph atk-glyph">ATK</span></span>
             <span class="prof-chip__val" id="prof-atk">10</span>
             <button class="skill-up-btn is-hidden" id="skill-up-atk" onclick="spendSkillPoint('atk')"
               aria-label="Increase Atk">+</button>
           </div>
           <div class="prof-chip">
-            <span class="prof-chip__key">🛡 Def</span>
+            <span class="prof-chip__key"><span class="stat-glyph def-glyph">DEF</span></span>
             <span class="prof-chip__val" id="prof-def">5</span>
             <button class="skill-up-btn is-hidden" id="skill-up-def" onclick="spendSkillPoint('def')"
               aria-label="Increase Def">+</button>

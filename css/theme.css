@@ -845,3 +845,22 @@ body {
 .modal-stat--ok   { color: var(--c-ok); }
 .modal-stat--bad  { color: var(--c-bad); }
 .modal-stat--gold { color: var(--c-gold-text); font-weight: 600; }
+
+/* ── Stat glyphs for fusion results + profile stats ─────── */
+.stat-glyph {
+  font-family: var(--f-head);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .10em;
+  padding: 2px 5px;
+  border-radius: var(--r-sm);
+  display: inline-block;
+  min-width: 28px;
+  text-align: center;
+}
+.str-glyph { background: rgba(217,79,26,.15);  color: var(--c-fire);  border: 1px solid rgba(217,79,26,.30); }
+.int-glyph { background: rgba(102,199,232,.12); color: var(--c-ice);   border: 1px solid rgba(102,199,232,.28); }
+.atk-glyph { background: rgba(184,48,48,.14);   color: #e07070;        border: 1px solid rgba(184,48,48,.30); }
+.def-glyph { background: rgba(42,152,88,.12);   color: var(--c-ok);    border: 1px solid rgba(42,152,88,.28); }
+.hp-glyph { background: rgba(192,48,48,.15);  color: #e05a5a; border: 1px solid rgba(192,48,48,.30); }
+.sp-glyph { background: rgba(26,74,139,.18);  color: #5a9ae0; border: 1px solid rgba(26,74,139,.35); }
