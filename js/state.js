@@ -269,7 +269,8 @@ function _openBulkAllocModal(stat) {
     '<div class="modal-title" id="modal-confirm-title">Allocate ' + statLabels[stat] + '</div>'
     + '<div class="modal-body" style="margin-bottom:var(--sp-3)">Points available: <strong style="color:var(--c-gold-text)">' + available + '</strong></div>'
     + '<div style="display:flex;align-items:center;justify-content:center;margin-bottom:var(--sp-2);">'
-    + '<input id="bulk-alloc-input" type="number" min="1" max="' + available + '" value="1"'
+    + '<input id="bulk-alloc-input" type="number" min="1" max="' + available + '" value="1" step="1"'
+    + ' oninput="(function(el){let v=el.value;if(v===\'\'||v===\'0\')return;let n=Number(v);if(!isFinite(n)||v.includes(\'.\'))el.value=v.slice(0,-1);else if(Math.floor(n)!==n)el.value=v.slice(0,-1);else if(n>' + available + ')el.value=' + available + ';})(this)"'
     + ' style="width:100px;text-align:center;background:var(--c-inset);border:1px solid var(--c-border-hi);'
     + 'border-radius:var(--r-md);color:var(--c-gold-text);font-size:20px;padding:6px;outline:none;">'
     + '</div>'
@@ -314,7 +315,9 @@ function _confirmBulkAlloc(stat) {
   const inp = document.getElementById('bulk-alloc-input');
   const s = getState();
   const available = s.player.skillPoints || 0;
-  let amount = Math.max(1, Math.min(available, parseInt(inp ? inp.value : 1) || 1));
+  let raw = inp ? inp.value : '';
+  let amount = Math.floor(Number(raw));
+  if (!isFinite(amount) || amount < 1 || amount > available) { closeShopConfirm(); return; }
 
   if (!s.player.spentPoints) s.player.spentPoints = { str: 0, int: 0, atk: 0, def: 0 };
   s.player.spentPoints[stat] += amount;
