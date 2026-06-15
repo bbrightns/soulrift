@@ -174,9 +174,10 @@ function gainExp(amount) {
     s.player.sp = s.player.spMax;
     saveState();
     syncHeader();
-  } else {
+} else {
     saveState();
   }
+  return s.player.level;
 }
 
 function battlePlayerName() {
