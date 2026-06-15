@@ -308,6 +308,7 @@ function renderProfilePanel() {
   if (avatarEl) avatarEl.style.boxShadow = towerGlowToken[s.tower] || 'none';
 
   lucide.createIcons({ nodes: [document.querySelector('.prof-stats-grid')] });
+  if (typeof renderAuthSection === 'function') renderAuthSection();
 }
 window.renderProfilePanel = renderProfilePanel;
 

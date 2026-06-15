@@ -18,6 +18,11 @@
   <link rel="stylesheet" href="css/library.css?v=phase1-1">
   <link rel="stylesheet" href="css/battle.css">
   <link rel="stylesheet" href="css/gm.css">
+
+  <!-- Google Sign-In client library (for future use in cloud saves and cross-device sync) -->
+  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-ui.js"></script>
 </head>
 
 <body>
@@ -616,6 +621,8 @@
           Reset Tower
         </button>
 
+        <div id="profile-auth-section"></div>
+
       </div>
     </div><!-- /profile-panel -->
 
@@ -784,6 +791,7 @@
   <script src="js/fusion.js?v=phase1-1"></script>
   <script src="js/app.js?v=phase1-1"></script>
   <script src="js/gm.js"></script>
+  <script src="js/auth-ui.js"></script>
   <script> lucide.createIcons(); </script>
 
 </body>

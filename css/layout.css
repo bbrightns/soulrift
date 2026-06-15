@@ -3752,3 +3752,57 @@ input, select, textarea {
 #avatar-pick-panel .profile-sheet {
   min-height: 50svh;
 }
+
+/* ── Auth section (profile panel) ────────────────────────── */
+.auth-section {
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--c-border);
+}
+
+.auth-label {
+  font-family: var(--f-head);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .28em;
+  color: var(--c-text-3);
+  margin-bottom: var(--sp-2);
+}
+
+.auth-hint {
+  font-size: 12px;
+  color: var(--c-text-3);
+  margin-bottom: var(--sp-3);
+  line-height: 1.5;
+}
+
+.auth-user-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+.auth-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--c-border-md);
+}
+
+.auth-avatar--placeholder {
+  background: var(--c-inset);
+}
+
+.auth-user-name {
+  font-family: var(--f-head);
+  font-size: 13px;
+  color: var(--c-gold-text);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: .04em;
+}
