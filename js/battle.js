@@ -158,7 +158,7 @@ function gainExp(amount) {
   while (p.exp >= p.expNext) {
     p.exp -= p.expNext;
     p.level += 1;
-    p.expNext = Math.floor(p.expNext * 1.25);
+    p.expNext = expNeededForLevel(p.level);
     leveled = true;
     if (typeof SFX !== 'undefined') SFX.levelUp();
 

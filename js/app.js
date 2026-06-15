@@ -30,16 +30,15 @@ function resetSpentStats() {
 function reconcilePlayerLevel() {
   const s = getState();
   if (!s.towerChosen) return; // no tower yet, skip
-  if (!s.player.expNext || s.player.expNext < 1) {
-    s.player.expNext = Math.floor(100 * Math.pow(1.25, Math.max(0, s.player.level - 1)));
-  }
+  // Always recompute from level — single source of truth (Logic B)
+  s.player.expNext = expNeededForLevel(s.player.level);
   let changed = false;
   let guard = 0;
   while (s.player.exp >= s.player.expNext && guard < 200) {
     guard++;
     s.player.exp -= s.player.expNext;
     s.player.level += 1;
-    s.player.expNext = Math.max(1, Math.floor(s.player.expNext * 1.25));
+    s.player.expNext = expNeededForLevel(s.player.level);
     changed = true;
   }
   if (changed) {

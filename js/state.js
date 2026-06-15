@@ -192,6 +192,12 @@ function resetState() {
 
 /* ── Convenience accessors ───────────────────────────────── */
 function getPlayer() { return getState().player; }
+
+function expNeededForLevel(level) {
+  return Math.floor(100 * Math.pow(1.25, Math.max(0, level - 1)));
+}
+window.expNeededForLevel = expNeededForLevel;
+
 function getGold() { return getState().gold; }
 function getTower() { return getState().tower; }
 function getBlueprint() { return getState().blueprint; }

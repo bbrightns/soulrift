@@ -162,7 +162,7 @@
     if (isNaN(val) || val < 1 || val > 99) return;
     var state = getState();
     state.player.level  = val;
-    state.player.expNext = Math.floor(100 * Math.pow(1.25, val - 1));
+    state.player.expNext = expNeededForLevel(val);
     if (typeof recalculatePlayerStats === 'function') recalculatePlayerStats();
     state.player.hp = state.player.hpMax;
     state.player.sp = state.player.spMax;
