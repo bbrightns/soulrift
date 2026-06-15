@@ -24,6 +24,15 @@ function lvlChance(base, perLvl, cap, lvl) {
 function lvlDmgMult(lvl) {
   return 1 + (lvl - 1) * 0.12;
 }
+
+// Reusable crit roll. Returns { isCrit, multiplier }.
+// multiplier is 1 when not a crit (safe to always apply).
+function rollCrit(chance, multiplier) {
+  const isCrit = chance > 0 && Math.random() < chance;
+  return { isCrit, multiplier: isCrit ? multiplier : 1 };
+}
+window.rollCrit = rollCrit;
+
 function ctxGoldenName(ctx) {
   return '<span class="log-name">' + ctx.playerName + '</span>';
 }
@@ -260,10 +269,19 @@ registerHandler('dark_combo', async (ctx) => {
   if (!ctx.battleStatus.darkCombo) ctx.battleStatus.darkCombo = 0;
   if (ctx.battleStatus.darkCombo < 5) ctx.battleStatus.darkCombo++;
   const combo = ctx.battleStatus.darkCombo;
-  const dmg = Math.floor(ctx.baseDmg * (1 + combo * 0.15));
+
+  let dmg = Math.floor(ctx.baseDmg * (1 + combo * 0.15));
+
+  // Crit: 40% chance at combo 3+, multiplier scales 1.5x (combo 3) to 2.5x (combo 5)
+  const critChance = combo >= 3 ? 0.40 : 0;
+  const critMultiplier = combo >= 3 ? 1.5 + (combo - 3) * 0.5 : 1;
+  const { isCrit, multiplier } = rollCrit(critChance, critMultiplier);
+  if (isCrit) dmg = Math.floor(dmg * multiplier);
+
+  const critTag = isCrit ? '💥 CRITICAL! ' : '';
   await dealDamage(ctx, dmg,
-    ctxGoldenName(ctx) + ' casts Dark Combo for ' + dmg
-    + ' dmg (+' + Math.round(combo * 15) + '%). Combo: ' + combo + '/5.'
+    critTag + ctxGoldenName(ctx) + ' casts Dark Combo for ' + dmg
+    + ' dmg (+' + Math.round(combo * 15) + '%' + (isCrit ? ', CRIT ×' + multiplier.toFixed(1) : '') + '). Combo: ' + combo + '/5.'
   );
 });
 
