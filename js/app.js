@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTowerFlow();
   bootApp();
   reconcilePlayerLevel();
+  if (typeof initSyncListeners === 'function') initSyncListeners();
 
   const tower = getState().tower;
   const app = document.getElementById('app');

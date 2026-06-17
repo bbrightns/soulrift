@@ -142,6 +142,7 @@ function confirmShopBuy() {
   renderMarket();
   if (typeof renderInventory === 'function') renderInventory();
   toast(def.name + (qty > 1 ? ' ×' + qty : '') + ' acquired.', 'gold', 2400);
+  if (typeof syncToCloud === 'function') syncToCloud();
   closeShopConfirm();
 }
 

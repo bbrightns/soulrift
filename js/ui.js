@@ -190,6 +190,7 @@ function saveEditName() {
   saveState();
   syncHeader();
   renderProfilePanel();
+  if (typeof syncToCloud === 'function') syncToCloud();
   /* reset button back to edit mode */
   const editBtn = document.getElementById('prof-name-edit-btn');
   if (editBtn) {
@@ -383,6 +384,7 @@ function selectProfileAvatar(key) {
   saveState();
   renderProfilePanel();
   closeAvatarPicker();
+  if (typeof syncToCloud === 'function') syncToCloud();
 }
 
 window.openAvatarPicker = openAvatarPicker;

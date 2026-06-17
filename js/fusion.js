@@ -21,16 +21,16 @@ function _towerColor(tower) {
 
 function _catLabel(id) {
   return {
-    catalyst_shard:   'Catalyst Shard',
-    catalyst_core:    'Catalyst Core',
+    catalyst_shard: 'Catalyst Shard',
+    catalyst_core: 'Catalyst Core',
     catalyst_crystal: 'Catalyst Crystal',
   }[id] || id;
 }
 
 function _catDesc(id) {
   return {
-    catalyst_shard:   'A rough shard of fusion ore',
-    catalyst_core:    'A refined core of arcane fusion',
+    catalyst_shard: 'A rough shard of fusion ore',
+    catalyst_core: 'A refined core of arcane fusion',
     catalyst_crystal: 'A perfect crystal of pure resonance',
   }[id] || '';
 }
@@ -61,19 +61,19 @@ function _renderFusionCatTrigger() {
       + '</button>';
   } else {
     const owned = (getState().items || []).find(i => i.id === _fusionCatalyst);
-    const qty   = owned ? owned.qty : 0;
+    const qty = owned ? owned.qty : 0;
     wrap.innerHTML =
       '<div class="fusion-cat-selected" onclick="openFusionCatPanel()">'
       + '<img src="/asset/catalyst_icons/' + _fusionCatalyst + '.png" '
-      +   'class="fusion-cat-selected__icon" alt="">'
+      + 'class="fusion-cat-selected__icon" alt="">'
       + '<div class="fusion-cat-selected__info">'
-      +   '<span class="fusion-cat-selected__name">' + _catLabel(_fusionCatalyst) + '</span>'
-      +   '<span class="fusion-cat-selected__desc">' + _catDesc(_fusionCatalyst) + '</span>'
-      +   '<span class="fusion-cat-selected__bonus">' + _catBonus(_fusionCatalyst) + ' success rate</span>'
+      + '<span class="fusion-cat-selected__name">' + _catLabel(_fusionCatalyst) + '</span>'
+      + '<span class="fusion-cat-selected__desc">' + _catDesc(_fusionCatalyst) + '</span>'
+      + '<span class="fusion-cat-selected__bonus">' + _catBonus(_fusionCatalyst) + ' success rate</span>'
       + '</div>'
       + '<button class="fusion-cat-clear-btn" '
-      +   'onclick="event.stopPropagation();clearFusionCatalyst()" '
-      +   'aria-label="Remove catalyst">✕</button>'
+      + 'onclick="event.stopPropagation();clearFusionCatalyst()" '
+      + 'aria-label="Remove catalyst">✕</button>'
       + '</div>';
   }
 }
@@ -107,14 +107,14 @@ function _renderFusionCatPickerBody() {
     return '<button class="fusion-cat-pick-row' + (active ? ' is-selected' : '') + '" '
       + 'onclick="pickFusionCatalyst(\'' + i.id + '\')">'
       + '<img src="/asset/catalyst_icons/' + i.id + '.png" '
-      +   'class="fusion-cat-pick-row__icon" alt="">'
+      + 'class="fusion-cat-pick-row__icon" alt="">'
       + '<div class="fusion-cat-pick-row__info">'
-      +   '<span class="fusion-cat-pick-row__name">' + _catLabel(i.id) + '</span>'
-      +   '<span class="fusion-cat-pick-row__desc">' + _catDesc(i.id) + '</span>'
+      + '<span class="fusion-cat-pick-row__name">' + _catLabel(i.id) + '</span>'
+      + '<span class="fusion-cat-pick-row__desc">' + _catDesc(i.id) + '</span>'
       + '</div>'
       + '<div class="fusion-cat-pick-row__right">'
-      +   '<span class="fusion-cat-pick-row__bonus">' + _catBonus(i.id) + '</span>'
-      +   '<span class="fusion-cat-pick-row__qty">' + i.qty + '<span style="font-weight:500;font-size:10px;opacity:0.8;margin-left:3px;">remaining</span></span>'
+      + '<span class="fusion-cat-pick-row__bonus">' + _catBonus(i.id) + '</span>'
+      + '<span class="fusion-cat-pick-row__qty">' + i.qty + '<span style="font-weight:500;font-size:10px;opacity:0.8;margin-left:3px;">remaining</span></span>'
       + '</div>'
       + '</button>';
   });
@@ -125,11 +125,11 @@ function _renderFusionCatPickerBody() {
     + 'onclick="pickFusionCatalyst(null)">'
     + '<div class="fusion-cat-pick-row__icon fusion-cat-pick-row__icon--none">–</div>'
     + '<div class="fusion-cat-pick-row__info">'
-    +   '<span class="fusion-cat-pick-row__name">No Catalyst</span>'
-    +   '<span class="fusion-cat-pick-row__desc">No success rate bonus</span>'
+    + '<span class="fusion-cat-pick-row__name">No Catalyst</span>'
+    + '<span class="fusion-cat-pick-row__desc">No success rate bonus</span>'
     + '</div>'
     + '<div class="fusion-cat-pick-row__right">'
-    +   '<span class="fusion-cat-pick-row__bonus" style="color:var(--c-text-3);">+0%</span>'
+    + '<span class="fusion-cat-pick-row__bonus" style="color:var(--c-text-3);">+0%</span>'
     + '</div>'
     + '</button>'
   );
@@ -154,7 +154,7 @@ function clearFusionCatalyst() {
 
 /* ── Render ──────────────────────────────────────────── */
 function renderFusion() {
-  _fusionSpellId  = null;
+  _fusionSpellId = null;
   _fusionSpellLvl = null;
   _fusionCatalyst = null;
   renderFusionSpellList();
@@ -320,15 +320,18 @@ function executeFusion() {
   if (success) {
     giveSpell(_fusionSpellId, toLvl);
     saveState();
+    if (typeof syncToCloud === 'function') syncToCloud();
     showFusionResult(true, def.name, _fusionSpellId, toLvl, null);
   } else {
     if (fromLvl <= 5) {
       const downgradeLvl = Math.max(1, fromLvl - 1);
       giveSpell(_fusionSpellId, downgradeLvl);
       saveState();
+      if (typeof syncToCloud === 'function') syncToCloud();
       showFusionResult(false, def.name, _fusionSpellId, toLvl, 'downgrade', downgradeLvl);
     } else {
       saveState();
+      if (typeof syncToCloud === 'function') syncToCloud();
       showFusionResult(false, def.name, _fusionSpellId, toLvl, 'break', null);
     }
   }
@@ -465,12 +468,12 @@ function closeFusionResult() {
 /* ── Screen hook ─────────────────────────────────────── */
 onScreen('fusion', renderFusion);
 
-window.selectFusionSpell    = selectFusionSpell;
-window.executeFusion        = executeFusion;
-window.executeFusionAll     = executeFusionAll;
-window.closeFusionResult    = closeFusionResult;
-window.renderFusion         = renderFusion;
-window.openFusionCatPanel   = openFusionCatPanel;
-window.closeFusionCatPanel  = closeFusionCatPanel;
-window.pickFusionCatalyst   = pickFusionCatalyst;
-window.clearFusionCatalyst  = clearFusionCatalyst;
+window.selectFusionSpell = selectFusionSpell;
+window.executeFusion = executeFusion;
+window.executeFusionAll = executeFusionAll;
+window.closeFusionResult = closeFusionResult;
+window.renderFusion = renderFusion;
+window.openFusionCatPanel = openFusionCatPanel;
+window.closeFusionCatPanel = closeFusionCatPanel;
+window.pickFusionCatalyst = pickFusionCatalyst;
+window.clearFusionCatalyst = clearFusionCatalyst;

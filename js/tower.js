@@ -79,6 +79,7 @@ function confirmStart() {
   syncHeader();
   showScreen('battle');
   toast(_pendingName + ' enters ' + TOWER_UI[_pendingTower].name + '.', 'gold', 3200);
+  if (typeof syncToCloud === 'function') syncToCloud();
 }
 
 function backToNameStep() {

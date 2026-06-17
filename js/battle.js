@@ -174,7 +174,7 @@ function gainExp(amount) {
     s.player.sp = s.player.spMax;
     saveState();
     syncHeader();
-} else {
+  } else {
     saveState();
   }
   return s.player.level;
@@ -1218,6 +1218,7 @@ async function runAutoBattle(dungeonId) {
   s.player.sp = s.player.spMax;
   saveState();
   syncHeader();
+  if (typeof syncToCloud === 'function') syncToCloud();
 
   const hudEl = document.getElementById('combat-hud');
   if (hudEl) hudEl.classList.add('hud--post-battle');
