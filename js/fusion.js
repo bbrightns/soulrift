@@ -392,6 +392,8 @@ function executeFusionAll() {
     saveState();
   }
 
+  if (typeof syncToCloud === 'function') syncToCloud();
+
   // show summary modal
   const modal = document.getElementById('fusion-result-modal');
   const body = document.getElementById('fusion-result-body');
