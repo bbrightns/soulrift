@@ -80,15 +80,13 @@
           </div>
           <div class="divider--gold divider"></div>
           <div class="intro-signin-cards">
-            <button class="intro-signin-card intro-signin-card--cloud" id="intro-cloud-card"
-              onclick="introChooseCloud()">
+            <div class="intro-signin-card intro-signin-card--cloud" id="intro-cloud-card">
               <div class="intro-signin-card__glow"></div>
               <div class="intro-signin-card__icon">☁</div>
               <div class="intro-signin-card__title">Log In</div>
               <div class="intro-signin-card__desc">Sign in with Google. Your progress syncs across all devices.</div>
-              <div id="intro-gsi-hidden"
-                style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;overflow:hidden;"></div>
-            </button>
+              <div id="intro-gsi-overlay" class="intro-signin-card__gsi-overlay"></div>
+            </div>
             <button class="intro-signin-card intro-signin-card--local" onclick="introChooseLocal()">
               <div class="intro-signin-card__glow"></div>
               <div class="intro-signin-card__icon">◆</div>

@@ -36,54 +36,35 @@ function chooseTower(tower) {
   }
 }
 
-function _renderIntroGsiButton() {
+let _introGsiRendered = false;
+
+function _renderIntroGsiOverlay() {
+  if (_introGsiRendered) return;
   if (!window.google?.accounts?.id) {
-    setTimeout(_renderIntroGsiButton, 300);
+    setTimeout(_renderIntroGsiOverlay, 300);
     return;
   }
-  const target = document.getElementById('intro-gsi-hidden');
+  const target = document.getElementById('intro-gsi-overlay');
   if (!target) return;
   google.accounts.id.renderButton(target, {
     type: 'standard',
     theme: 'filled_black',
     size: 'large',
     text: 'signin_with',
-    width: 1,
+    width: 400, // stretched to fill the card via CSS regardless
   });
+  _introGsiRendered = true;
 }
 
-function introChooseCloud() {
-  if (!window.google?.accounts?.id) {
-    toast('Google Sign-In not ready. Try again.', 'bad');
-    return;
-  }
-  google.accounts.id.prompt((notification) => {
-    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-      const target = document.getElementById('intro-gsi-hidden');
-      if (!target) return;
-      target.style.position = 'static';
-      target.style.opacity = '1';
-      target.style.pointerEvents = 'auto';
-      target.style.width = '100%';
-      target.style.height = 'auto';
-      target.style.overflow = 'visible';
-      google.accounts.id.renderButton(target, {
-        type: 'standard',
-        theme: 'filled_black',
-        size: 'large',
-        text: 'signin_with',
-        width: document.getElementById('intro-cloud-card')?.clientWidth || 160,
-      });
-    }
-  });
-  window.addEventListener('soulrift:authchange', _onIntroAuthChange);
-}
-
-function _onIntroAuthChange(e) {
+window.addEventListener('soulrift:authchange', (e) => {
   if (!e.detail?.signedIn) return;
-  window.removeEventListener('soulrift:authchange', _onIntroAuthChange);
-  _goToTowerStep();
-}
+  // Only auto-advance if the player is still on the auth step
+  // (avoids hijacking sign-in triggered later from the profile panel)
+  const authStep = document.getElementById('intro-auth-step');
+  if (authStep && !authStep.classList.contains('is-hidden')) {
+    _goToTowerStep();
+  }
+});
 
 function introChooseLocal() {
   _goToTowerStep();
@@ -165,4 +146,5 @@ function initTowerFlow() {
       if (event.key === 'Enter') confirmName();
     });
   }
+  _renderIntroGsiOverlay();
 }

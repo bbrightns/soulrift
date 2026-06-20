@@ -3878,6 +3878,24 @@ input, select, textarea {
     0 16px 42px rgba(0,0,0,0.82);
 }
 
+.intro-signin-card--cloud {
+  position: relative;
+  overflow: hidden;
+}
+
+.intro-signin-card__gsi-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: 0; /* fully invisible — real Google button, real clicks */
+}
+
+.intro-signin-card__gsi-overlay iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+}
+
 .intro-signin-card__glow {
   position: absolute;
   inset: 0;
