@@ -175,8 +175,15 @@ function signIn() {
     console.warn('[auth] Google Identity Services not loaded yet');
     return;
   }
-  google.accounts.id.prompt();
+  google.accounts.id.prompt((notification) => {
+    const isUnavailable =
+      notification.isNotDisplayed() || notification.isSkippedMoment();
+    if (isUnavailable) {
+      window.dispatchEvent(new CustomEvent('soulrift:gsi_fallback'));
+    }
+  });
 }
+window.signIn = signIn;
 
 /**
  * Sign out: clear in-memory state, localStorage, and revoke the Google
