@@ -115,6 +115,17 @@
   --ease-fast: 120ms ease;
   --ease-base: 200ms ease;
   --ease-slow: 380ms ease;
+
+  /* ── Z-Index Scale ───────────────────────────────────── */
+  /* Single source of truth for stacking order. Never hardcode
+     a z-index number elsewhere — reference one of these. */
+  --z-header: 100;
+  --z-bottom-nav: 200;
+  --z-modal-panel: 500;      /* profile, spell-picker, fusion-cat sheets */
+  --z-gm-panel: 600;
+  --z-toast: 600;
+  --z-overlay-critical: 9000;         /* conflict-overlay */
+  --z-overlay-critical-confirm: 9001; /* its confirm sub-modal */
 }
 
 /* ── Reset ───────────────────────────────────────────────── */

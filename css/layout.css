@@ -765,10 +765,10 @@ input, select, textarea {
 }
 
 /* Profile panel */
-#profile-panel {
+#app #profile-panel {
   position: absolute;
   inset: 0;
-  z-index: 500;
+  z-index: var(--z-modal-panel);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -3159,10 +3159,10 @@ input, select, textarea {
 }
 
 /* ── Spell Picker Panel ───────────────────────────── */
-#spell-picker-panel {
+#app #spell-picker-panel {
   position: absolute;
   inset: 0;
-  z-index: 500;
+  z-index: var(--z-modal-panel);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -3451,10 +3451,10 @@ input, select, textarea {
 }
 
 /* ── Fusion Catalyst Bottomsheet Panel ───────────────── */
-#fusion-cat-panel {
+#app #fusion-cat-panel {
   position: absolute;
   inset: 0;
-  z-index: 500;
+  z-index: var(--z-modal-panel);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -3680,9 +3680,10 @@ input, select, textarea {
 }
 
 /* Modals outside #app need explicit positioning */
-#shop-confirm-modal {
+#shop-confirm-modal,
+#app #conflict-confirm-modal {
   position: fixed;
-  z-index: 999;
+  z-index: 9999;
 }
 
 /* ── Intro avatar picker ─────────────────────────────────── */
@@ -3919,19 +3920,21 @@ input, select, textarea {
 }
 
 /* ── Conflict Overlay ────────────────────────────────────── */
-#conflict-overlay {
+#app #conflict-overlay {
   display: none;
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 700;
+  z-index: var(--z-overlay-critical);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: var(--sp-4) var(--sp-4) calc(var(--sp-6) + env(safe-area-inset-bottom));
   background:
     radial-gradient(ellipse 80% 58% at 50% -10%, rgba(102,199,232,0.10) 0%, transparent 70%),
     rgba(5,5,10,0.97);
+  touch-action: auto;
+  pointer-events: auto;
 }
-#conflict-overlay.is-visible {
+#app #conflict-overlay.is-visible {
   display: block;
 }
 

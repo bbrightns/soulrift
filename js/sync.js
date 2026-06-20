@@ -278,12 +278,12 @@ window.addEventListener('soulrift:authchange', (e) => {
 });
 
 /* ── Exports ─────────────────────────────────────────────── */
-window.syncToCloud         = syncToCloud;
-window.syncOnSignIn        = syncOnSignIn;
-window.initSyncListeners   = initSyncListeners;
+window.syncToCloud = syncToCloud;
+window.syncOnSignIn = syncOnSignIn;
+window.initSyncListeners = initSyncListeners;
 window.showConflictOverlay = showConflictOverlay;
-window.conflictChoose      = conflictChoose;
-window.conflictConfirmOk   = conflictConfirmOk;
+window.conflictChoose = conflictChoose;
+window.conflictConfirmOk = conflictConfirmOk;
 window.conflictConfirmCancel = conflictConfirmCancel;
-window.conflictCancel      = conflictCancel;
-window.cloudPauseTap       = cloudPauseTap;
+window.conflictCancel = conflictCancel;
+window.cloudPauseTap = cloudPauseTap;

@@ -53,17 +53,30 @@ function _renderIntroGsiButton() {
 }
 
 function introChooseCloud() {
-  // Click the hidden GIS button
-  const gsiBtn = document.querySelector('#intro-gsi-hidden iframe, #intro-gsi-hidden div[role="button"]');
-  if (gsiBtn) {
-    gsiBtn.click();
-  } else {
-    // GIS not ready — try prompt fallback
-    if (window.google?.accounts?.id) {
-      google.accounts.id.prompt();
-    }
+  if (!window.google?.accounts?.id) {
+    toast('Google Sign-In not ready. Try again.', 'bad');
+    return;
   }
-  // Listen for sign-in success then start game
+  google.accounts.id.prompt((notification) => {
+    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+      // FedCM blocked — render GIS button visibly inside the card as fallback
+      const target = document.getElementById('intro-gsi-hidden');
+      if (!target) return;
+      target.style.position = 'static';
+      target.style.opacity = '1';
+      target.style.pointerEvents = 'auto';
+      target.style.width = '100%';
+      target.style.height = 'auto';
+      target.style.overflow = 'visible';
+      google.accounts.id.renderButton(target, {
+        type: 'standard',
+        theme: 'filled_black',
+        size: 'large',
+        text: 'signin_with',
+        width: document.getElementById('intro-cloud-card')?.clientWidth || 160,
+      });
+    }
+  });
   window.addEventListener('soulrift:authchange', _onIntroAuthChange);
 }
 

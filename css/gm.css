@@ -1,9 +1,9 @@
 /* ── GM Dev Panel ──────────────────────────────────────────── */
 
-#gm-panel {
+#app #gm-panel {
   position: absolute;
   inset: 0;
-  z-index: 600;
+  z-index: var(--z-gm-panel);
   display: flex;
   align-items: flex-start;
   justify-content: center;
