@@ -30,7 +30,9 @@ const BACKEND_URL = 'https://soulrift-backend.vercel.app';
 
 /* ── Internal state ───────────────────────────────────────── */
 let _syncInFlight = false;
-let _syncQueued   = false;   // a second push was requested while one was in flight
+let _syncQueued = false;
+let _syncInFlightSince = 0;
+let _syncOnSignInDone = false;
 
 /* ── Helpers ──────────────────────────────────────────────── */
 
@@ -70,7 +72,16 @@ function _fmtDate(ts) {
  * Silently no-ops if the user is not signed in.
  */
 async function syncToCloud() {
-  if (typeof isSignedIn === 'function' && !isSignedIn()) return;
+  if (typeof isSignedIn === 'function' && !isSignedIn()) {
+    _syncOnSignInDone = true; // not using cloud, unblock
+    return;
+  }
+
+  // block pushes until syncOnSignIn has resolved the conflict
+  if (!_syncOnSignInDone) {
+    _syncQueued = true;
+    return;
+  }
 
   const headers = _authHeaders();
   if (!headers) return;
@@ -82,7 +93,7 @@ async function syncToCloud() {
   }
 
   _syncInFlight = true;
-  _syncQueued   = false;
+  _syncQueued = false;
 
   try {
     const raw = localStorage.getItem('soulrift_v1');
@@ -146,7 +157,7 @@ async function _fetchCloudSave() {
 function _showCloudNewerDialog(cloudSavedAt, localSavedAt) {
   return new Promise(resolve => {
     const modal = document.getElementById('shop-confirm-modal');
-    const body  = document.getElementById('shop-confirm-body');
+    const body = document.getElementById('shop-confirm-body');
     if (!modal || !body) { resolve(false); return; }
 
     body.innerHTML =
@@ -160,7 +171,7 @@ function _showCloudNewerDialog(cloudSavedAt, localSavedAt) {
       + '.</div>';
 
     const confirmBtn = modal.querySelector('.btn--primary');
-    const cancelBtn  = modal.querySelector('.btn--ghost');
+    const cancelBtn = modal.querySelector('.btn--ghost');
 
     if (confirmBtn) {
       confirmBtn.textContent = 'Load Cloud';
@@ -224,8 +235,8 @@ async function syncOnSignIn() {
 
   const cloudBlob = await _fetchCloudSave();
 
-  // No cloud save yet — push local silently
   if (!cloudBlob) {
+    _syncOnSignInDone = true;
     syncToCloud();
     return;
   }
@@ -235,6 +246,7 @@ async function syncOnSignIn() {
 
   // Local is newer or equal — push silently, no dialog
   if (localSavedAt >= cloudSavedAt) {
+    _syncOnSignInDone = true;
     syncToCloud();
     return;
   }
@@ -242,10 +254,10 @@ async function syncOnSignIn() {
   // Cloud is newer — ask the player
   const loadCloud = await _showCloudNewerDialog(cloudSavedAt, localSavedAt);
   if (loadCloud) {
+    _syncOnSignInDone = true;
     _applyCloudSave(cloudBlob);
-    // page will reload — nothing after this runs
   } else {
-    // Player chose to keep local — push it to cloud to overwrite
+    _syncOnSignInDone = true;
     syncToCloud();
   }
 }
@@ -277,6 +289,6 @@ window.addEventListener('soulrift:authchange', (e) => {
 });
 
 /* ── Exports ──────────────────────────────────────────────── */
-window.syncToCloud       = syncToCloud;
-window.syncOnSignIn      = syncOnSignIn;
+window.syncToCloud = syncToCloud;
+window.syncOnSignIn = syncOnSignIn;
 window.initSyncListeners = initSyncListeners;
