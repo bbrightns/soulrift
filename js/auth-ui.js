@@ -20,10 +20,16 @@
    <div id="profile-auth-section"></div>
 ──────────────────────────────────────────────────────────── */
 
-function _maybeRenderGsiButton() {
-  // Pre-render the GIS button hidden; reveal it on fallback
+function _renderGsiButton() {
   const target = document.getElementById('auth-gsi-button');
-  if (!target || !window.google?.accounts?.id) return;
+  if (!target) return;
+
+  if (!window.google?.accounts?.id) {
+    // GIS not loaded yet — retry shortly
+    setTimeout(_renderGsiButton, 300);
+    return;
+  }
+
   google.accounts.id.renderButton(target, {
     type: 'standard',
     shape: 'rectangular',
@@ -34,15 +40,6 @@ function _maybeRenderGsiButton() {
   });
 }
 
-function _showGsiFallbackButton() {
-  const gsiBtn    = document.getElementById('auth-gsi-button');
-  const promptBtn = document.getElementById('auth-prompt-btn');
-  if (gsiBtn)    gsiBtn.style.display    = 'block';
-  if (promptBtn) promptBtn.style.display = 'none';
-}
-
-window.addEventListener('soulrift:gsi_fallback', _showGsiFallbackButton);
-
 function renderAuthSection() {
   const container = document.getElementById('profile-auth-section');
   if (!container) return;
@@ -52,14 +49,9 @@ function renderAuthSection() {
       <div class="auth-section">
         <p class="auth-label">Cloud Save</p>
         <p class="auth-hint">Sign in with Google to back up your progress and play across devices.</p>
-        <div id="auth-gsi-button" style="display:none;margin-bottom:var(--sp-2);"></div>
-        <button class="btn btn--ghost btn--full auth-signin-btn" id="auth-prompt-btn" onclick="signIn()">
-          <img src="https://developers.google.com/identity/images/g-logo.png"
-              alt="" width="18" height="18" style="vertical-align:middle;margin-right:8px;">
-          Sign in with Google
-        </button>
+        <div id="auth-gsi-button" style="margin-top:var(--sp-2);"></div>
       </div>`;
-    _maybeRenderGsiButton();
+    _renderGsiButton();
   } else {
     const user = getGoogleUser();
     const name = user?.name || user?.email || 'Google User';

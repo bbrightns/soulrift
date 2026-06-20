@@ -167,25 +167,6 @@ function _restoreSession() {
 /* ── Public API ──────────────────────────────────────────── */
 
 /**
- * Open the Google One Tap / popup sign-in flow.
- * The callback passed to initialize() handles the result.
- */
-function signIn() {
-  if (!window.google?.accounts?.id) {
-    console.warn('[auth] Google Identity Services not loaded yet');
-    return;
-  }
-  google.accounts.id.prompt((notification) => {
-    const isUnavailable =
-      notification.isNotDisplayed() || notification.isSkippedMoment();
-    if (isUnavailable) {
-      window.dispatchEvent(new CustomEvent('soulrift:gsi_fallback'));
-    }
-  });
-}
-window.signIn = signIn;
-
-/**
  * Sign out: clear in-memory state, localStorage, and revoke the Google
  * session hint so One Tap doesn't auto-sign back in.
  */
