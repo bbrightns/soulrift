@@ -470,5 +470,19 @@ function calcProgressScore(state) {
 
 window.calcProgressScore = calcProgressScore;
 
+/** Replace the live in-memory state wholesale (used when adopting a
+ * cloud save) so that any subsequent saveState() call — including the
+ * one fired on beforeunload — persists the NEW data, not the stale one. */
+function loadExternalState(newState) {
+  _state = _hydrate(newState);
+  _sanitize(_state);
+  if (_state.towerChosen) {
+    recalculatePlayerStats();
+  }
+  saveState();
+  return _state;
+}
+window.loadExternalState = loadExternalState;
+
 /* ── Auto-save before tab close ──────────────────────────── */
 window.addEventListener('beforeunload', saveState);

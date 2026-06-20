@@ -251,7 +251,11 @@ function _hideConflictOverlay() {
 /* ── Apply cloud save ────────────────────────────────────── */
 function _applyCloudSave(cloudBlob) {
   try {
-    localStorage.setItem('soulrift_v1', JSON.stringify(cloudBlob));
+    if (typeof loadExternalState === 'function') {
+      loadExternalState(cloudBlob);   // updates in-memory _state AND localStorage
+    } else {
+      localStorage.setItem('soulrift_v1', JSON.stringify(cloudBlob));
+    }
     location.reload();
   } catch (e) {
     console.error('[sync] Failed to apply cloud save:', e);
