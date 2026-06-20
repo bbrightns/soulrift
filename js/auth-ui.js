@@ -66,7 +66,7 @@ function renderAuthSection() {
             : `<div class="auth-avatar auth-avatar--placeholder"></div>`}
           <span class="auth-user-name">${_escHtml(name)}</span>
         </div>
-        <button class="btn btn--ghost btn--full auth-signout-btn" onclick="signOut()">
+        <button class="btn btn--ghost btn--full auth-signout-btn" onclick="confirmSignOutNewPlayer()">
           Sign out
         </button>
       </div>`;
@@ -104,64 +104,11 @@ if (document.readyState === 'loading') {
 
 window.renderAuthSection = renderAuthSection;
 
-
-/*============================================================
-  CSS to add to your stylesheet
-  (uses your existing design tokens)
-============================================================
-
-.auth-section {
-  margin-top: var(--sp-4);
-  padding-top: var(--sp-3);
-  border-top: 1px solid var(--c-border);
+function confirmSignOutNewPlayer() {
+  if (!confirm('Sign out and start over as a new player? Local progress on this device will be cleared.')) return;
+  if (typeof signOut === 'function') signOut();
+  if (typeof closeProfilePanel === 'function') closeProfilePanel();
+  resetState();
+  location.reload();
 }
-
-.auth-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--c-text-dim);
-  margin-bottom: var(--sp-1);
-}
-
-.auth-hint {
-  font-size: 12px;
-  color: var(--c-text-dim);
-  margin-bottom: var(--sp-2);
-  line-height: 1.4;
-}
-
-.auth-signin-btn,
-.auth-signout-btn {
-  font-size: 13px;
-}
-
-.auth-user-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  margin-bottom: var(--sp-2);
-}
-
-.auth-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.auth-avatar--placeholder {
-  background: var(--c-inset);
-  border: 1px solid var(--c-border-hi);
-}
-
-.auth-user-name {
-  font-size: 13px;
-  color: var(--c-gold-text);
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-============================================================*/
+window.confirmSignOutNewPlayer = confirmSignOutNewPlayer;

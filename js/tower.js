@@ -59,7 +59,6 @@ function introChooseCloud() {
   }
   google.accounts.id.prompt((notification) => {
     if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-      // FedCM blocked — render GIS button visibly inside the card as fallback
       const target = document.getElementById('intro-gsi-hidden');
       if (!target) return;
       target.style.position = 'static';
@@ -83,28 +82,16 @@ function introChooseCloud() {
 function _onIntroAuthChange(e) {
   if (!e.detail?.signedIn) return;
   window.removeEventListener('soulrift:authchange', _onIntroAuthChange);
-  _startGameAfterIntro();
+  _goToTowerStep();
 }
 
 function introChooseLocal() {
-  // Skip sign-in, go straight to game
-  _startGameAfterIntro();
+  _goToTowerStep();
 }
 
-function _startGameAfterIntro() {
-  if (!_pendingTower || !_pendingName) return;
-  applyTowerStart(_pendingTower, _pendingName, _pendingAvatar);
-  document.getElementById('intro-signin-step')?.classList.remove('is-visible');
-  hideIntro();
-  syncHeader();
-  showScreen('battle');
-  toast(_pendingName + ' enters ' + TOWER_UI[_pendingTower].name + '.', 'gold', 3200);
-  if (typeof syncToCloud === 'function') syncToCloud();
-}
-
-function backToAvatarStep() {
-  document.getElementById('intro-signin-step')?.classList.remove('is-visible');
-  document.getElementById('intro-avatar-step')?.classList.add('is-visible');
+function _goToTowerStep() {
+  document.getElementById('intro-auth-step')?.classList.add('is-hidden');
+  document.getElementById('intro-tower-step')?.classList.remove('is-hidden');
 }
 
 function confirmName() {
@@ -145,13 +132,13 @@ function selectIntroAvatar(key) {
 
 function confirmStart() {
   if (!_pendingTower || !_pendingName) return;
-
-  // Move to sign-in step instead of starting game immediately
+  applyTowerStart(_pendingTower, _pendingName, _pendingAvatar);
   document.getElementById('intro-avatar-step')?.classList.remove('is-visible');
-  document.getElementById('intro-signin-step')?.classList.add('is-visible');
-
-  // Pre-render GIS button inside the cloud card
-  _renderIntroGsiButton();
+  hideIntro();
+  syncHeader();
+  showScreen('battle');
+  toast(_pendingName + ' enters ' + TOWER_UI[_pendingTower].name + '.', 'gold', 3200);
+  if (typeof syncToCloud === 'function') syncToCloud();
 }
 
 function backToNameStep() {

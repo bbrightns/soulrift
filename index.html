@@ -68,8 +68,38 @@
     <div id="screen-intro">
       <div class="landing-shell">
 
+        <!-- Step 0: Login or Guest -->
+        <div id="intro-auth-step">
+          <header class="landing-header">
+            <div class="landing-rune">◆ World of Arcadia ◆</div>
+            <h1 class="landing-title">SOULRIFT</h1>
+            <p class="landing-subtitle">RPG Chronicles</p>
+          </header>
+          <div class="landing-name-head" style="padding-top:8px;">
+            <div class="landing-name-copy">How will you walk the Rift?</div>
+          </div>
+          <div class="divider--gold divider"></div>
+          <div class="intro-signin-cards">
+            <button class="intro-signin-card intro-signin-card--cloud" id="intro-cloud-card"
+              onclick="introChooseCloud()">
+              <div class="intro-signin-card__glow"></div>
+              <div class="intro-signin-card__icon">☁</div>
+              <div class="intro-signin-card__title">Log In</div>
+              <div class="intro-signin-card__desc">Sign in with Google. Your progress syncs across all devices.</div>
+              <div id="intro-gsi-hidden"
+                style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;overflow:hidden;"></div>
+            </button>
+            <button class="intro-signin-card intro-signin-card--local" onclick="introChooseLocal()">
+              <div class="intro-signin-card__glow"></div>
+              <div class="intro-signin-card__icon">◆</div>
+              <div class="intro-signin-card__title">Continue as Guest</div>
+              <div class="intro-signin-card__desc">No sign-in needed. Progress is saved on this device only.</div>
+            </button>
+          </div>
+        </div><!-- /intro-auth-step -->
+
         <!-- Step 1: Tower selection -->
-        <div id="intro-tower-step">
+        <div id="intro-tower-step" class="is-hidden">
           <header class="landing-header">
             <div class="landing-rune">◆ World of Arcadia ◆</div>
             <h1 class="landing-title">SOULRIFT</h1>
@@ -200,44 +230,6 @@
             Back — Change Name
           </button>
         </div>
-
-        <!-- Step 4: Sign-in option -->
-        <div id="intro-signin-step">
-          <div class="landing-name-head">
-            <div class="landing-name-copy">One last step.</div>
-          </div>
-          <div class="divider--gold divider"></div>
-
-          <div class="intro-signin-cards">
-
-            <!-- Cloud Save card -->
-            <button class="intro-signin-card intro-signin-card--cloud" id="intro-cloud-card"
-              onclick="introChooseCloud()">
-              <div class="intro-signin-card__glow"></div>
-              <div class="intro-signin-card__icon">☁</div>
-              <div class="intro-signin-card__title">Save to Cloud</div>
-              <div class="intro-signin-card__desc">Sign in with Google. Your progress syncs across all devices.</div>
-              <!-- Hidden GIS button -->
-              <div id="intro-gsi-hidden"
-                style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;overflow:hidden;"></div>
-            </button>
-
-            <!-- Local Save card -->
-            <button class="intro-signin-card intro-signin-card--local" onclick="introChooseLocal()">
-              <div class="intro-signin-card__glow"></div>
-              <div class="intro-signin-card__icon">◆</div>
-              <div class="intro-signin-card__title">Play Locally</div>
-              <div class="intro-signin-card__desc">No sign-in needed. You can always enable cloud save later from your
-                profile.</div>
-            </button>
-
-            <!-- Back button -->
-            <button class="btn btn--ghost btn--full" style="margin-top:var(--sp-2);" onclick="backToAvatarStep()">
-              Back — Change Appearance
-            </button>
-
-          </div>
-        </div><!-- /intro-signin-step -->
 
       </div>
     </div><!-- /screen-intro -->
