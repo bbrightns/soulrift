@@ -3806,3 +3806,302 @@ input, select, textarea {
   white-space: nowrap;
   letter-spacing: .04em;
 }
+
+/* ── Intro Step 3 — Sign-in ──────────────────────────────── */
+#intro-signin-step {
+  display: none;
+}
+#intro-signin-step.is-visible {
+  display: block;
+}
+
+.intro-signin-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+  margin: var(--sp-4) 0;
+}
+
+.intro-signin-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-3);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.028) 0%, transparent 75%),
+    linear-gradient(180deg, rgba(18,18,26,0.98), rgba(9,9,14,0.98));
+  border: 1px solid rgba(197,160,89,0.34);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  box-shadow:
+    0 0 0 1px rgba(197,160,89,0.08) inset,
+    0 12px 34px rgba(0,0,0,0.72);
+}
+
+.intro-signin-card:hover,
+.intro-signin-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(197,160,89,0.58);
+  outline: none;
+  box-shadow:
+    0 0 0 1px rgba(197,160,89,0.13) inset,
+    0 0 34px rgba(197,160,89,0.16),
+    0 16px 42px rgba(0,0,0,0.82);
+}
+
+.intro-signin-card:active {
+  transform: translateY(-1px);
+  filter: brightness(0.92);
+}
+
+.intro-signin-card--cloud {
+  border-color: rgba(102,199,232,0.34);
+}
+.intro-signin-card--cloud:hover {
+  border-color: rgba(102,199,232,0.58);
+  box-shadow:
+    0 0 0 1px rgba(102,199,232,0.13) inset,
+    0 0 34px rgba(102,199,232,0.16),
+    0 16px 42px rgba(0,0,0,0.82);
+}
+
+.intro-signin-card__glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.intro-signin-card--cloud .intro-signin-card__glow {
+  background: radial-gradient(ellipse at 50% 0%, rgba(102,199,232,0.13) 0%, transparent 72%);
+}
+.intro-signin-card--local .intro-signin-card__glow {
+  background: radial-gradient(ellipse at 50% 0%, rgba(197,160,89,0.10) 0%, transparent 72%);
+}
+.intro-signin-card:hover .intro-signin-card__glow {
+  opacity: 1;
+}
+
+.intro-signin-card__icon {
+  font-size: 28px;
+  line-height: 1;
+  color: var(--c-gold-text);
+}
+.intro-signin-card--cloud .intro-signin-card__icon {
+  color: var(--c-ice);
+}
+
+.intro-signin-card__title {
+  font-family: var(--f-head);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-text-hi);
+}
+
+.intro-signin-card__desc {
+  font-size: 11px;
+  color: var(--c-text-2);
+  line-height: 1.55;
+}
+
+/* ── Conflict Overlay ────────────────────────────────────── */
+#conflict-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 300;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--sp-4) var(--sp-4) calc(var(--sp-6) + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(ellipse 80% 58% at 50% -10%, rgba(102,199,232,0.10) 0%, transparent 70%),
+    rgba(5,5,10,0.97);
+}
+#conflict-overlay.is-visible {
+  display: block;
+}
+
+.conflict-shell {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 26px 0 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.conflict-title {
+  font-family: var(--f-deco);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--c-gold-text);
+  letter-spacing: .10em;
+  text-align: center;
+  text-shadow: 0 0 48px rgba(197,160,89,0.24);
+}
+
+.conflict-sub {
+  font-size: 13px;
+  color: var(--c-text-2);
+  text-align: center;
+  margin-top: calc(-1 * var(--sp-2));
+}
+
+.conflict-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+  width: 100%;
+}
+
+.conflict-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-3);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.028) 0%, transparent 75%),
+    linear-gradient(180deg, rgba(18,18,26,0.98), rgba(9,9,14,0.98));
+  border: 1px solid rgba(197,160,89,0.34);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  box-shadow:
+    0 0 0 1px rgba(197,160,89,0.08) inset,
+    0 12px 34px rgba(0,0,0,0.72);
+}
+
+.conflict-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(197,160,89,0.58);
+  box-shadow:
+    0 0 0 1px rgba(197,160,89,0.13) inset,
+    0 0 34px rgba(197,160,89,0.16),
+    0 16px 42px rgba(0,0,0,0.82);
+}
+
+.conflict-card:active {
+  transform: translateY(-1px);
+  filter: brightness(0.92);
+}
+
+.conflict-card__label {
+  font-family: var(--f-head);
+  font-size: 9px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--c-gold-dim);
+}
+
+.conflict-card__avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--c-inset);
+  border: 1.5px solid var(--c-border-hi);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.conflict-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.conflict-card__tower {
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--c-gold-dim);
+  font-family: var(--f-head);
+}
+
+.conflict-card__name {
+  font-family: var(--f-head);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text-hi);
+  letter-spacing: .06em;
+}
+
+.conflict-card__level {
+  font-family: var(--f-head);
+  font-size: 12px;
+  color: var(--c-gold-text);
+  letter-spacing: .06em;
+}
+
+.conflict-card__score {
+  font-size: 11px;
+  color: var(--c-text-2);
+}
+
+.conflict-card__badge {
+  font-family: var(--f-head);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  padding: 3px 10px;
+  border-radius: var(--r-sm);
+  margin-top: var(--sp-1);
+}
+
+.conflict-card__badge--more {
+  background: rgba(46,144,80,0.15);
+  border: 1px solid rgba(46,144,80,0.40);
+  color: var(--c-ok);
+}
+
+.conflict-card__badge--less {
+  background: rgba(197,160,89,0.08);
+  border: 1px solid var(--c-gold-dim);
+  color: var(--c-gold-dim);
+}
+
+.conflict-cancel-btn {
+  font-size: 11px;
+  color: var(--c-text-3);
+  border-color: var(--c-border);
+  padding: var(--sp-2) var(--sp-4);
+  min-height: unset;
+  width: 100%;
+}
+
+/* ── Cloud Pause Banner ───────────────────────────────────── */
+.cloud-pause-banner {
+  position: absolute;
+  bottom: calc(var(--nav-h) + var(--sp-2));
+  left: var(--sp-3);
+  right: var(--sp-3);
+  z-index: 400;
+  background: var(--c-overlay);
+  border: 1px solid var(--c-border-md);
+  border-radius: var(--r-md);
+  padding: 9px var(--sp-4);
+  font-size: 12px;
+  color: var(--c-text-2);
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: opacity .22s;
+}
+.cloud-pause-banner.is-hidden {
+  display: none;
+}

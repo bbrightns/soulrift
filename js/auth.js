@@ -171,6 +171,22 @@ function _restoreSession() {
  * The callback passed to initialize() handles the result.
  */
 function signIn() {
+  // Triggered by cloud pause banner tap — use prompt as best-effort
+  // Main sign-in flow uses the GIS-rendered button in intro step 3
+  if (!window.google?.accounts?.id) return;
+  google.accounts.id.prompt((notification) => {
+    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+      // render fallback button in banner area if available
+      const target = document.getElementById('cloud-pause-banner');
+      if (target && window.google?.accounts?.id) {
+        google.accounts.id.renderButton(target, {
+          type: 'standard',
+          theme: 'filled_black',
+          size: 'medium',
+        });
+      }
+    }
+  });
 }
 window.signIn = signIn;
 

@@ -1,41 +1,12 @@
-/*============ /js/sync.js ============
-  Phase C — offline-first cloud save sync.
-
-  PUBLIC API
-  ──────────────────────────────────────
-  syncToCloud()          — push local save to cloud (fire-and-forget)
-  syncOnSignIn()         — called once when user signs in: compare timestamps,
-                           show dialog if cloud is newer, else push silently
-  initSyncListeners()    — wire up visibilitychange + beforeunload triggers
-                           (called once from app.js DOMContentLoaded)
-
-  TRIGGER POINTS (wired in Phase D into existing JS files)
-  ──────────────────────────────────────
-  syncToCloud() is called after:
-    - Battle ended (win or lose)
-    - Spell purchased (single or bulk)
-    - Fusion result (success / downgrade / shatter)
-    - Tower chosen (first run)
-    - Player name or avatar changed
-    - App backgrounded / closed (visibilitychange hidden + beforeunload)
-
-  NOT called after:
-    - Stat point allocation
-    - GM panel actions
-    (those ride along with the next real trigger)
-=====================================================*/
 'use strict';
 
 const BACKEND_URL = 'https://soulrift-backend.vercel.app';
 
-/* ── Internal state ───────────────────────────────────────── */
 let _syncInFlight = false;
 let _syncQueued = false;
-let _syncInFlightSince = 0;
 let _syncOnSignInDone = false;
 
-/* ── Helpers ──────────────────────────────────────────────── */
-
+/* ── Helpers ─────────────────────────────────────────────── */
 function _authHeaders() {
   const token = typeof getAuthToken === 'function' ? getAuthToken() : null;
   if (!token) return null;
@@ -49,11 +20,8 @@ function _localSavedAt() {
   try {
     const raw = localStorage.getItem('soulrift_v1');
     if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    return parsed.savedAt || null;
-  } catch {
-    return null;
-  }
+    return JSON.parse(raw).savedAt || null;
+  } catch { return null; }
 }
 
 function _fmtDate(ts) {
@@ -64,20 +32,13 @@ function _fmtDate(ts) {
   });
 }
 
-/* ── Cloud push ───────────────────────────────────────────── */
-
-/**
- * Push the current local save to the cloud.
- * Safe to call at any time — queues automatically if already in flight.
- * Silently no-ops if the user is not signed in.
- */
+/* ── Cloud push ──────────────────────────────────────────── */
 async function syncToCloud() {
   if (typeof isSignedIn === 'function' && !isSignedIn()) {
-    _syncOnSignInDone = true; // not using cloud, unblock
+    _syncOnSignInDone = true;
     return;
   }
 
-  // block pushes until syncOnSignIn has resolved the conflict
   if (!_syncOnSignInDone) {
     _syncQueued = true;
     return;
@@ -86,7 +47,6 @@ async function syncToCloud() {
   const headers = _authHeaders();
   if (!headers) return;
 
-  // If a sync is already running, mark that we want another one after
   if (_syncInFlight) {
     _syncQueued = true;
     return;
@@ -98,17 +58,15 @@ async function syncToCloud() {
   try {
     const raw = localStorage.getItem('soulrift_v1');
     if (!raw) return;
-    const body = JSON.parse(raw);
 
     const res = await fetch(BACKEND_URL + '/api/save', {
       method: 'POST',
       headers,
-      body: JSON.stringify(body),
+      body: raw,
     });
 
     if (res.status === 401) {
-      // Token expired — silent refresh will fix it; next trigger will retry
-      console.info('[sync] 401 on push — token may be stale, waiting for refresh');
+      _showCloudPauseBanner();
       return;
     }
 
@@ -116,11 +74,9 @@ async function syncToCloud() {
       console.warn('[sync] Push failed:', res.status);
     }
   } catch (e) {
-    // Network offline — no toast, no error UI, just log
     console.info('[sync] Push skipped (offline?):', e.message);
   } finally {
     _syncInFlight = false;
-    // Drain the queue: if another push was requested during flight, run it now
     if (_syncQueued) {
       _syncQueued = false;
       syncToCloud();
@@ -128,167 +84,206 @@ async function syncToCloud() {
   }
 }
 
-/* ── Cloud pull ───────────────────────────────────────────── */
-
+/* ── Cloud pull ──────────────────────────────────────────── */
 async function _fetchCloudSave() {
   const headers = _authHeaders();
   if (!headers) return null;
-
   try {
     const res = await fetch(BACKEND_URL + '/api/save', { headers });
-    if (res.status === 401) {
-      console.info('[sync] 401 on fetch — token stale');
-      return null;
-    }
     if (!res.ok) return null;
     const json = await res.json();
     return json.save || null;
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
 
-/* ── Conflict dialog ──────────────────────────────────────── */
-
-/**
- * Show the "Cloud save is newer" modal using the existing shop-confirm-modal.
- * Resolves with true (load cloud) or false (keep local).
- */
-function _showCloudNewerDialog(cloudSavedAt, localSavedAt) {
-  return new Promise(resolve => {
-    const modal = document.getElementById('shop-confirm-modal');
-    const body = document.getElementById('shop-confirm-body');
-    if (!modal || !body) { resolve(false); return; }
-
-    body.innerHTML =
-      '<div class="modal-icon">☁</div>'
-      + '<div class="modal-title" id="modal-confirm-title">Cloud Save is Newer</div>'
-      + '<div class="modal-body">Last played <strong>'
-      + _fmtDate(cloudSavedAt)
-      + '</strong></div>'
-      + '<div class="modal-hint">Load it? This will replace your local progress'
-      + (localSavedAt ? ' (saved ' + _fmtDate(localSavedAt) + ')' : '')
-      + '.</div>';
-
-    const confirmBtn = modal.querySelector('.btn--primary');
-    const cancelBtn = modal.querySelector('.btn--ghost');
-
-    if (confirmBtn) {
-      confirmBtn.textContent = 'Load Cloud';
-      confirmBtn.disabled = false;
-      confirmBtn.onclick = () => {
-        _cleanupDialog(modal, confirmBtn, cancelBtn);
-        resolve(true);
-      };
-    }
-    if (cancelBtn) {
-      cancelBtn.textContent = 'Keep Local';
-      cancelBtn.onclick = () => {
-        _cleanupDialog(modal, confirmBtn, cancelBtn);
-        resolve(false);
-      };
-    }
-
-    modal.setAttribute('aria-labelledby', 'modal-confirm-title');
-    modal.classList.remove('is-hidden');
-    if (typeof _openModal === 'function') _openModal(modal);
-  });
-}
-
-function _cleanupDialog(modal, confirmBtn, cancelBtn) {
-  modal.classList.add('is-hidden');
-  if (typeof _closeModal === 'function') _closeModal(modal);
-  // Restore default handlers so the modal works normally elsewhere
-  if (confirmBtn) {
-    confirmBtn.textContent = 'Confirm';
-    confirmBtn.onclick = typeof confirmShopBuy === 'function' ? confirmShopBuy : null;
-  }
-  if (cancelBtn) {
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.onclick = typeof closeShopConfirm === 'function' ? closeShopConfirm : null;
-  }
-}
-
-/* ── Apply cloud save ─────────────────────────────────────── */
-
-function _applyCloudSave(cloudBlob) {
-  try {
-    localStorage.setItem('soulrift_v1', JSON.stringify(cloudBlob));
-    // Force state.js to re-read from localStorage on next getState() call
-    // _state is a module-level var in state.js; we null it via the reset path
-    // without wiping the key — reload is the cleanest approach here
-    location.reload();
-  } catch (e) {
-    console.error('[sync] Failed to apply cloud save:', e);
-    if (typeof toast === 'function') toast('Failed to load cloud save.', 'bad');
-  }
-}
-
-/* ── Main sign-in sync ────────────────────────────────────── */
-
-/**
- * Called once after the user signs in (or on app load if already signed in).
- * Fetches cloud save, compares savedAt, resolves conflict if needed.
- */
+/* ── Main sign-in sync ───────────────────────────────────── */
 async function syncOnSignIn() {
   if (typeof isSignedIn === 'function' && !isSignedIn()) return;
 
   const cloudBlob = await _fetchCloudSave();
 
-  if (!cloudBlob) {
+  // Scenario C — fresh google account, no cloud save
+  if (!cloudBlob || !cloudBlob.towerChosen) {
     _syncOnSignInDone = true;
     syncToCloud();
     return;
   }
 
-  const cloudSavedAt = cloudBlob.savedAt || 0;
-  const localSavedAt = _localSavedAt() || 0;
+  const localRaw = localStorage.getItem('soulrift_v1');
+  const localBlob = localRaw ? JSON.parse(localRaw) : null;
 
-  // Local is newer or equal — push silently, no dialog
-  if (localSavedAt >= cloudSavedAt) {
-    _syncOnSignInDone = true;
-    syncToCloud();
-    return;
-  }
-
-  // Cloud is newer — ask the player
-  const loadCloud = await _showCloudNewerDialog(cloudSavedAt, localSavedAt);
-  if (loadCloud) {
-    _syncOnSignInDone = true;
+  // Local is a fresh state — load cloud silently
+  if (!localBlob || !localBlob.towerChosen) {
     _applyCloudSave(cloudBlob);
-  } else {
-    _syncOnSignInDone = true;
-    syncToCloud();
+    return;
+  }
+
+  // Scenario D — both saves have progress, show conflict UI
+  _syncOnSignInDone = false;
+  showConflictOverlay(cloudBlob, localBlob);
+}
+
+/* ── Conflict resolution ─────────────────────────────────── */
+let _conflictCloud = null;
+let _conflictLocal = null;
+let _conflictPending = null; // 'cloud' | 'local'
+
+function showConflictOverlay(cloudBlob, localBlob) {
+  _conflictCloud = cloudBlob;
+  _conflictLocal = localBlob;
+
+  const cloudScore = calcProgressScore(cloudBlob);
+  const localScore = calcProgressScore(localBlob);
+  const cloudIsMore = cloudScore >= localScore;
+
+  _populateConflictCard('cloud', cloudBlob, cloudIsMore ? 'more' : 'less');
+  _populateConflictCard('local', localBlob, cloudIsMore ? 'less' : 'more');
+
+  const overlay = document.getElementById('conflict-overlay');
+  if (overlay) {
+    overlay.classList.add('is-visible');
+    overlay.setAttribute('aria-hidden', 'false');
   }
 }
 
-/* ── Background / unload triggers ────────────────────────── */
+function _populateConflictCard(side, blob, badge) {
+  const p = blob.player || {};
+  const tower = blob.tower || '';
+  const towerNames = { light: 'Light Tower', dark: 'Dark Tower', fire: 'Fire Tower', ice: 'Ice Tower' };
+  const avatarKey = blob.playerAvatar || (tower + '_1');
 
+  const avatarEl = document.getElementById('conflict-' + side + '-avatar');
+  if (avatarEl) {
+    avatarEl.innerHTML = '<img src="/asset/player_avatars/' + avatarKey + '.png" alt="">';
+  }
+
+  const set = (id, val) => {
+    const el = document.getElementById('conflict-' + side + '-' + id);
+    if (el) el.textContent = val;
+  };
+
+  set('tower', towerNames[tower] || '—');
+  set('name', blob.playerName || 'Wanderer');
+  set('level', 'Level ' + (p.level || 1));
+  set('score', 'Score ' + calcProgressScore(blob).toLocaleString());
+
+  const badgeEl = document.getElementById('conflict-' + side + '-badge');
+  if (badgeEl) {
+    badgeEl.textContent = badge === 'more' ? 'More Progress ↑' : 'Less Progress';
+    badgeEl.className = 'conflict-card__badge conflict-card__badge--' + badge;
+  }
+}
+
+function conflictChoose(side) {
+  _conflictPending = side;
+  const other = side === 'cloud' ? 'local' : 'cloud';
+  const blob = side === 'cloud' ? _conflictCloud : _conflictLocal;
+  const otherBlob = side === 'cloud' ? _conflictLocal : _conflictCloud;
+  const p = otherBlob.player || {};
+  const towerNames = { light: 'Light Tower', dark: 'Dark Tower', fire: 'Fire Tower', ice: 'Ice Tower' };
+
+  const modal = document.getElementById('conflict-confirm-modal');
+  const body = document.getElementById('conflict-confirm-body');
+  if (!modal || !body) return;
+
+  const lostSide = other === 'cloud' ? 'Cloud' : 'Local';
+  const lostName = otherBlob.playerName || 'Wanderer';
+  const lostTower = towerNames[otherBlob.tower] || '—';
+  const lostLevel = p.level || 1;
+
+  body.innerHTML =
+    '<div class="modal-icon">' + (other === 'cloud' ? '☁' : '◆') + '</div>'
+    + '<div class="modal-title modal-title--bad">Are you sure?</div>'
+    + '<div class="modal-body">Your <strong>' + lostSide + ' save</strong> will be permanently deleted.</div>'
+    + '<div class="modal-hint">'
+    + lostTower + ' · ' + lostName + ' · Level ' + lostLevel
+    + '<br>This cannot be undone.'
+    + '</div>';
+
+  modal.classList.remove('is-hidden');
+}
+
+function conflictConfirmOk() {
+  const modal = document.getElementById('conflict-confirm-modal');
+  if (modal) modal.classList.add('is-hidden');
+
+  if (_conflictPending === 'cloud') {
+    _applyCloudSave(_conflictCloud);
+  } else {
+    _syncOnSignInDone = true;
+    _hideConflictOverlay();
+    syncToCloud();
+  }
+  _conflictPending = null;
+}
+
+function conflictConfirmCancel() {
+  const modal = document.getElementById('conflict-confirm-modal');
+  if (modal) modal.classList.add('is-hidden');
+  _conflictPending = null;
+}
+
+function conflictCancel() {
+  // stay signed out, cloud untouched
+  if (typeof signOut === 'function') signOut();
+  _syncOnSignInDone = true;
+  _hideConflictOverlay();
+}
+
+function _hideConflictOverlay() {
+  const overlay = document.getElementById('conflict-overlay');
+  if (overlay) {
+    overlay.classList.remove('is-visible');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+}
+
+/* ── Apply cloud save ────────────────────────────────────── */
+function _applyCloudSave(cloudBlob) {
+  try {
+    localStorage.setItem('soulrift_v1', JSON.stringify(cloudBlob));
+    location.reload();
+  } catch (e) {
+    console.error('[sync] Failed to apply cloud save:', e);
+  }
+}
+
+/* ── Cloud pause banner ──────────────────────────────────── */
+function _showCloudPauseBanner() {
+  const banner = document.getElementById('cloud-pause-banner');
+  if (banner) banner.classList.remove('is-hidden');
+}
+
+function cloudPauseTap() {
+  const banner = document.getElementById('cloud-pause-banner');
+  if (banner) banner.classList.add('is-hidden');
+  if (typeof signIn === 'function') signIn();
+}
+
+/* ── Background triggers ─────────────────────────────────── */
 function initSyncListeners() {
-  // Push when tab goes to background
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      syncToCloud();
-    }
+    if (document.visibilityState === 'hidden') syncToCloud();
   });
-
-  // Push on page close (best-effort; fetch may be cancelled by browser)
-  // We replace the existing saveState-only beforeunload in state.js
   window.addEventListener('beforeunload', () => {
     syncToCloud();
   });
 }
 
-/* ── Auth event listener ──────────────────────────────────── */
-
-// When auth state changes, kick off the sign-in sync
+/* ── Auth event ──────────────────────────────────────────── */
 window.addEventListener('soulrift:authchange', (e) => {
   if (e.detail && e.detail.signedIn) {
     syncOnSignIn();
   }
 });
 
-/* ── Exports ──────────────────────────────────────────────── */
-window.syncToCloud = syncToCloud;
-window.syncOnSignIn = syncOnSignIn;
-window.initSyncListeners = initSyncListeners;
+/* ── Exports ─────────────────────────────────────────────── */
+window.syncToCloud         = syncToCloud;
+window.syncOnSignIn        = syncOnSignIn;
+window.initSyncListeners   = initSyncListeners;
+window.showConflictOverlay = showConflictOverlay;
+window.conflictChoose      = conflictChoose;
+window.conflictConfirmOk   = conflictConfirmOk;
+window.conflictConfirmCancel = conflictConfirmCancel;
+window.conflictCancel      = conflictCancel;
+window.cloudPauseTap       = cloudPauseTap;

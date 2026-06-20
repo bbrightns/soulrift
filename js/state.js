@@ -453,5 +453,22 @@ function clearBlueprint() {
   saveState();
 }
 
+/* ── Progress score (for conflict resolution) ────────────── */
+const RARITY_BONUS = { common: 0, uncommon: 2, rare: 4, ultimate: 6 };
+
+function calcProgressScore(state) {
+  if (!state || !state.towerChosen) return 0;
+  let score = (state.player.level || 1) * 1000;
+  (state.spells || []).forEach(stone => {
+    const def = window.getSpellDef ? getSpellDef(stone.id) : null;
+    if (!def) return;
+    const bonus = RARITY_BONUS[def.rarity] || 0;
+    score += (stone.lvl + bonus) * stone.qty;
+  });
+  return score;
+}
+
+window.calcProgressScore = calcProgressScore;
+
 /* ── Auto-save before tab close ──────────────────────────── */
 window.addEventListener('beforeunload', saveState);

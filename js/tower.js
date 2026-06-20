@@ -36,6 +36,64 @@ function chooseTower(tower) {
   }
 }
 
+function _renderIntroGsiButton() {
+  if (!window.google?.accounts?.id) {
+    setTimeout(_renderIntroGsiButton, 300);
+    return;
+  }
+  const target = document.getElementById('intro-gsi-hidden');
+  if (!target) return;
+  google.accounts.id.renderButton(target, {
+    type: 'standard',
+    theme: 'filled_black',
+    size: 'large',
+    text: 'signin_with',
+    width: 1,
+  });
+}
+
+function introChooseCloud() {
+  // Click the hidden GIS button
+  const gsiBtn = document.querySelector('#intro-gsi-hidden iframe, #intro-gsi-hidden div[role="button"]');
+  if (gsiBtn) {
+    gsiBtn.click();
+  } else {
+    // GIS not ready — try prompt fallback
+    if (window.google?.accounts?.id) {
+      google.accounts.id.prompt();
+    }
+  }
+  // Listen for sign-in success then start game
+  window.addEventListener('soulrift:authchange', _onIntroAuthChange);
+}
+
+function _onIntroAuthChange(e) {
+  if (!e.detail?.signedIn) return;
+  window.removeEventListener('soulrift:authchange', _onIntroAuthChange);
+  _startGameAfterIntro();
+}
+
+function introChooseLocal() {
+  // Skip sign-in, go straight to game
+  _startGameAfterIntro();
+}
+
+function _startGameAfterIntro() {
+  if (!_pendingTower || !_pendingName) return;
+  applyTowerStart(_pendingTower, _pendingName, _pendingAvatar);
+  document.getElementById('intro-signin-step')?.classList.remove('is-visible');
+  hideIntro();
+  syncHeader();
+  showScreen('battle');
+  toast(_pendingName + ' enters ' + TOWER_UI[_pendingTower].name + '.', 'gold', 3200);
+  if (typeof syncToCloud === 'function') syncToCloud();
+}
+
+function backToAvatarStep() {
+  document.getElementById('intro-signin-step')?.classList.remove('is-visible');
+  document.getElementById('intro-avatar-step')?.classList.add('is-visible');
+}
+
 function confirmName() {
   if (!_pendingTower) return;
   const inp = document.getElementById('player-name-input');
@@ -74,12 +132,13 @@ function selectIntroAvatar(key) {
 
 function confirmStart() {
   if (!_pendingTower || !_pendingName) return;
-  applyTowerStart(_pendingTower, _pendingName, _pendingAvatar);
-  hideIntro();
-  syncHeader();
-  showScreen('battle');
-  toast(_pendingName + ' enters ' + TOWER_UI[_pendingTower].name + '.', 'gold', 3200);
-  if (typeof syncToCloud === 'function') syncToCloud();
+
+  // Move to sign-in step instead of starting game immediately
+  document.getElementById('intro-avatar-step')?.classList.remove('is-visible');
+  document.getElementById('intro-signin-step')?.classList.add('is-visible');
+
+  // Pre-render GIS button inside the cloud card
+  _renderIntroGsiButton();
 }
 
 function backToNameStep() {

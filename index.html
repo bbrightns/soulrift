@@ -201,8 +201,100 @@
           </button>
         </div>
 
+        <!-- Step 4: Sign-in option -->
+        <div id="intro-signin-step">
+          <div class="landing-name-head">
+            <div class="landing-name-copy">One last step.</div>
+          </div>
+          <div class="divider--gold divider"></div>
+
+          <div class="intro-signin-cards">
+
+            <!-- Cloud Save card -->
+            <button class="intro-signin-card intro-signin-card--cloud" id="intro-cloud-card"
+              onclick="introChooseCloud()">
+              <div class="intro-signin-card__glow"></div>
+              <div class="intro-signin-card__icon">☁</div>
+              <div class="intro-signin-card__title">Save to Cloud</div>
+              <div class="intro-signin-card__desc">Sign in with Google. Your progress syncs across all devices.</div>
+              <!-- Hidden GIS button -->
+              <div id="intro-gsi-hidden"
+                style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;overflow:hidden;"></div>
+            </button>
+
+            <!-- Local Save card -->
+            <button class="intro-signin-card intro-signin-card--local" onclick="introChooseLocal()">
+              <div class="intro-signin-card__glow"></div>
+              <div class="intro-signin-card__icon">◆</div>
+              <div class="intro-signin-card__title">Play Locally</div>
+              <div class="intro-signin-card__desc">No sign-in needed. You can always enable cloud save later from your
+                profile.</div>
+            </button>
+
+            <!-- Back button -->
+            <button class="btn btn--ghost btn--full" style="margin-top:var(--sp-2);" onclick="backToAvatarStep()">
+              Back — Change Appearance
+            </button>
+
+          </div>
+        </div><!-- /intro-signin-step -->
+
       </div>
     </div><!-- /screen-intro -->
+
+    <!-- Cloud Conflict Overlay -->
+    <div id="conflict-overlay" aria-hidden="true">
+      <div class="conflict-shell">
+        <div class="conflict-title">Choose Your Save</div>
+        <div class="conflict-sub">We found a cloud save linked to your account.</div>
+
+        <div class="conflict-cards">
+
+          <button class="conflict-card" id="conflict-cloud-card" onclick="conflictChoose('cloud')">
+            <div class="conflict-card__label">Cloud Save</div>
+            <div class="conflict-card__avatar" id="conflict-cloud-avatar"></div>
+            <div class="conflict-card__tower" id="conflict-cloud-tower"></div>
+            <div class="conflict-card__name" id="conflict-cloud-name"></div>
+            <div class="conflict-card__level" id="conflict-cloud-level"></div>
+            <div class="conflict-card__score" id="conflict-cloud-score"></div>
+            <div class="conflict-card__badge" id="conflict-cloud-badge"></div>
+          </button>
+
+          <button class="conflict-card" id="conflict-local-card" onclick="conflictChoose('local')">
+            <div class="conflict-card__label">Local Save</div>
+            <div class="conflict-card__avatar" id="conflict-local-avatar"></div>
+            <div class="conflict-card__tower" id="conflict-local-tower"></div>
+            <div class="conflict-card__name" id="conflict-local-name"></div>
+            <div class="conflict-card__level" id="conflict-local-level"></div>
+            <div class="conflict-card__score" id="conflict-local-score"></div>
+            <div class="conflict-card__badge" id="conflict-local-badge"></div>
+          </button>
+
+        </div>
+
+        <button class="btn btn--ghost conflict-cancel-btn" onclick="conflictCancel()">
+          Continue without syncing — your cloud save stays safe
+        </button>
+
+      </div>
+    </div><!-- /conflict-overlay -->
+
+    <!-- Conflict Confirm Modal -->
+    <div id="conflict-confirm-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <div id="conflict-confirm-body"></div>
+        <div style="display:flex;gap:var(--sp-3);margin-top:var(--sp-5)">
+          <button class="btn btn--ghost btn--full" onclick="conflictConfirmCancel()">Go Back</button>
+          <button class="btn btn--danger btn--full" id="conflict-confirm-ok"
+            onclick="conflictConfirmOk()">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Token expiry banner -->
+    <div id="cloud-pause-banner" class="cloud-pause-banner is-hidden" onclick="cloudPauseTap()">
+      ☁ Cloud save paused — tap to reconnect
+    </div>
 
 
     <!-- ── Main Screens ───────────────────────────────────── -->
