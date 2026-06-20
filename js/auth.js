@@ -20,10 +20,10 @@ const AUTH_STORAGE_KEY = 'soulrift_auth_v1';
 const REFRESH_THRESHOLD_MS = 5 * 60 * 1000;
 
 /* ── Internal state ──────────────────────────────────────── */
-let _idToken   = null;   // raw JWT string
+let _idToken = null;   // raw JWT string
 let _expiresAt = 0;      // ms since epoch
-let _user      = null;   // { sub, email, name, picture }
-let _client    = null;   // google.accounts.id client (for prompt/renew)
+let _user = null;   // { sub, email, name, picture }
+let _client = null;   // google.accounts.id client (for prompt/renew)
 let _tokenClient = null; // unused in id-token flow; kept for future OAuth scope
 
 /* ── Helpers ─────────────────────────────────────────────── */
@@ -62,12 +62,12 @@ function _applyCredential(credentialResponse) {
     return;
   }
 
-  _idToken   = credentialResponse.credential;
+  _idToken = credentialResponse.credential;
   _expiresAt = (payload.exp || 0) * 1000; // convert to ms
-  _user      = {
-    sub:     payload.sub,
-    email:   payload.email   || null,
-    name:    payload.name    || null,
+  _user = {
+    sub: payload.sub,
+    email: payload.email || null,
+    name: payload.name || null,
     picture: payload.picture || null,
   };
 
@@ -126,6 +126,9 @@ function _initGIS() {
     return;
   }
 
+  console.log('[auth] origin:', window.location.origin);
+  console.log('[auth] GIS loaded:', !!window.google?.accounts?.id);
+
   google.accounts.id.initialize({
     client_id: GOOGLE_CLIENT_ID,
     callback: _applyCredential,
@@ -149,9 +152,9 @@ function _restoreSession() {
 
     // Accept the stored token even if expired — Phase C will handle
     // a 401 gracefully. But schedule an immediate silent refresh.
-    _idToken   = token;
+    _idToken = token;
     _expiresAt = expiresAt;
-    _user      = user;
+    _user = user;
 
     _scheduleRefresh();
     _emit();
@@ -182,15 +185,15 @@ function signIn() {
 function signOut() {
   const email = _user?.email;
 
-  _idToken   = null;
+  _idToken = null;
   _expiresAt = 0;
-  _user      = null;
+  _user = null;
   if (_refreshTimer) { clearTimeout(_refreshTimer); _refreshTimer = null; }
 
   _clearPersisted();
 
   if (email && window.google?.accounts?.id) {
-    google.accounts.id.revoke(email, () => {});
+    google.accounts.id.revoke(email, () => { });
   }
 
   _emit();
@@ -223,8 +226,8 @@ if (document.readyState === 'loading') {
 }
 
 /* ── Exports (global, matching state.js style) ───────────── */
-window.signIn        = signIn;
-window.signOut       = signOut;
-window.getAuthToken  = getAuthToken;
+window.signIn = signIn;
+window.signOut = signOut;
+window.getAuthToken = getAuthToken;
 window.getGoogleUser = getGoogleUser;
-window.isSignedIn    = isSignedIn;
+window.isSignedIn = isSignedIn;
