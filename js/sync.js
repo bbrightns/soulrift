@@ -175,7 +175,6 @@ function _populateConflictCard(side, blob, badge) {
   set('tower', towerNames[tower] || '—');
   set('name', blob.playerName || 'Wanderer');
   set('level', 'Level ' + (p.level || 1));
-  set('score', 'Score ' + calcProgressScore(blob).toLocaleString());
 
   const badgeEl = document.getElementById('conflict-' + side + '-badge');
   if (badgeEl) {
