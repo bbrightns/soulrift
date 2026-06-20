@@ -779,7 +779,7 @@ input, select, textarea {
   backdrop-filter: blur(2px);
 }
 
-#profile-panel.is-open {
+#app #profile-panel.is-open {
   opacity: 1;
   pointer-events: auto;
 }
@@ -3173,7 +3173,7 @@ input, select, textarea {
   backdrop-filter: blur(2px);
 }
 
-#spell-picker-panel.is-open {
+#app #spell-picker-panel.is-open {
   opacity: 1;
   pointer-events: auto;
 }
@@ -3464,7 +3464,7 @@ input, select, textarea {
   transition: opacity .22s;
   backdrop-filter: blur(2px);
 }
-#fusion-cat-panel.is-open {
+#app #fusion-cat-panel.is-open {
   opacity: 1;
   pointer-events: auto;
 }
