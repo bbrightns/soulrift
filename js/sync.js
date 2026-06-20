@@ -118,7 +118,17 @@ async function syncOnSignIn() {
     return;
   }
 
-  // Scenario D — both saves have progress, show conflict UI
+  // Saves are already equivalent — nothing to resolve, no overlay needed.
+  // (Covers: re-login after a previous conflict choice, or two devices
+  // that happen to be in sync.)
+  const cloudScore = calcProgressScore(cloudBlob);
+  const localScore = calcProgressScore(localBlob);
+  if (cloudScore === localScore) {
+    _syncOnSignInDone = true;
+    return;
+  }
+
+  // Scenario D — saves genuinely differ, show conflict UI
   _syncOnSignInDone = false;
   showConflictOverlay(cloudBlob, localBlob);
 }
