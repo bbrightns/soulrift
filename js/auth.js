@@ -8,7 +8,7 @@ const GOOGLE_CLIENT_ID =
   '1071376739473-a6cjtaaf852lr42osrvs6aqke757h3j7.apps.googleusercontent.com';
 
 const BACKEND_AUTH_URL = 'https://soulrift-backend.vercel.app/api/auth/google';
-const REDIRECT_URI = 'https://REPLACE-WITH-YOUR-DOMAIN/'; // ← must exactly match Cloud Console
+const REDIRECT_URI = 'https://soulrift.vercel.app/';
 
 const AUTH_STORAGE_KEY = 'soulrift_auth_v2'; // bumped: shape changed (own JWT, not Google id_token)
 const OAUTH_STATE_KEY = 'soulrift_oauth_state';

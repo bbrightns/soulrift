@@ -54,7 +54,7 @@ function renderAuthSection() {
   }
 }
 
-/** Minimal HTML escape to avoid XSS when rendering user-supplied strings. */
+/** Minimal HTML escape to avoid XSS when rendering user-supplied strings */
 function _escHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
