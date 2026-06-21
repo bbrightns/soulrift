@@ -2578,13 +2578,13 @@ html.app-booted #screens { display: block; }
 
 .landing-name-head {
   text-align: center;
-  padding: 40px 0 24px;
+  padding: 20px 0 16px;
 }
 
 .landing-chosen-glyph {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 16px;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2593,12 +2593,15 @@ html.app-booted #screens { display: block; }
   border: 1px solid rgba(197, 160, 89, 0.3);
   color: var(--c-gold-text);
   box-shadow: var(--glow-gold-sm);
+  overflow: hidden;
 }
 
-.landing-chosen-glyph svg {
-  width: 30px;
-  height: 30px;
-  stroke-width: 1.5;
+.landing-chosen-glyph svg,
+.landing-chosen-glyph img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 #app[data-tower="light"] .landing-chosen-glyph {
