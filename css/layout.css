@@ -37,6 +37,7 @@ input, select, textarea {
 
 /* ── Header ──────────────────────────────────────────────── */
 #app-header {
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -55,6 +56,8 @@ input, select, textarea {
   flex-shrink: 0;
   box-shadow: 0 1px 20px rgba(0, 0, 0, 0.60);
 }
+
+body.app-booted #app-header { display: flex; flex-direction: column; }
 
 .header-hud-row {
   display: flex;

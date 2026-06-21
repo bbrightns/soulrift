@@ -399,10 +399,12 @@ function bootApp() {
 
   const s = getState();
   if (!s.towerChosen) {
-    showIntro();
+    showIntro();      // screen-intro already active by default; this just ensures nav/header stay hidden
   } else {
+    hideIntro();
     showScreen(DEFAULT_SCREEN);
   }
+  document.body.classList.add('app-booted');
 }
 
 /* ── Library ─────────────────────────────────────────────── */
