@@ -57,7 +57,10 @@ input, select, textarea {
   box-shadow: 0 1px 20px rgba(0, 0, 0, 0.60);
 }
 
-body.app-booted #app-header { display: flex; flex-direction: column; }
+html.app-booted #screen-intro { display: none; }
+html.app-booted #app-header { display: flex; flex-direction: column; }
+html.app-booted #bottom-nav { display: flex; }
+html.app-booted #screens { display: block; }
 
 .header-hud-row {
   display: flex;
@@ -219,8 +222,6 @@ body.app-booted #app-header { display: flex; flex-direction: column; }
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-body.app-booted #screens { display: block; }
-
 /* ── Individual screens ──────────────────────────────────── */
 .screen {
   display: none;
@@ -323,8 +324,6 @@ body.app-booted #screens { display: block; }
   z-index: 200;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.70);
 }
-
-body.app-booted #bottom-nav { display: flex; }
 
 #bottom-nav::before {
   content: '';
@@ -434,7 +433,7 @@ body.app-booted #bottom-nav { display: flex; }
 
 /* ── Intro screen ────────────────────────────────────────── */
 #screen-intro {
-  display: none;
+  display: block;
   position: absolute;
   inset: 0;
   z-index: 250;
@@ -445,10 +444,6 @@ body.app-booted #bottom-nav { display: flex; }
     linear-gradient(180deg,
       rgba(13, 13, 20, 0.78),
       rgba(13, 13, 20, 0.58));
-}
-
-#screen-intro.is-active {
-  display: block;
 }
 
 /* ── Tower select cards ──────────────────────────────────── */

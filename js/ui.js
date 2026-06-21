@@ -103,13 +103,11 @@ function onScreen(key, fn) {
 
 /* ── Intro helpers ───────────────────────────────────────── */
 function showIntro() {
-  document.body.classList.remove('app-booted');
-  document.getElementById('screen-intro').classList.add('is-active');
+  document.documentElement.classList.remove('app-booted');
 }
 
 function hideIntro() {
-  document.getElementById('screen-intro').classList.remove('is-active');
-  document.body.classList.add('app-booted');
+  document.documentElement.classList.add('app-booted');
 }
 
 /* ── Nav init ────────────────────────────────────────────── */

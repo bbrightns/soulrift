@@ -4,9 +4,20 @@
 
 <head>
   <script>
-    if (/[?&](code|error)=/.test(location.search)) {
-      document.documentElement.classList.add('oauth-pending');
-    }
+    (function () {
+      var html = document.documentElement;
+      if (/[?&](code|error)=/.test(location.search)) {
+        html.classList.add('oauth-pending');
+        return; // loading screen owns the first paint regardless of save state
+      }
+      try {
+        var raw = localStorage.getItem('soulrift_v1');
+        var save = raw ? JSON.parse(raw) : null;
+        if (save && save.towerChosen) {
+          html.classList.add('app-booted'); // returning player: skip straight to game
+        }
+      } catch (e) { /* corrupt/missing save — fall through to intro */ }
+    })();
   </script>
   <meta charset="UTF-8">
   <meta name="viewport"
@@ -68,7 +79,7 @@
     </header>
 
     <!-- ── Tower Select Intro (first run only) ────────────── -->
-    <div id="screen-intro" class="is-active">
+    <div id="screen-intro">
       <div class="landing-shell">
 
         <!-- Step 0: Login or Guest -->
