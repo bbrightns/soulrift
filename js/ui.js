@@ -103,18 +103,13 @@ function onScreen(key, fn) {
 
 /* ── Intro helpers ───────────────────────────────────────── */
 function showIntro() {
-  /* hide main screens + nav + header */
-  document.getElementById('screens').style.display = 'none';
-  document.getElementById('bottom-nav').style.display = 'none';
-  document.getElementById('app-header').style.display = 'none';
+  document.body.classList.remove('app-booted');
   document.getElementById('screen-intro').classList.add('is-active');
 }
 
 function hideIntro() {
   document.getElementById('screen-intro').classList.remove('is-active');
-  document.getElementById('screens').style.display = '';
-  document.getElementById('bottom-nav').style.display = '';
-  document.getElementById('app-header').style.display = '';
+  document.body.classList.add('app-booted');
 }
 
 /* ── Nav init ────────────────────────────────────────────── */
@@ -399,12 +394,11 @@ function bootApp() {
 
   const s = getState();
   if (!s.towerChosen) {
-    showIntro();      // screen-intro already active by default; this just ensures nav/header stay hidden
+    showIntro();              // body never gets .app-booted — header/nav stay CSS-hidden
   } else {
-    hideIntro();
+    hideIntro();               // adds .app-booted — header/nav become visible
     showScreen(DEFAULT_SCREEN);
   }
-  document.body.classList.add('app-booted');
 }
 
 /* ── Library ─────────────────────────────────────────────── */

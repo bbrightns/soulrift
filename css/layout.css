@@ -304,6 +304,7 @@ body.app-booted #app-header { display: flex; flex-direction: column; }
 
 /* ── Bottom Navigation ───────────────────────────────────── */
 #bottom-nav {
+  display: none;
   position: absolute;
   left: 0;
   right: 0;
@@ -315,11 +316,12 @@ body.app-booted #app-header { display: flex; flex-direction: column; }
     linear-gradient(0deg, rgba(0, 0, 0, 0.40) 0%, transparent 100%),
     var(--c-surface);
   border-top: 1px solid var(--c-border-md);
-  display: flex;
   align-items: stretch;
   z-index: 200;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.70);
 }
+
+body.app-booted #bottom-nav { display: flex; }
 
 #bottom-nav::before {
   content: '';
