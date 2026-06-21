@@ -1,19 +1,19 @@
 'use strict';
 
-let _pendingTower  = null;
+let _pendingTower = null;
 let _pendingAvatar = null;
 
 const TOWER_UI = {
-  light: { lucide: 'sun',     name: 'Light Tower' },
-  dark:  { lucide: 'moon',    name: 'Dark Tower'  },
-  fire:  { lucide: 'flame',   name: 'Fire Tower'  },
-  ice:   { lucide: 'diamond', name: 'Ice Tower'   },
+  light: { lucide: 'sun', name: 'Light Tower' },
+  dark: { lucide: 'moon', name: 'Dark Tower' },
+  fire: { lucide: 'flame', name: 'Fire Tower' },
+  ice: { lucide: 'diamond', name: 'Ice Tower' },
 };
 
 function chooseTower(tower) {
   const info = TOWER_UI[tower];
   if (!info) return;
-  _pendingTower  = tower;
+  _pendingTower = tower;
   _pendingAvatar = tower + '_1';
 
   const gEl = document.getElementById('intro-chosen-glyph');
@@ -108,9 +108,9 @@ function backToNameStep() {
 }
 
 function backToTowerSelect() {
-  _pendingTower  = null;
+  _pendingTower = null;
   _pendingAvatar = null;
-  _pendingName   = null;
+  _pendingName = null;
   document.getElementById('intro-name-step')?.classList.remove('is-visible');
   document.getElementById('intro-avatar-step')?.classList.remove('is-visible');
   document.getElementById('intro-tower-step')?.classList.remove('is-hidden');
@@ -127,3 +127,19 @@ function initTowerFlow() {
     });
   }
 }
+
+function backToAuthStep() {
+  _pendingTower = null;
+  _pendingAvatar = null;
+  _pendingName = null;
+  if (typeof isSignedIn === 'function' && isSignedIn()) {
+    if (!confirm('Go back and sign out of Google? Your cloud save will stay safe — you can sign in again later.')) return;
+    if (typeof signOut === 'function') signOut();
+  }
+  document.getElementById('intro-tower-step')?.classList.add('is-hidden');
+  document.getElementById('intro-auth-step')?.classList.remove('is-hidden');
+
+  const app = document.getElementById('app');
+  if (app) app.removeAttribute('data-tower');
+}
+window.backToAuthStep = backToAuthStep;
