@@ -816,7 +816,24 @@
             </div>
           </div>
 
-          <!-- 3. Battle Speed Section -->
+          <!-- 3. Catalyst Section -->
+          <div class="gm-section">
+            <div class="section-label">Catalyst</div>
+            <div class="gm-col">
+              <div class="gm-compact-row">
+                <select id="gm-catalyst-select" class="gm-select">
+                  <option value="catalyst_shard">Catalyst Shard (+15%)</option>
+                  <option value="catalyst_core">Catalyst Core (+30%)</option>
+                  <option value="catalyst_crystal">Catalyst Crystal (+50%)</option>
+                </select>
+                <input type="number" id="gm-catalyst-qty" class="gm-input" min="1" value="1" placeholder="Qty"
+                  style="max-width: 80px;">
+                <button class="btn btn--primary gm-btn" onclick="gmAddCatalyst()">Add</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Battle Speed Section -->
           <div class="gm-section">
             <div class="section-label">Battle Speed</div>
             <div class="gm-speed-row">

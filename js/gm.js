@@ -235,11 +235,26 @@
 
   document.addEventListener('DOMContentLoaded', _initLongPress);
 
+  function gmAddCatalyst() {
+    var id  = document.getElementById('gm-catalyst-select').value;
+    var qty = parseInt(document.getElementById('gm-catalyst-qty').value, 10) || 1;
+    var state = getState();
+    if (!Array.isArray(state.items)) state.items = [];
+    var existing = state.items.find(function(i) { return i.id === id; });
+    if (existing) { existing.qty += qty; }
+    else { state.items.push({ id: id, qty: qty }); }
+    saveState();
+    if (typeof renderItems === 'function') renderItems();
+    if (window.SFX) SFX.buy();
+    if (typeof toast === 'function') toast('Added ' + qty + 'x ' + id.replace(/_/g,' '), 'ok');
+  }
+
   window.openGMPanel      = openGMPanel;
   window.gmSetSpeed       = gmSetSpeed;
   window.closeGMPanel     = closeGMPanel;
   window.gmSetGold        = gmSetGold;
   window.gmAddSpellStone  = gmAddSpellStone;
+  window.gmAddCatalyst    = gmAddCatalyst;
   window.gmSetLevel       = gmSetLevel;
   window.gmSetExp         = gmSetExp;
   window.gmResetAll       = gmResetAll;
