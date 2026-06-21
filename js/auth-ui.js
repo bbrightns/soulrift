@@ -20,26 +20,6 @@
    <div id="profile-auth-section"></div>
 ──────────────────────────────────────────────────────────── */
 
-function _renderGsiButton() {
-  const target = document.getElementById('auth-gsi-button');
-  if (!target) return;
-
-  if (!window.google?.accounts?.id) {
-    // GIS not loaded yet — retry shortly
-    setTimeout(_renderGsiButton, 300);
-    return;
-  }
-
-  google.accounts.id.renderButton(target, {
-    type: 'standard',
-    shape: 'rectangular',
-    theme: 'filled_black',
-    text: 'signin_with',
-    size: 'large',
-    width: target.parentElement?.clientWidth || 300,
-  });
-}
-
 function renderAuthSection() {
   const container = document.getElementById('profile-auth-section');
   if (!container) return;
@@ -49,9 +29,10 @@ function renderAuthSection() {
       <div class="auth-section">
         <p class="auth-label">Cloud Save</p>
         <p class="auth-hint">Sign in with Google to back up your progress and play across devices.</p>
-        <div id="auth-gsi-button" style="margin-top:var(--sp-2);"></div>
+        <button class="btn btn--primary btn--full" onclick="signIn()" style="margin-top:var(--sp-2);">
+          Sign in with Google
+        </button>
       </div>`;
-    _renderGsiButton();
   } else {
     const user = getGoogleUser();
     const name = user?.name || user?.email || 'Google User';

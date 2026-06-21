@@ -36,26 +36,6 @@ function chooseTower(tower) {
   }
 }
 
-let _introGsiRendered = false;
-
-function _renderIntroGsiOverlay() {
-  if (_introGsiRendered) return;
-  if (!window.google?.accounts?.id) {
-    setTimeout(_renderIntroGsiOverlay, 300);
-    return;
-  }
-  const target = document.getElementById('intro-gsi-overlay');
-  if (!target) return;
-  google.accounts.id.renderButton(target, {
-    type: 'standard',
-    theme: 'filled_black',
-    size: 'large',
-    text: 'signin_with',
-    width: 400, // stretched to fill the card via CSS regardless
-  });
-  _introGsiRendered = true;
-}
-
 window.addEventListener('soulrift:authchange', (e) => {
   if (!e.detail?.signedIn) return;
   // Only auto-advance if the player is still on the auth step
@@ -146,5 +126,4 @@ function initTowerFlow() {
       if (event.key === 'Enter') confirmName();
     });
   }
-  _renderIntroGsiOverlay();
 }
