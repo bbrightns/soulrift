@@ -286,6 +286,9 @@ function initSyncListeners() {
 /* ── Auth event ──────────────────────────────────────────── */
 window.addEventListener('soulrift:authchange', (e) => {
   if (e.detail && e.detail.signedIn) {
+    // During an OAuth-redirect boot, auth.js's sequential flow owns this
+    // call (see _bootAuth) so the loading screen can wait on it properly.
+    if (document.documentElement.classList.contains('oauth-pending')) return;
     syncOnSignIn();
   }
 });

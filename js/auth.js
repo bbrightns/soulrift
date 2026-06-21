@@ -142,7 +142,11 @@ window.isSignedIn = isSignedIn;
 
 async function _bootAuth() {
   _restoreSession();
+  const wasPending = document.documentElement.classList.contains('oauth-pending');
   await _handleOAuthRedirect();
+  if (wasPending && isSignedIn() && typeof syncOnSignIn === 'function') {
+    await syncOnSignIn();   // wait for cloud-save fetch/apply before revealing anything
+  }
   window.dispatchEvent(new CustomEvent('soulrift:oauthcomplete'));
 }
 
