@@ -1,7 +1,7 @@
 /* ── GM Dev Panel ──────────────────────────────────────────── */
 
 #app #gm-panel {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: var(--z-gm-panel);
   display: flex;
@@ -16,7 +16,7 @@
   padding: var(--sp-5) var(--sp-4);
 }
 
-#gm-panel.is-open {
+#app #gm-panel.is-open {
   opacity: 1;
   pointer-events: auto;
 }
@@ -37,7 +37,7 @@
   box-shadow: 0 8px 56px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(197,160,89,0.06);
 }
 
-#gm-panel.is-open .gm-sheet {
+#app #gm-panel.is-open .gm-sheet {
   transform: scale(1) translateY(0);
 }
 
