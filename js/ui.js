@@ -315,7 +315,7 @@ function showLevelUpOverlay(level) {
   ov.classList.remove('is-active');
   void ov.offsetWidth; // force reflow so animation replays
   ov.classList.add('is-active');
-  setTimeout(() => ov.classList.remove('is-active'), 2700);
+  setTimeout(() => ov.classList.remove('is-active'), 4300);
 }
 window.showLevelUpOverlay = showLevelUpOverlay;
 

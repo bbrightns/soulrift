@@ -1204,7 +1204,7 @@ async function runAutoBattle(dungeonId) {
     if (typeof SFX !== 'undefined') SFX.victory();
     showBattleOutcome({ won: true, goldReward, expReward, drops });
     if (_didLevelUp && typeof showLevelUpOverlay === 'function') {
-      setTimeout(() => showLevelUpOverlay(_levelAfter), 800);
+      setTimeout(() => showLevelUpOverlay(_levelAfter), 600);
     }
     setBattleResult('<span class="c-ok">Victory recorded</span>');
   } else {

@@ -2433,17 +2433,26 @@ html.app-booted #screens { display: block; }
   align-items: center;
   justify-content: center;
   gap: 2px;
-  background: radial-gradient(ellipse at center, rgba(197,160,89,.20) 0%, rgba(5,5,10,.96) 70%);
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 48%, rgba(197,160,89,.18) 0%, transparent 70%),
+    rgba(5,5,10,.92);
   pointer-events: none;
   opacity: 0;
 }
+#levelup-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, rgba(0,0,0,.55) 100%);
+  pointer-events: none;
+}
 #levelup-overlay.is-active {
-  animation: lvlupEnvelope 2.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: lvlupEnvelope 4.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 @keyframes lvlupEnvelope {
   0%   { opacity: 0; }
-  10%  { opacity: 1; }
-  72%  { opacity: 1; }
+  8%   { opacity: 1; }
+  78%  { opacity: 1; }
   100% { opacity: 0; }
 }
 .levelup-kicker {
@@ -2462,7 +2471,7 @@ html.app-booted #screens { display: block; }
   font-size: 88px;
   line-height: 1;
   color: var(--c-gold-hi);
-  text-shadow: 0 0 52px rgba(197,160,89,.70), 0 0 100px rgba(197,160,89,.30);
+  text-shadow: 0 0 52px rgba(197,160,89,.90), 0 0 100px rgba(197,160,89,.55), 0 0 200px rgba(197,160,89,.25);
   opacity: 0;
 }
 #levelup-overlay.is-active .levelup-number {
