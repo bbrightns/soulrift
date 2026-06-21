@@ -392,14 +392,30 @@ function bootApp() {
   initNav();
   syncHeader();
 
+  if (document.documentElement.classList.contains('oauth-pending')) {
+    return; // hold — finishBootAfterAuth() takes over once the redirect resolves
+  }
+
   const s = getState();
   if (!s.towerChosen) {
-    showIntro();              // body never gets .app-booted — header/nav stay CSS-hidden
+    showIntro();
   } else {
-    hideIntro();               // adds .app-booted — header/nav become visible
+    hideIntro();
     showScreen(DEFAULT_SCREEN);
   }
 }
+
+function finishBootAfterAuth() {
+  document.documentElement.classList.remove('oauth-pending');
+  const s = getState();
+  if (!s.towerChosen) {
+    showIntro();
+  } else {
+    hideIntro();
+    showScreen(DEFAULT_SCREEN);
+  }
+}
+window.addEventListener('soulrift:oauthcomplete', finishBootAfterAuth);
 
 /* ── Library ─────────────────────────────────────────────── */
 let _libTower = null;

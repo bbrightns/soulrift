@@ -3,6 +3,11 @@
 <html lang="en">
 
 <head>
+  <script>
+    if (/[?&](code|error)=/.test(location.search)) {
+      document.documentElement.classList.add('oauth-pending');
+    }
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -232,6 +237,12 @@
 
       </div>
     </div><!-- /screen-intro -->
+
+    <!-- ── Loading Overlay (shows during session restore) ─────── -->
+    <div id="screen-loading" aria-hidden="true">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Restoring your Rift…</div>
+    </div><!-- /screen-loading -->
 
     <!-- Cloud Conflict Overlay -->
     <div id="conflict-overlay" aria-hidden="true">

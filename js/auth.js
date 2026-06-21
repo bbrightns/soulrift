@@ -143,6 +143,7 @@ window.isSignedIn = isSignedIn;
 async function _bootAuth() {
   _restoreSession();
   await _handleOAuthRedirect();
+  window.dispatchEvent(new CustomEvent('soulrift:oauthcomplete'));
 }
 
 if (document.readyState === 'loading') {
